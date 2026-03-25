@@ -77,6 +77,14 @@
   background: var(--vp-c-bg) !important;
 }
 
+/* 修掉 sidebar 頂部的 curtain 背景色（會露出預設色塊）*/
+:root {
+  --vp-sidebar-bg-color: var(--vp-c-bg);
+}
+.curtain {
+  background-color: var(--vp-c-bg) !important;
+}
+
 .VPSidebarItem .text {
   font-weight: 400;
   letter-spacing: 0.01em;
