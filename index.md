@@ -14,13 +14,16 @@ hero:
       link: /學習日誌/
 
 features:
-  - icon: 🤖
+  - icon:
+      src: /icons/ai.svg
     title: 每日 AI 技術摘要
     details: 自動追蹤 Anthropic Claude、GitHub Copilot、OpenAI 的最新動態，每天早上整理好等你來讀。
-  - icon: 🎯
+  - icon:
+      src: /icons/focus.svg
     title: 針對 UI 前端的關聯分析
     details: 不只是新聞，而是分析這些技術跟前端開發、設計系統的實際關聯，讓你知道該學什麼、怎麼用。
-  - icon: 📈
+  - icon:
+      src: /icons/growth.svg
     title: 累積式成長記錄
     details: 每一篇日誌都是可搜尋的知識節點，按年月日組織，隨時回顧、持續迭代。
 ---
