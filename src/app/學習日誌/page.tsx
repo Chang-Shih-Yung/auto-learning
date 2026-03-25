@@ -13,7 +13,7 @@ export default function JournalIndexPage() {
   const tree = getJournalTree();
 
   return (
-    <div className="flex gap-8 py-10 min-h-[calc(100vh-3.5rem)]">
+    <div className="flex flex-col md:flex-row gap-8 py-10 min-h-[calc(100vh-3.5rem)]">
       {/* Sidebar */}
       <Sidebar tree={tree} />
 
