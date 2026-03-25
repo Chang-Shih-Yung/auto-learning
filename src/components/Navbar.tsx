@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
 
@@ -80,10 +81,10 @@ export default function Navbar() {
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
-              className="px-3 py-1.5 rounded-md text-sm text-[#5a5856] hover:text-[#1a1a18] transition-colors"
+              className="p-2 rounded-md text-[#5a5856] hover:text-[#1a1a18] transition-colors"
               aria-label="Open menu"
             >
-              選單
+              <Menu className="h-5 w-5" />
             </SheetTrigger>
             <SheetContent
               side="right"
