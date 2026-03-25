@@ -45,14 +45,29 @@
   --vp-c-border: rgba(232, 228, 220, 0.08);
 }
 
-/* ── 去掉 Navbar 底部分隔線 ── */
+/* ── Navbar 全透明，去掉所有線和色塊 ── */
 .VPNav {
   border-bottom: none !important;
-  backdrop-filter: blur(12px);
-  background: rgba(250, 248, 245, 0.85) !important;
+  box-shadow: none !important;
+  background: transparent !important;
 }
-.dark .VPNav {
-  background: rgba(22, 20, 15, 0.85) !important;
+.VPNavBar {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+/* 去掉 Logo/Title 右側分隔線（造成左右不一致的底線）*/
+.VPNavBarTitle {
+  border-right: none !important;
+}
+.VPNavBarTitle .title {
+  border-right: none !important;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.dark .VPNav,
+.dark .VPNavBar {
+  background: transparent !important;
 }
 
 /* ── Sidebar 去邊框、去分隔線 ── */

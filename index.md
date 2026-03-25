@@ -3,7 +3,7 @@ layout: home
 
 hero:
   name: "Henry's Learning Hub"
-  text: "每日 AI 技術摘要 × 前端成長日誌"
+  text: "每日 AI 技術摘要"
   tagline: 用 Claude Code 驅動的自我學習系統，每天自動整理最新技術動態
   actions:
     - theme: brand

@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   title: "Henry's Learning Hub",
-  description: "每日 AI 技術摘要 × 前端成長日誌",
+  description: "每日 AI 技術摘要 × 前端成長紀錄",
   lang: 'zh-TW',
 
   head: [
