@@ -28,8 +28,8 @@
   --vp-c-divider: rgba(26, 26, 24, 0.06);
   --vp-c-border: rgba(26, 26, 24, 0.08);
 
-  /* 字型 */
-  --vp-font-family-base: 'Geist', 'Noto Serif JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  /* 字型：Noto Serif JP 優先，英文中文全部走這套 */
+  --vp-font-family-base: 'Noto Serif JP', 'Geist', 'Hiragino Mincho ProN', serif;
   --vp-font-family-mono: 'Geist Mono', monospace;
 }
 
@@ -45,28 +45,29 @@
   --vp-c-border: rgba(232, 228, 220, 0.08);
 }
 
-/* ── Navbar 全透明，去掉所有線和色塊 ── */
-.VPNav {
+/* ── Navbar：所有頁面全透明，去掉背景色塊和線 ── */
+.VPNav,
+.VPNavBar,
+.VPNavBar > .wrapper,
+.VPNavBar > .container,
+.VPNavBar .content,
+.VPNavBar .content-body {
   border-bottom: none !important;
   box-shadow: none !important;
   background: transparent !important;
-}
-.VPNavBar {
-  border-bottom: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
+  backdrop-filter: none !important;
 }
 /* 去掉 Logo/Title 右側分隔線（造成左右不一致的底線）*/
-.VPNavBarTitle {
-  border-right: none !important;
-}
+.VPNavBarTitle,
 .VPNavBarTitle .title {
   border-right: none !important;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
 .dark .VPNav,
-.dark .VPNavBar {
+.dark .VPNavBar,
+.dark .VPNavBar > .wrapper,
+.dark .VPNavBar > .container {
   background: transparent !important;
 }
 
@@ -95,9 +96,12 @@
   padding-top: 48px !important;
 }
 
-/* 去掉 doc 兩側多餘的邊框線 */
+/* 閱讀區塊寬度 */
 .VPDoc .container {
-  max-width: 780px;
+  max-width: 960px;
+}
+.VPDoc .content {
+  max-width: 860px;
 }
 
 /* ── Typography ── */
@@ -195,11 +199,24 @@
   opacity: 0.5;
 }
 
-/* ── 頁面底部 prev/next 去掉頂部線 ── */
+/* ── 頁面底部 prev/next：只有多篇文章才有意義，先隱藏 ── */
+.VPDocFooter .pager {
+  display: none !important;
+}
 .VPDocFooter {
-  border-top: 1px solid var(--vp-c-divider) !important;
-  margin-top: 3rem;
-  padding-top: 2rem;
+  border-top: none !important;
+  margin-top: 2rem;
+  padding-top: 1rem;
+}
+
+/* ── Table：日期欄不換行 ── */
+.vp-doc table td:first-child,
+.vp-doc table th:first-child {
+  white-space: nowrap;
+}
+.vp-doc table {
+  display: table;
+  width: 100%;
 }
 
 /* ── Local Search ── */
