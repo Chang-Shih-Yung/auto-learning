@@ -48,7 +48,7 @@ export default function Sidebar({ tree }: SidebarProps) {
   const years = Object.keys(tree).sort((a, b) => b.localeCompare(a));
 
   return (
-    <aside className="w-56 flex-shrink-0">
+    <aside className="hidden md:block w-56 flex-shrink-0">
       <ScrollArea className="h-full">
         <div className="py-4 pr-4">
           <div className="mb-3 px-2 flex items-center gap-1.5">
