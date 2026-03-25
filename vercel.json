@@ -1,5 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".vitepress/dist",
-  "framework": "vitepress"
+  "outputDirectory": ".next",
+  "framework": "nextjs"
 }

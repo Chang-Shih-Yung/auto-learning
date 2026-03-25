@@ -1,0 +1,200 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Brand design tokens */
+    --color-bg: #fdfcfa;
+    --color-bg-soft: #f8f6f3;
+    --color-text-1: #1a1a18;
+    --color-text-2: #5a5856;
+    --color-text-3: #9a9896;
+    --color-brand: #3d6b5e;
+    --color-brand-soft: rgba(61, 107, 94, 0.08);
+    --color-divider: rgba(26, 26, 24, 0.06);
+
+    /* shadcn CSS variables — mapped to our palette */
+    --background: 46 33% 99%;
+    --foreground: 60 3% 10%;
+    --card: 46 33% 99%;
+    --card-foreground: 60 3% 10%;
+    --popover: 46 33% 99%;
+    --popover-foreground: 60 3% 10%;
+    --primary: 160 28% 33%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 40 20% 96%;
+    --secondary-foreground: 60 3% 10%;
+    --muted: 40 20% 96%;
+    --muted-foreground: 30 3% 46%;
+    --accent: 160 28% 93%;
+    --accent-foreground: 160 28% 25%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 46 20% 88%;
+    --input: 46 20% 88%;
+    --ring: 160 28% 33%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: #fdfcfa;
+    color: #1a1a18;
+    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #fdfcfa;
+    color: #1a1a18;
+    min-height: 100vh;
+  }
+}
+
+/* Prose styles for markdown content */
+@layer components {
+  .prose-journal {
+    max-width: 860px;
+    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
+    line-height: 1.85;
+    color: #1a1a18;
+  }
+
+  .prose-journal h1,
+  .prose-journal h2,
+  .prose-journal h3,
+  .prose-journal h4 {
+    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
+    color: #1a1a18;
+    line-height: 1.4;
+    font-weight: 600;
+  }
+
+  .prose-journal h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+  }
+
+  .prose-journal h2 {
+    font-size: 1.35rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+  }
+
+  .prose-journal h3 {
+    font-size: 1.1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #3d6b5e;
+  }
+
+  .prose-journal p {
+    margin-bottom: 1.25rem;
+    color: #1a1a18;
+  }
+
+  .prose-journal a {
+    color: #3d6b5e;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose-journal a:hover {
+    opacity: 0.8;
+  }
+
+  .prose-journal strong {
+    font-weight: 600;
+    color: #1a1a18;
+  }
+
+  .prose-journal blockquote {
+    border-left: 3px solid #3d6b5e;
+    padding-left: 1.25rem;
+    margin: 1.5rem 0;
+    color: #5a5856;
+    font-style: italic;
+  }
+
+  .prose-journal blockquote p {
+    color: #5a5856;
+  }
+
+  .prose-journal code {
+    font-family: var(--font-geist-mono), "Geist Mono", monospace;
+    font-size: 0.85em;
+    background-color: #f8f6f3;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: #3d6b5e;
+  }
+
+  .prose-journal pre {
+    background-color: #f8f6f3;
+    border: 1px solid rgba(26, 26, 24, 0.06);
+    border-radius: 8px;
+    padding: 1.25rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .prose-journal pre code {
+    background: none;
+    padding: 0;
+    color: #1a1a18;
+    font-size: 0.875rem;
+  }
+
+  .prose-journal ul,
+  .prose-journal ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose-journal li {
+    margin-bottom: 0.4rem;
+  }
+
+  .prose-journal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+  }
+
+  .prose-journal th {
+    background-color: #f8f6f3;
+    padding: 0.65rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(26, 26, 24, 0.10);
+  }
+
+  .prose-journal td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+    vertical-align: top;
+  }
+
+  .prose-journal tr:last-child td {
+    border-bottom: none;
+  }
+
+  .prose-journal hr {
+    border: none;
+    border-top: 1px solid rgba(26, 26, 24, 0.06);
+    margin: 2rem 0;
+  }
+}
