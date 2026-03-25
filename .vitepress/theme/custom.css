@@ -45,51 +45,60 @@
   --vp-c-border: rgba(232, 228, 220, 0.08);
 }
 
-/* ── Navbar：毛玻璃半透明，滾動時不蓋內容 ── */
+/* ── Navbar 外層：完全透明，不干擾手機選單的 stacking context ── */
 .VPNav {
+  background: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  background: rgba(253, 252, 250, 0.8) !important;
+}
+
+/* ── 毛玻璃只掛在頂部那條 bar，不影響手機選單 ── */
+.VPNavBar {
+  background: rgba(253, 252, 250, 0.82) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
-.dark .VPNav {
-  background: rgba(22, 20, 15, 0.8) !important;
-  backdrop-filter: blur(16px) !important;
-  -webkit-backdrop-filter: blur(16px) !important;
+.dark .VPNavBar {
+  background: rgba(22, 20, 15, 0.82) !important;
 }
-/* 子層清透，避免疊加出現不透明色塊 */
-.VPNavBar,
 .VPNavBar > .wrapper,
 .VPNavBar > .container,
 .VPNavBar .content,
 .VPNavBar .content-body {
+  background: transparent !important;
   border-bottom: none !important;
   box-shadow: none !important;
-  background: transparent !important;
 }
-/* 去掉 Logo 右側分隔線 */
+
+/* ── 手機選單：獨立 stacking context，solid 背景 ── */
+.VPNavScreen {
+  background: var(--vp-c-bg) !important;
+  z-index: 200 !important;
+}
+.dark .VPNavScreen {
+  background: var(--vp-c-bg) !important;
+}
+.VPNavScreenMenu {
+  padding: 1rem 1.5rem;
+}
+
+/* ── Appearance 切換按鈕 icon 顏色修正 ── */
+.VPNavBarAppearance .vpi-sun,
+.VPNavBarAppearance .vpi-moon {
+  color: var(--vp-c-text-2) !important;
+}
+.VPSwitch {
+  border: 1px solid var(--vp-c-border) !important;
+}
+
+/* ── 去掉 Logo 右側分隔線 ── */
 .VPNavBarTitle,
 .VPNavBarTitle .title {
   border-right: none !important;
   font-weight: 500;
   letter-spacing: -0.01em;
-}
-
-/* ── 手機選單修復：確保 overlay 有背景色和正確 z-index ── */
-.VPNavScreen {
-  background: var(--vp-c-bg) !important;
-  z-index: 9999 !important;
-  top: var(--vp-nav-height) !important;
-}
-.VPNavScreenMenu {
-  padding: 1rem 1.5rem;
-}
-.VPNavScreenMenuLink,
-.VPNavScreenMenuGroupLink {
-  font-size: 1.1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--vp-c-divider);
 }
 
 /* ── Sidebar 去邊框、去分隔線 ── */
