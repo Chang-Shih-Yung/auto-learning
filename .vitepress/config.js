@@ -11,7 +11,7 @@ export default defineConfig({
   ],
 
   themeConfig: {
-    logo: '📚',
+    logo: { src: '/logo.svg', alt: 'Henry Learning Hub' },
 
     nav: [
       { text: '首頁', link: '/' },
