@@ -45,8 +45,20 @@
   --vp-c-border: rgba(232, 228, 220, 0.08);
 }
 
-/* ── Navbar：所有頁面全透明，去掉背景色塊和線 ── */
-.VPNav,
+/* ── Navbar：毛玻璃半透明，滾動時不蓋內容 ── */
+.VPNav {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  background: rgba(253, 252, 250, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+.dark .VPNav {
+  background: rgba(22, 20, 15, 0.8) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+/* 子層清透，避免疊加出現不透明色塊 */
 .VPNavBar,
 .VPNavBar > .wrapper,
 .VPNavBar > .container,
@@ -55,20 +67,13 @@
   border-bottom: none !important;
   box-shadow: none !important;
   background: transparent !important;
-  backdrop-filter: none !important;
 }
-/* 去掉 Logo/Title 右側分隔線（造成左右不一致的底線）*/
+/* 去掉 Logo 右側分隔線 */
 .VPNavBarTitle,
 .VPNavBarTitle .title {
   border-right: none !important;
   font-weight: 500;
   letter-spacing: -0.01em;
-}
-.dark .VPNav,
-.dark .VPNavBar,
-.dark .VPNavBar > .wrapper,
-.dark .VPNavBar > .container {
-  background: transparent !important;
 }
 
 /* ── Sidebar 去邊框、去分隔線 ── */
