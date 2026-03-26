@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import AnnotationCard from "@/components/AnnotationCard";
 
 interface PageProps {
   params: {
@@ -21,8 +22,9 @@ interface PageProps {
   };
 }
 
-// shadcn Table 對應 markdown 的 table 元素
+// MDX component map — Server Components (table) and AnnotationCard (Server Component)
 const mdxComponents = {
+  AnnotationCard,
   table: ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
     <div className="my-6 rounded-md border border-[rgba(26,26,24,0.08)] overflow-hidden">
       <Table {...props}>{children}</Table>
@@ -90,7 +92,7 @@ export default function JournalPostPage({ params }: PageProps) {
           <div className="prose-journal">
             <MDXRemote
               source={post.content}
-              options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+              options={{ mdxOptions: { remarkPlugins: [remarkGfm] }, blockJS: false }}
               components={mdxComponents}
             />
           </div>

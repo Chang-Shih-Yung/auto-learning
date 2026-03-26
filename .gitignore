@@ -12,3 +12,4 @@ npm-debug.log*
 .claude/skills/gstack/browse/dist/
 .claude/skills/gstack/node_modules/
 .claude/skills/gstack/.agents/
+.gstack/
