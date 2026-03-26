@@ -59,7 +59,7 @@ export default function AnnotationCard({
   adjacent,
   adjacentNote,
   connection,
-}: AnnotationCardProps) {
+}: Readonly<AnnotationCardProps>) {
   const skillMap = getSkillMap();
   const score = Math.max(0, Math.min(5, Math.round(relevance)));
   const defaultOpen = score >= 3;
@@ -173,7 +173,7 @@ export default function AnnotationCard({
 // Small internal sub-components
 // ──────────────────────────────────────────────
 
-function Label({ children }: { children: React.ReactNode }) {
+function Label({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <span
       className="text-[#9a9896]"
@@ -193,11 +193,11 @@ function Chip({
   children,
   filled,
   outline,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   filled?: boolean;
   outline?: boolean;
-}) {
+}>) {
   const base = "inline-block self-start rounded px-2 py-0.5 text-[11px]";
   if (filled) {
     return (
