@@ -71,12 +71,12 @@ export default function JournalPostPage({ params }: PageProps) {
       <article className="flex-1 min-w-0">
         <div className="max-w-[860px]">
           <Link
-            href="/學習日誌"
+            href="/journal"
             className="inline-flex items-center gap-1.5 text-xs text-[#9a9896] hover:text-[#3d6b5e] transition-colors mb-6"
             style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
           >
             <ChevronLeft className="h-3.5 w-3.5" />
-            學習日誌
+            journal
           </Link>
 
           <div className="flex items-center gap-1.5 mb-4">

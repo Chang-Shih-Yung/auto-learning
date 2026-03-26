@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 
-const JOURNAL_DIR = path.join(process.cwd(), "學習日誌");
+const JOURNAL_DIR = path.join(process.cwd(), "journal");
 
 export interface PostMeta {
   slug: string[];

@@ -42,7 +42,7 @@ export default function HomePage() {
 
           <div className="flex items-center gap-3 flex-wrap">
             <Link
-              href="/學習日誌"
+              href="/journal"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90"
               style={{ background: "#3d6b5e" }}
             >
@@ -51,11 +51,11 @@ export default function HomePage() {
             </Link>
             {recentPosts[0] && (
               <Link
-                href={`/學習日誌/${recentPosts[0].slug.join("/")}`}
+                href={`/journal/${recentPosts[0].slug.join("/")}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-[#3d6b5e] transition-colors hover:bg-[rgba(61,107,94,0.08)]"
                 style={{ border: "1px solid rgba(61,107,94,0.25)" }}
               >
-                今日學習日誌
+                今日journal
                 <ArrowRight className="h-4 w-4" />
               </Link>
             )}
@@ -125,7 +125,7 @@ export default function HomePage() {
               最近更新
             </h2>
             <Link
-              href="/學習日誌"
+              href="/journal"
               className="text-sm text-[#3d6b5e] hover:opacity-80 transition-opacity inline-flex items-center gap-1"
             >
               查看全部
@@ -173,7 +173,7 @@ export default function HomePage() {
                     </td>
                     <td className="px-4 py-3">
                       <Link
-                        href={`/學習日誌/${post.slug.join("/")}`}
+                        href={`/journal/${post.slug.join("/")}`}
                         className="text-sm text-[#1a1a18] group-hover:text-[#3d6b5e] transition-colors"
                         style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
                       >

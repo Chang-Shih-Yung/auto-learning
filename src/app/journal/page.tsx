@@ -5,7 +5,7 @@ import { FileText } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "學習日誌",
+  title: "journal",
 };
 
 export default function JournalIndexPage() {
@@ -24,7 +24,7 @@ export default function JournalIndexPage() {
             className="text-2xl font-semibold text-[#1a1a18] mb-2"
             style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
           >
-            學習日誌
+            journal
           </h1>
           <p
             className="text-sm text-[#5a5856] mb-8"
@@ -46,7 +46,7 @@ export default function JournalIndexPage() {
               {posts.map((post) => (
                 <Link
                   key={post.slug.join("/")}
-                  href={`/學習日誌/${post.slug.join("/")}`}
+                  href={`/journal/${post.slug.join("/")}`}
                   className="group flex items-start gap-4 px-4 py-3.5 rounded-lg transition-colors hover:bg-[rgba(61,107,94,0.04)]"
                   style={{ border: "1px solid rgba(26,26,24,0.06)" }}
                 >

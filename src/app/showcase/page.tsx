@@ -2,7 +2,7 @@ import { Construction } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "成果展示",
+  title: "showcase",
 };
 
 export default function ShowcasePage() {
@@ -12,7 +12,7 @@ export default function ShowcasePage() {
         className="text-2xl font-semibold text-[#1a1a18] mb-8"
         style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
       >
-        成果展示
+        showcase
       </h1>
 
       <div

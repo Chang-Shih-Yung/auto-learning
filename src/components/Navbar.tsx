@@ -10,8 +10,8 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const navLinks = [
   { href: "/", label: "首頁" },
-  { href: "/學習日誌", label: "學習日誌" },
-  { href: "/成果展示", label: "成果展示" },
+  { href: "/journal", label: "學習日誌" },
+  { href: "/showcase", label: "成果展示" },
 ];
 
 export default function Navbar() {

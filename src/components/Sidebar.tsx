@@ -91,7 +91,7 @@ export default function Sidebar({ tree }: SidebarProps) {
                             {isMonthOpen && (
                               <div className="ml-3 border-l border-[rgba(26,26,24,0.06)] pl-2">
                                 {posts.map((post) => {
-                                  const href = `/學習日誌/${post.slug.join("/")}`;
+                                  const href = `/journal/${post.slug.join("/")}`;
                                   const isActive = pathname === href;
 
                                   return (
