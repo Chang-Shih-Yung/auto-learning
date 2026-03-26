@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const navLinks = [
   { href: "/", label: "首頁" },
@@ -91,6 +92,10 @@ export default function Navbar() {
               className="w-full max-w-xs pt-14"
               style={{ background: "#fdfcfa", borderLeft: "1px solid rgba(26,26,24,0.06)" }}
             >
+              <VisuallyHidden>
+                <SheetTitle>導覽選單</SheetTitle>
+                <SheetDescription>網站主要導覽連結</SheetDescription>
+              </VisuallyHidden>
               <nav className="flex flex-col gap-1">
                 {navLinks.map(({ href, label }) => {
                   const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
