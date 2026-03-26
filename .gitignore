@@ -6,3 +6,5 @@ npm-debug.log*
 .env
 .env.local
 .env.*.local
+.claude/skills/gstack/node_modules
+.claude/skills/gstack/browse/dist

@@ -1,0 +1,48 @@
+# Claude Code — Henry's Learning Hub
+
+## 專案說明
+
+Next.js + shadcn/ui + React 的個人學習系統。每天自動抓取 AI 技術文章寫進學習日誌，部署在 Vercel。
+
+## 技術棧
+
+- Framework: Next.js 14 (App Router)
+- UI: shadcn/ui + Tailwind CSS
+- Content: Markdown → MDX (next-mdx-remote + remark-gfm)
+- 字型: Noto Serif JP + Source Code Pro
+- Deploy: Vercel (auto-deploy on push to main)
+
+## gstack
+
+所有網頁瀏覽都應使用 gstack 的 `/browse` 技能，永遠不要使用 `mcp__claude-in-chrome__*` 工具。
+
+可用技能：
+- `/office-hours` — 產品策略發現
+- `/plan-ceo-review` — 執行層面審查
+- `/plan-eng-review` — 架構文件審查
+- `/plan-design-review` — 設計審查（含 AI slop 偵測）
+- `/design-consultation` — 建立設計系統
+- `/review` — Code review（找 production-critical bugs）
+- `/ship` — 完整 release 流程
+- `/land-and-deploy` — 部署到正式環境
+- `/canary` — 部署後監控
+- `/benchmark` — Core Web Vitals 效能基準
+- `/browse` — 真實 Chromium 瀏覽器操作
+- `/qa` — E2E 測試（真實瀏覽器）
+- `/qa-only` — QA 測試（不修改程式碼）
+- `/design-review` — 執行設計審查修復
+- `/setup-browser-cookies` — 匯入瀏覽器 session
+- `/setup-deploy` — 一次性部署設定
+- `/retro` — 週回顧
+- `/investigate` — Root cause 分析
+- `/document-release` — 文件同步
+- `/codex` — OpenAI Codex 交叉 code review
+- `/cso` — 安全審查（OWASP / STRIDE）
+- `/autoplan` — 自動合併 CEO + 設計 + 工程審查
+- `/careful` — 危險操作警告
+- `/freeze` — 限制目錄編輯
+- `/guard` — careful + freeze 合併
+- `/unfreeze` — 解除目錄限制
+- `/gstack-upgrade` — 更新 gstack
+
+如果 gstack 技能無法運作，執行：`cd .claude/skills/gstack && ./setup`
