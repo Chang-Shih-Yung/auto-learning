@@ -53,10 +53,11 @@ export function getAllPosts(): PostMeta[] {
       const { data, content } = matter(rawContent);
 
       // Infer date from path if not in frontmatter
+      // The filename (parts[2]) is already "YYYY-MM-DD" — use it directly
       const year = parts[0] || "";
       const month = parts[1] || "";
       const day = parts[2] || "";
-      const date = data.date ? String(data.date) : `${year}-${month}-${day}`;
+      const date = data.date ? String(data.date) : day;
 
       // Extract title from frontmatter or first heading
       let title = data.title as string | undefined;
@@ -99,7 +100,7 @@ export function getPost(slug: string[]): Post | null {
   const year = slug[0] || "";
   const month = slug[1] || "";
   const day = slug[2] || "";
-  const date = data.date ? String(data.date) : `${year}-${month}-${day}`;
+  const date = data.date ? String(data.date) : day;
 
   let title = data.title as string | undefined;
   if (!title) {
