@@ -13,3 +13,4 @@ npm-debug.log*
 .claude/skills/gstack/node_modules/
 .claude/skills/gstack/.agents/
 .gstack/
+memory/
