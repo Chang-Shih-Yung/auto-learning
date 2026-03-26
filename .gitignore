@@ -8,3 +8,7 @@ npm-debug.log*
 .env.*.local
 .claude/skills/gstack/node_modules
 .claude/skills/gstack/browse/dist
+.claude/worktrees/
+.claude/skills/gstack/browse/dist/
+.claude/skills/gstack/node_modules/
+.claude/skills/gstack/.agents/
