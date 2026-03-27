@@ -1,87 +1,194 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+@import "tw-animate-css";
 
-@layer base {
-  :root {
-    /* Brand design tokens */
-    --color-bg: #fdfcfa;
-    --color-bg-soft: #f8f6f3;
-    --color-bg-muted: #f0ede8;
-    --color-text-1: #1a1a18;
-    --color-text-2: #5a5856;
-    --color-text-3: #767472;
-    --color-brand: #3d6b5e;
-    --color-brand-soft: rgba(61, 107, 94, 0.08);
-    --color-annotation: #bf7a26;
-    --color-annotation-soft: rgba(191, 122, 38, 0.08);
-    --color-annotation-border: rgba(191, 122, 38, 0.25);
-    --color-divider: rgba(26, 26, 24, 0.06);
-    --color-border: rgba(26, 26, 24, 0.10);
-    --color-border-strong: rgba(26, 26, 24, 0.18);
+/* ─────────────────────────────────────────────
+   Tailwind v4 theme — single source of truth
+   Maps our DESIGN.md tokens into shadcn's
+   semantic slot system + our custom extensions
+───────────────────────────────────────────── */
+@theme inline {
+  /* ── Typography ── */
+  --font-serif:    var(--font-noto-serif-jp), "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-sans:     var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono:     var(--font-geist-mono), "SF Mono", "Fira Code", monospace;
 
-    --font-serif: var(--font-noto-serif-jp), 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-    --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-    --font-mono: var(--font-geist-mono), 'SF Mono', 'Fira Code', monospace;
+  /* ── Shadcn semantic slots → DESIGN.md values ── */
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-destructive:        var(--destructive);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
 
-    /* shadcn CSS variables — mapped to our palette */
-    --background: 46 33% 99%;
-    --foreground: 60 3% 10%;
-    --card: 46 33% 99%;
-    --card-foreground: 60 3% 10%;
-    --popover: 46 33% 99%;
-    --popover-foreground: 60 3% 10%;
-    --primary: 160 28% 33%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 40 20% 96%;
-    --secondary-foreground: 60 3% 10%;
-    --muted: 40 20% 96%;
-    --muted-foreground: 30 3% 46%;
-    --accent: 160 28% 93%;
-    --accent-foreground: 160 28% 25%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 46 20% 88%;
-    --input: 46 20% 88%;
-    --ring: 160 28% 33%;
-    --radius: 0.5rem;
-  }
+  /* ── Custom extensions — not in shadcn's slots ── */
+  --color-annotation:        var(--annotation);
+  --color-annotation-soft:   var(--annotation-soft);
+  --color-annotation-border: var(--annotation-border);
+  --color-brand:             var(--primary);
+  --color-brand-soft:        var(--accent);
+  --color-bg:                var(--background);
+  --color-bg-soft:           var(--muted);
+  --color-bg-muted:          var(--secondary);
+  --color-text-1:            var(--foreground);
+  --color-text-2:            var(--muted-foreground);
+  --color-divider:           var(--border);
 
-  [data-theme="dark"] {
-    --color-bg: #161614;
-    --color-bg-soft: #1e1e1b;
-    --color-bg-muted: #252520;
-    --color-text-1: #e8e6e3;
-    --color-text-2: #a09e9b;
-    --color-text-3: #6e6c69;
-    --color-brand: #5a9a8a;
-    --color-brand-soft: rgba(90, 154, 138, 0.12);
-    --color-annotation: #d4943a;
-    --color-annotation-soft: rgba(212, 148, 58, 0.12);
-    --color-annotation-border: rgba(212, 148, 58, 0.30);
-    --color-divider: rgba(232, 230, 227, 0.06);
-    --color-border: rgba(232, 230, 227, 0.10);
-    --color-border-strong: rgba(232, 230, 227, 0.18);
-  }
+  /* ── Radius scale (Tailwind v4 derives from --radius) ── */
+  --radius-sm:  calc(var(--radius) * 0.6);
+  --radius-md:  calc(var(--radius) * 0.8);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
 }
 
+/* ─────────────────────────────────────────────
+   Design tokens — light mode
+   Mapped to shadcn semantic names so all
+   shadcn components automatically use our palette
+───────────────────────────────────────────── */
+:root {
+  --radius: 0.5rem;
+
+  /* Page & surfaces — warm parchment, not cold white */
+  --background:  oklch(99.2% 0.003 75);   /* #fdfcfa */
+  --foreground:  oklch(12.5% 0.005 75);   /* #1a1a18 */
+
+  --card:            oklch(97.5% 0.006 75);  /* #f8f6f3 */
+  --card-foreground: oklch(12.5% 0.005 75);
+
+  --popover:            oklch(99.2% 0.003 75);
+  --popover-foreground: oklch(12.5% 0.005 75);
+
+  /* Brand green — primary / active states / blockquote borders */
+  --primary:            oklch(43.8% 0.063 169);  /* #3d6b5e */
+  --primary-foreground: oklch(99.2% 0.003 75);
+
+  /* Secondary — slightly warm surface */
+  --secondary:            oklch(94.5% 0.009 75);  /* #f0ede8 */
+  --secondary-foreground: oklch(12.5% 0.005 75);
+
+  /* Muted — bg-soft and subdued text */
+  --muted:            oklch(97.5% 0.006 75);  /* #f8f6f3 */
+  --muted-foreground: oklch(47.5% 0.007 55);  /* #767472 */
+
+  /* Accent — hover / active fill */
+  --accent:            oklch(94.5% 0.009 75);  /* #f0ede8 */
+  --accent-foreground: oklch(43.8% 0.063 169); /* brand green */
+
+  /* Destructive */
+  --destructive: oklch(57.7% 0.245 27.3);
+
+  /* Borders & inputs — ultra-subtle */
+  --border: oklch(12.5% 0.005 75 / 10%);  /* rgba(26,26,24,0.10) */
+  --input:  oklch(12.5% 0.005 75 / 10%);
+  --ring:   oklch(43.8% 0.063 169);        /* brand green focus ring */
+
+  /* ── Annotation amber — AnnotationCard only ──
+     Not in shadcn's slots; exposed via @theme above */
+  --annotation:        oklch(59.0% 0.129 58);          /* #bf7a26 */
+  --annotation-soft:   oklch(59.0% 0.129 58 / 8%);
+  --annotation-border: oklch(59.0% 0.129 58 / 25%);
+
+  /* Sidebar (unused for now but keeps shadcn components happy) */
+  --sidebar:            var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary:    var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent:     var(--accent);
+  --sidebar-accent-foreground:  var(--accent-foreground);
+  --sidebar-border:     var(--border);
+  --sidebar-ring:       var(--ring);
+
+  /* Charts */
+  --chart-1: oklch(43.8% 0.063 169);
+  --chart-2: oklch(59.0% 0.129 58);
+  --chart-3: oklch(62.5% 0.076 183);
+  --chart-4: oklch(47.5% 0.007 55);
+  --chart-5: oklch(12.5% 0.005 75);
+}
+
+/* ─────────────────────────────────────────────
+   Dark mode — warm darks, not cold black
+   Activated by .dark class (shadcn standard)
+   or [data-theme="dark"] for our own components
+───────────────────────────────────────────── */
+.dark,
+[data-theme="dark"] {
+  --background:  oklch(9.5% 0.005 75);   /* #161614 */
+  --foreground:  oklch(91.5% 0.007 75);  /* #e8e6e3 */
+
+  --card:            oklch(12.5% 0.007 100);  /* #1e1e1b */
+  --card-foreground: oklch(91.5% 0.007 75);
+
+  --popover:            oklch(12.5% 0.007 100);
+  --popover-foreground: oklch(91.5% 0.007 75);
+
+  --primary:            oklch(62.5% 0.076 183);  /* #5a9a8a */
+  --primary-foreground: oklch(9.5% 0.005 75);
+
+  --secondary:            oklch(16.5% 0.007 100);  /* #252520 */
+  --secondary-foreground: oklch(91.5% 0.007 75);
+
+  --muted:            oklch(12.5% 0.007 100);
+  --muted-foreground: oklch(66.5% 0.006 55);  /* #a09e9b */
+
+  --accent:            oklch(16.5% 0.007 100);
+  --accent-foreground: oklch(62.5% 0.076 183);
+
+  --destructive: oklch(70.4% 0.191 22.2);
+
+  --border: oklch(91.5% 0.007 75 / 10%);
+  --input:  oklch(91.5% 0.007 75 / 15%);
+  --ring:   oklch(62.5% 0.076 183);
+
+  --annotation:        oklch(66.5% 0.133 58);          /* #d4943a */
+  --annotation-soft:   oklch(66.5% 0.133 58 / 12%);
+  --annotation-border: oklch(66.5% 0.133 58 / 30%);
+
+  --sidebar:            var(--background);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary:    var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent:     var(--accent);
+  --sidebar-accent-foreground:  var(--accent-foreground);
+  --sidebar-border:     var(--border);
+  --sidebar-ring:       var(--ring);
+}
+
+/* ─────────────────────────────────────────────
+   Base resets
+───────────────────────────────────────────── */
 @layer base {
   * {
-    @apply border-border;
     box-sizing: border-box;
+    border-color: var(--border);
+    outline-color: oklch(from var(--ring) l c h / 50%);
   }
 
   html {
-    background-color: #fdfcfa;
-    color: #1a1a18;
-    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-serif);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: #fdfcfa;
-    color: #1a1a18;
+    background-color: var(--background);
+    color: var(--foreground);
     min-height: 100vh;
   }
 
@@ -91,21 +198,23 @@
   }
 }
 
-/* Prose styles for markdown content */
+/* ─────────────────────────────────────────────
+   Editorial prose — journal content
+───────────────────────────────────────────── */
 @layer components {
   .prose-journal {
     max-width: 860px;
-    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
+    font-family: var(--font-serif);
     line-height: 1.85;
-    color: #1a1a18;
+    color: var(--foreground);
   }
 
   .prose-journal h1,
   .prose-journal h2,
   .prose-journal h3,
   .prose-journal h4 {
-    font-family: var(--font-noto-serif-jp), "Noto Serif JP", serif;
-    color: #1a1a18;
+    font-family: var(--font-serif);
+    color: var(--foreground);
     line-height: 1.4;
     font-weight: 600;
   }
@@ -114,7 +223,7 @@
     font-size: 1.75rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+    border-bottom: 1px solid var(--border);
   }
 
   .prose-journal h2 {
@@ -122,23 +231,23 @@
     margin-top: 2.5rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+    border-bottom: 1px solid var(--border);
   }
 
   .prose-journal h3 {
     font-size: 1.1rem;
     margin-top: 2rem;
     margin-bottom: 0.75rem;
-    color: #3d6b5e;
+    color: var(--primary);
   }
 
   .prose-journal p {
     margin-bottom: 1.25rem;
-    color: #1a1a18;
+    color: var(--foreground);
   }
 
   .prose-journal a {
-    color: #3d6b5e;
+    color: var(--primary);
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -149,34 +258,34 @@
 
   .prose-journal strong {
     font-weight: 600;
-    color: #1a1a18;
+    color: var(--foreground);
   }
 
   .prose-journal blockquote {
-    border-left: 3px solid #3d6b5e;
+    border-left: 3px solid var(--primary);
     padding-left: 1.25rem;
     margin: 1.5rem 0;
-    color: #5a5856;
+    color: var(--muted-foreground);
     font-style: italic;
   }
 
   .prose-journal blockquote p {
-    color: #5a5856;
+    color: var(--muted-foreground);
   }
 
   .prose-journal code {
-    font-family: var(--font-geist-mono), "Geist Mono", monospace;
+    font-family: var(--font-mono);
     font-size: 0.85em;
-    background-color: #f8f6f3;
+    background-color: var(--muted);
     padding: 0.15em 0.4em;
-    border-radius: 4px;
-    color: #3d6b5e;
+    border-radius: var(--radius-sm);
+    color: var(--primary);
   }
 
   .prose-journal pre {
-    background-color: #f8f6f3;
-    border: 1px solid rgba(26, 26, 24, 0.06);
-    border-radius: 8px;
+    background-color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
     padding: 1.25rem;
     overflow-x: auto;
     margin: 1.5rem 0;
@@ -185,7 +294,7 @@
   .prose-journal pre code {
     background: none;
     padding: 0;
-    color: #1a1a18;
+    color: var(--foreground);
     font-size: 0.875rem;
   }
 
@@ -207,16 +316,16 @@
   }
 
   .prose-journal th {
-    background-color: #f8f6f3;
+    background-color: var(--muted);
     padding: 0.65rem 1rem;
     text-align: left;
     font-weight: 600;
-    border-bottom: 1px solid rgba(26, 26, 24, 0.10);
+    border-bottom: 1px solid var(--border);
   }
 
   .prose-journal td {
     padding: 0.6rem 1rem;
-    border-bottom: 1px solid rgba(26, 26, 24, 0.06);
+    border-bottom: 1px solid var(--border);
     vertical-align: top;
   }
 
@@ -226,7 +335,7 @@
 
   .prose-journal hr {
     border: none;
-    border-top: 1px solid rgba(26, 26, 24, 0.06);
+    border-top: 1px solid var(--border);
     margin: 2rem 0;
   }
 }

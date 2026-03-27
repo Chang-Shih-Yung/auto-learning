@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { cn } from "@/lib/utils";
 
 const notoSerifJP = Noto_Serif_JP({
   subsets: ["latin"],
@@ -27,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW" className={`${notoSerifJP.variable} ${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="zh-TW" className={cn(notoSerifJP.variable, GeistSans.variable, GeistMono.variable)}>
       <body className="min-h-screen" style={{ background: "#fdfcfa", color: "#1a1a18" }}>
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-4 md:px-6">

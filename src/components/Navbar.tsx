@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger, SheetClose, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const navLinks = [
@@ -100,7 +101,7 @@ export default function Navbar() {
                 {navLinks.map(({ href, label }) => {
                   const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
                   return (
-                    <SheetClose asChild key={href}>
+                    <SheetPrimitive.Close asChild key={href}>
                       <Link
                         href={href}
                         className={cn(
@@ -113,7 +114,7 @@ export default function Navbar() {
                       >
                         {label}
                       </Link>
-                    </SheetClose>
+                    </SheetPrimitive.Close>
                   );
                 })}
               </nav>
