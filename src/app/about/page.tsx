@@ -36,6 +36,19 @@ function InterestChip({ label }: Readonly<{ label: string }>) {
   );
 }
 
+function SkillCategory({ cat, skills }: Readonly<{ cat: string; skills: SkillEntry[] }>) {
+  return (
+    <div className="flex items-start gap-4">
+      <span className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider shrink-0 w-20 mt-1.5">
+        {CATEGORY_LABELS[cat]}
+      </span>
+      <div className="flex flex-wrap gap-1.5">
+        {skills.map((s) => <SkillChip key={s.id} label={s.label} />)}
+      </div>
+    </div>
+  );
+}
+
 export default function AboutPage() {
   const { current_skills, learning_now, interests } = getSkills();
 
@@ -77,16 +90,7 @@ export default function AboutPage() {
           {categoryOrder.map((cat) => {
             const skills = grouped[cat];
             if (!skills?.length) return null;
-            return (
-              <div key={cat} className="flex items-start gap-4">
-                <span className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider shrink-0 w-20 mt-1.5">
-                  {CATEGORY_LABELS[cat]}
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {skills.map((s) => <SkillChip key={s.id} label={s.label} />)}
-                </div>
-              </div>
-            );
+            return <SkillCategory key={cat} cat={cat} skills={skills} />;
           })}
         </div>
       </section>

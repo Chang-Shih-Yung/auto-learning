@@ -27,6 +27,61 @@ const MONTH_NAMES: Record<string, string> = {
   "12": "12月",
 };
 
+function PostLink({ post, pathname }: Readonly<{ post: JournalTree[string][string][number]; pathname: string }>) {
+  const href = `/journal/${post.slug.join("/")}`;
+  const isActive = pathname === href;
+  return (
+    <Link
+      href={href}
+      prefetch={false}
+      className={cn(
+        "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors leading-snug",
+        isActive
+          ? "text-primary bg-primary/8 font-medium"
+          : "text-text-2 hover:text-foreground hover:bg-foreground/4"
+      )}
+    >
+      <span className="truncate">{post.day}</span>
+    </Link>
+  );
+}
+
+function MonthSection({
+  year,
+  month,
+  posts,
+  isOpen,
+  onToggle,
+  pathname,
+}: Readonly<{
+  year: string;
+  month: string;
+  posts: JournalTree[string][string];
+  isOpen: boolean;
+  onToggle: () => void;
+  pathname: string;
+}>) {
+  const monthKey = `${year}-${month}`;
+  return (
+    <div key={monthKey} className="mb-0.5">
+      <button
+        onClick={onToggle}
+        className="flex w-full items-center gap-1.5 px-2 py-1 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
+      >
+        <ChevronRight className={`h-3 w-3 shrink-0 transition-transform duration-200 text-muted-foreground ${isOpen ? "rotate-90" : ""}`} />
+        {MONTH_NAMES[month] || month + "月"}
+      </button>
+      {isOpen && (
+        <div className="ml-3 border-l border-border/60 pl-2">
+          {posts.map((post) => (
+            <PostLink key={post.slug.join("/")} post={post} pathname={pathname} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Sidebar({ tree }: Readonly<SidebarProps>) {
   const pathname = usePathname();
 
@@ -75,49 +130,17 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
 
                   {isYearOpen && (
                     <div className="ml-3 border-l border-border pl-2">
-                      {months.map((month) => {
-                        const monthKey = `${year}-${month}`;
-                        const isMonthOpen = expanded[monthKey] ?? false;
-                        const posts = tree[year][month];
-
-                        return (
-                          <div key={month} className="mb-0.5">
-                            {/* Month row */}
-                            <button
-                              onClick={() => toggle(monthKey)}
-                              className="flex w-full items-center gap-1.5 px-2 py-1 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
-                            >
-                              <ChevronRight className={`h-3 w-3 shrink-0 transition-transform duration-200 text-muted-foreground ${isMonthOpen ? "rotate-90" : ""}`} />
-                              {MONTH_NAMES[month] || month + "月"}
-                            </button>
-
-                            {isMonthOpen && (
-                              <div className="ml-3 border-l border-border/60 pl-2">
-                                {posts.map((post) => {
-                                  const href = `/journal/${post.slug.join("/")}`;
-                                  const isActive = pathname === href;
-
-                                  return (
-                                    <Link
-                                      key={href}
-                                      href={href}
-                                      prefetch={false}
-                                      className={cn(
-                                        "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors leading-snug",
-                                        isActive
-                                          ? "text-primary bg-primary/8 font-medium"
-                                          : "text-text-2 hover:text-foreground hover:bg-foreground/4"
-                                      )}
-                                    >
-                                      <span className="truncate">{post.day}</span>
-                                    </Link>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                      {months.map((month) => (
+                        <MonthSection
+                          key={month}
+                          year={year}
+                          month={month}
+                          posts={tree[year][month]}
+                          isOpen={expanded[`${year}-${month}`] ?? false}
+                          onToggle={() => toggle(`${year}-${month}`)}
+                          pathname={pathname}
+                        />
+                      ))}
                     </div>
                   )}
                 </div>

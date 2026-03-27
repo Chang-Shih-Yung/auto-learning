@@ -1,11 +1,39 @@
 import { getJournalTree } from "@/lib/posts";
+import type { PostMeta } from "@/lib/posts";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
 import { FileText, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
+function PostListItem({ post }: Readonly<{ post: PostMeta }>) {
+  const displayTitle = post.title.startsWith(post.date)
+    ? post.title.slice(post.date.length + 1)
+    : post.title;
+  return (
+    <Link
+      href={`/journal/${post.slug.join("/")}`}
+      prefetch={false}
+      className="group/row flex items-start gap-4 px-4 py-3 rounded-lg border border-foreground/6 transition-colors hover:bg-primary/4"
+    >
+      <span className="font-mono text-xs text-muted-foreground shrink-0 mt-0.5">
+        {post.date}
+      </span>
+      <div className="flex-1 min-w-0">
+        <h2 className="font-serif text-sm font-medium text-foreground group-hover/row:text-primary transition-colors mb-1 line-clamp-1">
+          {displayTitle}
+        </h2>
+        {post.excerpt && (
+          <p className="font-serif text-xs text-muted-foreground line-clamp-1">
+            {post.excerpt}
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+}
+
 export const metadata: Metadata = {
-  title: "journal",
+  title: "學習日誌",
 };
 
 const MONTH_NAMES: Record<string, string> = {
@@ -50,7 +78,7 @@ export default function JournalIndexPage() {
       <div className="flex-1 min-w-0">
         <div className="max-w-215">
           <h1 className="font-serif text-2xl font-semibold text-foreground mb-2">
-            journal
+            學習日誌
           </h1>
           <p className="font-serif text-sm text-text-2 mb-8">
             共 {totalPosts} 篇紀錄
@@ -85,26 +113,7 @@ export default function JournalIndexPage() {
                   {/* Post rows */}
                   <div className="mt-1 space-y-1 pl-2">
                     {posts.map((post) => (
-                      <Link
-                        key={post.slug.join("/")}
-                        href={`/journal/${post.slug.join("/")}`}
-                        prefetch={false}
-                        className="group/row flex items-start gap-4 px-4 py-3 rounded-lg border border-foreground/6 transition-colors hover:bg-primary/4"
-                      >
-                        <span className="font-mono text-xs text-muted-foreground shrink-0 mt-0.5">
-                          {post.date}
-                        </span>
-                        <div className="flex-1 min-w-0">
-                          <h2 className="font-serif text-sm font-medium text-foreground group-hover/row:text-primary transition-colors mb-1 line-clamp-1">
-                            {post.title}
-                          </h2>
-                          {post.excerpt && (
-                            <p className="font-serif text-xs text-muted-foreground line-clamp-1">
-                              {post.excerpt}
-                            </p>
-                          )}
-                        </div>
-                      </Link>
+                      <PostListItem key={post.slug.join("/")} post={post} />
                     ))}
                   </div>
                 </details>

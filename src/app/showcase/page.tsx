@@ -2,14 +2,14 @@ import { Construction } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "showcase",
+  title: "成果展示",
 };
 
 export default function ShowcasePage() {
   return (
     <div className="py-16 md:py-24 max-w-215">
       <h1 className="font-serif text-2xl font-semibold text-foreground mb-8">
-        showcase
+        成果展示
       </h1>
 
       <div className="flex flex-col items-center justify-center py-20 rounded-xl text-center bg-muted border border-foreground/6">

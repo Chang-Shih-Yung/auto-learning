@@ -3,6 +3,7 @@ node_modules/
 .pnpm-store/
 .DS_Store
 *.log
+*.tsbuildinfo
 npm-debug.log*
 .env
 .env.local

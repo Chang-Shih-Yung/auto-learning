@@ -30,6 +30,34 @@ const navLinks = [
   { href: "/about", label: "關於" },
 ];
 
+function NavLink({
+  href,
+  label,
+  pathname,
+  mobile = false,
+}: Readonly<{ href: string; label: string; pathname: string; mobile?: boolean }>) {
+  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const className = cn(
+    "rounded-md text-sm transition-colors",
+    mobile ? "px-4 py-3 text-right" : "px-3 py-2.5",
+    isActive
+      ? "text-primary bg-primary/8 font-medium"
+      : "text-text-2 hover:text-foreground hover:bg-foreground/4"
+  );
+  if (mobile) {
+    return (
+      <SheetClose render={<Link href={href} className={className} />}>
+        {label}
+      </SheetClose>
+    );
+  }
+  return (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
+  );
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -49,23 +77,9 @@ export default function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 font-sans">
-          {navLinks.map(({ href, label }) => {
-            const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={cn(
-                  "px-3 py-2.5 rounded-md text-sm transition-colors",
-                  isActive
-                    ? "text-primary bg-primary/8 font-medium"
-                    : "text-text-2 hover:text-foreground hover:bg-foreground/4"
-                )}
-              >
-                {label}
-              </Link>
-            );
-          })}
+          {navLinks.map(({ href, label }) => (
+            <NavLink key={href} href={href} label={label} pathname={pathname} />
+          ))}
 
           <a
             href="https://github.com/Chang-Shih-Yung/auto-learning"
@@ -109,27 +123,9 @@ export default function Navbar() {
               <SheetTitle className="sr-only">導覽選單</SheetTitle>
               <SheetDescription className="sr-only">網站主要導覽連結</SheetDescription>
               <nav className="flex flex-col gap-1 font-sans">
-                {navLinks.map(({ href, label }) => {
-                  const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
-                  return (
-                    <SheetClose
-                      key={href}
-                      render={
-                        <Link
-                          href={href}
-                          className={cn(
-                            "px-4 py-3 rounded-md text-sm transition-colors text-right",
-                            isActive
-                              ? "text-primary bg-primary/8 font-medium"
-                              : "text-text-2 hover:text-foreground hover:bg-foreground/4"
-                          )}
-                        />
-                      }
-                    >
-                      {label}
-                    </SheetClose>
-                  );
-                })}
+                {navLinks.map(({ href, label }) => (
+                  <NavLink key={href} href={href} label={label} pathname={pathname} mobile />
+                ))}
               </nav>
             </SheetContent>
           </Sheet>

@@ -42,7 +42,7 @@ export default function HomePage() {
                 href={`/journal/${recentPosts[0].slug.join("/")}`}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary/25 transition-colors hover:bg-primary/8"
               >
-                今日 journal
+                今日學習日誌
                 <ArrowRight className="h-4 w-4" />
               </Link>
             )}
@@ -120,7 +120,7 @@ export default function HomePage() {
                         prefetch={false}
                         className="font-serif text-sm text-foreground group-hover:text-primary transition-colors"
                       >
-                        {post.title}
+                        {post.title.startsWith(post.date) ? post.title.slice(post.date.length + 1) : post.title}
                       </Link>
                     </td>
                   </tr>
