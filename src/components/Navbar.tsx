@@ -19,6 +19,7 @@ const navLinks = [
   { href: "/", label: "首頁" },
   { href: "/journal", label: "學習日誌" },
   { href: "/showcase", label: "成果展示" },
+  { href: "/about", label: "關於" },
 ];
 
 export default function Navbar() {

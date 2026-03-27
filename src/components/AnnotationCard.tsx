@@ -98,45 +98,44 @@ export default function AnnotationCard({
       </summary>
 
       {/* ── Card body ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 border-t border-border px-4 py-3 text-sm">
-        {/* Matched skills */}
-        <div className="flex flex-col gap-1.5">
-          <Label>匹配技能</Label>
-          <div className="flex flex-wrap gap-1">
-            {skillLabels ? (
-              skillLabels.map((label) => (
-                <Chip key={label} filled>
-                  {label}
-                </Chip>
-              ))
-            ) : (
-              <Chip>無直接匹配技能</Chip>
-            )}
-          </div>
-        </div>
+      <div className="flex flex-col gap-3 border-t border-border px-4 py-4">
 
-        {/* Connection to existing knowledge */}
+        {/* Connection — most valuable, always first */}
         {connection && (
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1">
             <Label>與你的關聯</Label>
-            <p className="m-0 text-[12px] leading-relaxed text-text-2">
+            <p className="m-0 font-serif text-[13px] leading-[1.65] text-foreground/80">
               {connection}
             </p>
           </div>
         )}
 
-        {/* Adjacent skill — spans both columns */}
+        {/* Skills — label prefix + inline chips */}
+        <div className="flex items-start gap-2">
+          <span className="font-mono text-[10px] tracking-[0.07em] uppercase text-muted-foreground shrink-0 mt-0.75">
+            匹配技能
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {skillLabels ? (
+              skillLabels.map((label) => (
+                <Chip key={label} filled>{label}</Chip>
+              ))
+            ) : (
+              <Chip>無直接匹配</Chip>
+            )}
+          </div>
+        </div>
+
+        {/* Adjacent skill */}
         {adjacent && (
-          <div className="col-span-2 flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label>延伸探索</Label>
-            <div className="flex flex-col gap-1">
-              <Chip outline>{adjacent}</Chip>
-              {adjacentNote && (
-                <p className="m-0 text-[12px] leading-relaxed text-text-2">
-                  {adjacentNote}
-                </p>
-              )}
-            </div>
+            <Chip outline>{adjacent}</Chip>
+            {adjacentNote && (
+              <p className="m-0 font-serif text-[12px] leading-relaxed text-text-2">
+                {adjacentNote}
+              </p>
+            )}
           </div>
         )}
       </div>

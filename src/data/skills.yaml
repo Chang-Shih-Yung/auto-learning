@@ -1,60 +1,35 @@
 # src/data/skills.yaml
-# 公開版技能清單 — 只含 id + label，無私人備註
+# 公開版技能清單 — id + label + category，無私人備註
 # 對應來源：memory/skill-taxonomy.yaml（gitignored）
-# 更新時機：與 memory/skill-taxonomy.yaml 同步更新
+# 更新時機：與 memory/skill-taxonomy.yaml 同步
 
 current_skills:
-  - id: angular
-    label: Angular
-  - id: rxjs
-    label: RxJS
-  - id: ngrx
-    label: NgRx
-  - id: vue3
-    label: Vue 3
-  - id: typescript
-    label: TypeScript
-  - id: react
-    label: React / Next.js
-  - id: tailwind
-    label: Tailwind CSS
-  - id: css-custom-properties
-    label: CSS Custom Properties
-  - id: oklch
-    label: OKLCH Color Space
-  - id: figma
-    label: Figma
-  - id: ant-design
-    label: Ant Design
-  - id: echarts
-    label: ECharts
-  - id: signalr
-    label: SignalR
-  - id: monorepo-pnpm
-    label: Monorepo (PNPM Workspace)
-  - id: ci-cd
-    label: CI/CD
-  - id: lottie
-    label: Lottie Web
-  - id: webgl
-    label: WebGL
+  - { id: angular,             label: Angular,                category: framework }
+  - { id: rxjs,                label: RxJS,                   category: framework }
+  - { id: ngrx,                label: NgRx,                   category: framework }
+  - { id: vue3,                label: Vue 3,                  category: framework }
+  - { id: typescript,          label: TypeScript,             category: framework }
+  - { id: react,               label: React / Next.js,        category: framework }
+  - { id: tailwind,            label: Tailwind CSS,           category: design }
+  - { id: css-custom-properties, label: CSS Custom Properties, category: design }
+  - { id: oklch,               label: OKLCH Color Space,      category: design }
+  - { id: figma,               label: Figma,                  category: design }
+  - { id: ant-design,          label: Ant Design,             category: design }
+  - { id: echarts,             label: ECharts,                category: data }
+  - { id: signalr,             label: SignalR,                category: data }
+  - { id: monorepo-pnpm,       label: Monorepo (pnpm),        category: infra }
+  - { id: ci-cd,               label: CI/CD,                  category: infra }
+  - { id: lottie,              label: Lottie Web,             category: infra }
+  - { id: webgl,               label: WebGL,                  category: infra }
 
 learning_now:
-  - id: sql
-    label: SQL
-  - id: containers
-    label: Containers
-  - id: ai-workflow
-    label: AI Workflow
+  - { id: sql,          label: SQL }
+  - { id: containers,   label: Containers }
+  - { id: ai-workflow,  label: AI Workflow }
 
 interests:
-  - id: ai-agents
-    label: AI Agents
-  - id: data-viz
-    label: Data Visualization
-  - id: design-systems
-    label: Design Systems
-  - id: realtime-data
-    label: Real-time Data Flow
-  - id: design-code-bridge
-    label: Design ↔ Code Bidirectional
+  - { id: ai-agents,          label: AI Agents }
+  - { id: data-viz,           label: Data Visualization }
+  - { id: design-systems,     label: Design Systems }
+  - { id: realtime-data,      label: Real-time Data Flow }
+  - { id: design-code-bridge, label: Design ↔ Code Bridge }
