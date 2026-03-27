@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
-import { Noto_Serif_JP, Source_Code_Pro } from "next/font/google";
+import { Noto_Serif_JP } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 
@@ -9,12 +11,6 @@ const notoSerifJP = Noto_Serif_JP({
   variable: "--font-noto-serif-jp",
   display: "swap",
   preload: false,
-});
-
-const sourcCodePro = Source_Code_Pro({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW" className={`${notoSerifJP.variable} ${sourcCodePro.variable}`}>
+    <html lang="zh-TW" className={`${notoSerifJP.variable} ${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="min-h-screen" style={{ background: "#fdfcfa", color: "#1a1a18" }}>
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-4 md:px-6">
