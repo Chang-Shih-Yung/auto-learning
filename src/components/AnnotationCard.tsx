@@ -75,11 +75,11 @@ export default function AnnotationCard({
       {/* ── Toggle header ── */}
       <summary className="flex cursor-pointer select-none items-center gap-2 border-t-2 border-t-annotation bg-annotation-soft px-4 py-2.5 text-xs text-text-2 [list-style:none] [&::-webkit-details-marker]:hidden">
         {/* Chevron — rotates 90° when open */}
-        <span className="inline-block text-[10px] transition-transform duration-200 group-open:rotate-90">
+        <span className="inline-block text-xs transition-transform duration-200 group-open:rotate-90">
           ▶
         </span>
 
-        <span className="font-mono text-[11px] tracking-[0.05em] text-annotation">
+        <span className="font-mono text-xs tracking-[0.05em] text-annotation">
           Henry's Take
         </span>
 
@@ -112,7 +112,7 @@ export default function AnnotationCard({
 
         {/* Skills — label prefix + inline chips */}
         <div className="flex items-start gap-2">
-          <span className="font-mono text-[10px] tracking-[0.07em] uppercase text-muted-foreground shrink-0 mt-0.75">
+          <span className="font-mono text-xs tracking-[0.07em] uppercase text-muted-foreground shrink-0 mt-0.75">
             匹配技能
           </span>
           <div className="flex flex-wrap gap-1">
@@ -149,7 +149,7 @@ export default function AnnotationCard({
 
 function Label({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <span className="font-mono text-[10px] tracking-[0.07em] uppercase text-muted-foreground">
+    <span className="font-mono text-xs tracking-[0.07em] uppercase text-muted-foreground">
       {children}
     </span>
   );
@@ -164,7 +164,7 @@ function Chip({
   filled?: boolean;
   outline?: boolean;
 }>) {
-  const base = "inline-block self-start rounded px-2 py-0.5 text-[11px]";
+  const base = "inline-block self-start rounded px-2 py-0.5 text-xs";
   if (filled) {
     return <span className={`${base} bg-foreground text-background`}>{children}</span>;
   }

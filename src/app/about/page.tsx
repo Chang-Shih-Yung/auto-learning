@@ -35,7 +35,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 // ── Chip variants ──────────────────────────────────────────
 function SkillChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-[12px] bg-foreground text-background">
+    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs bg-foreground text-background">
       {label}
     </span>
   );
@@ -43,7 +43,7 @@ function SkillChip({ label }: Readonly<{ label: string }>) {
 
 function LearningChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-[12px] border border-primary/40 text-primary">
+    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs border border-primary/40 text-primary">
       {label}
     </span>
   );
@@ -51,7 +51,7 @@ function LearningChip({ label }: Readonly<{ label: string }>) {
 
 function InterestChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-[12px] border border-border text-muted-foreground">
+    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs border border-border text-muted-foreground">
       {label}
     </span>
   );
@@ -100,7 +100,7 @@ export default function AboutPage() {
             if (!skills?.length) return null;
             return (
               <div key={cat} className="flex items-start gap-4">
-                <span className="font-mono text-[10px] text-muted-foreground/60 uppercase tracking-wider shrink-0 w-20 mt-1.5">
+                <span className="font-mono text-xs text-muted-foreground/60 uppercase tracking-wider shrink-0 w-20 mt-1.5">
                   {CATEGORY_LABELS[cat]}
                 </span>
                 <div className="flex flex-wrap gap-1.5">

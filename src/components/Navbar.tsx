@@ -72,7 +72,7 @@ export default function Navbar() {
         </nav>
 
         {/* Mobile hamburger */}
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-1 md:hidden font-sans">
           <ThemeToggle />
 
           <a
