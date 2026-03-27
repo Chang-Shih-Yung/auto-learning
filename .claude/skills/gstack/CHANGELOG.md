@@ -1,5 +1,224 @@
 # Changelog
 
+## [0.12.9.0] - 2026-03-27 — Community PRs: Faster Install, Skill Namespacing, Uninstall
+
+Six community PRs landed in one batch. Install is faster, skills no longer collide with other tools, and you can cleanly uninstall gstack when needed.
+
+### Added
+
+- **Uninstall script.** `bin/gstack-uninstall` cleanly removes gstack from your system: stops browse daemons, removes all skill installs (Claude/Codex/Kiro), cleans up state. Supports `--force` (skip confirmation) and `--keep-state` (preserve config). (#323)
+- **Python security patterns in /review.** Shell injection (`subprocess.run(shell=True)`), SSRF via LLM-generated URLs, stored prompt injection, async/sync mixing, and column name safety checks now fire automatically on Python projects. (#531)
+- **Office-hours works without Codex.** The "second opinion" step now falls back to a Claude subagent when Codex CLI is unavailable, so every user gets the cross-model perspective. (#464)
+
+### Changed
+
+- **Faster install (~30s).** All clone commands now use `--single-branch --depth 1`. Full history available for contributors. (#484)
+- **Skills namespaced with `gstack-` prefix.** Skill symlinks are now `gstack-review`, `gstack-ship`, etc. instead of bare `review`, `ship`. Prevents collisions with other skill packs. Old symlinks are auto-cleaned on upgrade. Use `--no-prefix` to opt out. (#503)
+
+### Fixed
+
+- **Windows port race condition.** `findPort()` now uses `net.createServer()` instead of `Bun.serve()` for port probing, fixing an EADDRINUSE race on Windows where the polyfill's `stop()` is fire-and-forget. (#490)
+- **package.json version sync.** VERSION file and package.json now agree (was stuck at 0.12.5.0).
+
+## [0.12.8.1] - 2026-03-27 — zsh Glob Compatibility
+
+Skill scripts now work correctly in zsh. Previously, bash code blocks in skill templates used raw glob patterns like `.github/workflows/*.yaml` and `ls ~/.gstack/projects/$SLUG/*-design-*.md` that would throw "no matches found" errors in zsh when no files matched. Fixed 38 instances across 13 templates and 2 resolvers using two approaches: `find`-based alternatives for complex patterns, and `setopt +o nomatch` guards for simple `ls` commands.
+
+### Fixed
+
+- **`.github/workflows/` globs replaced with `find`.** `cat .github/workflows/*deploy*`, `for f in .github/workflows/*.yml`, and `ls .github/workflows/*.yaml` patterns in `/land-and-deploy`, `/setup-deploy`, `/cso`, and the deploy bootstrap resolver now use `find ... -name` instead of raw globs.
+- **`~/.gstack/` and `~/.claude/` globs guarded with `setopt`.** Design doc lookups, eval result listings, test plan discovery, and retro history checks across 10 skills now prepend `setopt +o nomatch 2>/dev/null || true` (no-op in bash, disables NOMATCH in zsh).
+- **Test framework detection globs guarded.** `ls jest.config.* vitest.config.*` in the testing resolver now has a setopt guard.
+
+## [0.12.8.0] - 2026-03-27 — Codex No Longer Reviews the Wrong Project
+
+When you run gstack in Conductor with multiple workspaces open, Codex could silently review the wrong project. The `codex exec -C` flag resolved the repo root inline via `$(git rev-parse --show-toplevel)`, which evaluates in whatever cwd the background shell inherits. In multi-workspace environments, that cwd might be a different project entirely.
+
+### Fixed
+
+- **Codex exec resolves repo root eagerly.** All 12 `codex exec` commands across `/codex`, `/autoplan`, and 4 resolver functions now resolve `_REPO_ROOT` at the top of each bash block and reference the stored value in `-C`. No more inline evaluation that races with other workspaces.
+- **`codex review` also gets cwd protection.** `codex review` doesn't support `-C`, so it now gets `cd "$_REPO_ROOT"` before invocation. Same class of bug, different command.
+- **Silent fallback replaced with hard fail.** The `|| pwd` fallback silently used whatever random cwd was available. Now it errors out with a clear message if not in a git repo.
+
+### Removed
+
+- **Dead resolver copies in gen-skill-docs.ts.** Six functions that were moved to `scripts/resolvers/` months ago but never deleted. They had already diverged from the live versions and contained the old vulnerable pattern.
+
+### Added
+
+- **Regression test** that scans all `.tmpl`, resolver `.ts`, and generated `SKILL.md` files for codex commands using inline `$(git rev-parse --show-toplevel)`. Prevents reintroduction.
+
+## [0.12.7.0] - 2026-03-27 — Community PRs + Security Hardening
+
+Seven community contributions merged, reviewed, and tested. Plus security hardening for telemetry and review logging, and E2E test stability fixes.
+
+### Added
+
+- **Dotfile filtering in skill discovery.** Hidden directories (`.git`, `.vscode`, etc.) are no longer picked up as skill templates.
+- **JSON validation gate in review-log.** Malformed input is rejected instead of appended to the JSONL file.
+- **Telemetry input sanitization.** All string fields are stripped of quotes, backslashes, and control characters before being written to JSONL.
+- **Host-specific co-author trailers.** `/ship` and `/document-release` now use the correct co-author line for Codex vs Claude.
+- **10 new security tests** covering telemetry injection, review-log validation, and dotfile filtering.
+
+### Fixed
+
+- **File paths starting with `./` no longer treated as CSS selectors.** `$B screenshot ./path/to/file.png` now works instead of trying to find a CSS element.
+- **Build chain resilience.** `gen:skill-docs` failure no longer blocks binary compilation.
+- **Update checker fall-through.** After upgrading, the checker now also checks for newer remote versions instead of stopping.
+- **Flaky E2E tests stabilized.** `browse-basic`, `ship-base-branch`, and `review-dashboard-via` tests now pass reliably by extracting only relevant SKILL.md sections instead of copying full 1900-line files into test fixtures.
+- **Removed unreliable `journey-think-bigger` routing test.** Never passed reliably because the routing signal was too ambiguous. 10 other journey tests cover routing with clear signals.
+
+### For contributors
+
+- New CLAUDE.md rule: never copy full SKILL.md files into E2E test fixtures. Extract the relevant section only.
+
+## [0.12.6.0] - 2026-03-27 — Sidebar Knows What Page You're On
+
+The Chrome sidebar agent used to navigate to the wrong page when you asked it to do something. If you'd manually browsed to a site, the sidebar would ignore that and go to whatever Playwright last saw (often Hacker News from the demo). Now it works.
+
+### Fixed
+
+- **Sidebar uses the real tab URL.** The Chrome extension now captures the actual page URL via `chrome.tabs.query()` and sends it to the server. Previously the sidebar agent used Playwright's stale `page.url()`, which didn't update when you navigated manually in headed mode.
+- **URL sanitization.** The extension-provided URL is validated (http/https only, control characters stripped, 2048 char limit) before being used in the Claude system prompt. Prevents prompt injection via crafted URLs.
+- **Stale sidebar agents killed on reconnect.** Each `/connect-chrome` now kills leftover sidebar-agent processes before starting a new one. Old agents had stale auth tokens and would silently fail, causing the sidebar to freeze.
+
+### Added
+
+- **Pre-flight cleanup for `/connect-chrome`.** Kills stale browse servers and cleans Chromium profile locks before connecting. Prevents "already connected" false positives after crashes.
+- **Sidebar agent test suite (36 tests).** Four layers: unit tests for URL sanitization, integration tests for server HTTP endpoints, mock-Claude round-trip tests, and E2E tests with real Claude. All free except layer 4.
+
+## [0.12.5.1] - 2026-03-27 — Eng Review Now Tells You What to Parallelize
+
+`/plan-eng-review` automatically analyzes your plan for parallel execution opportunities. When your plan has independent workstreams, the review outputs a dependency table, parallel lanes, and execution order so you know exactly which tasks to split into separate git worktrees.
+
+### Added
+
+- **Worktree parallelization strategy** in `/plan-eng-review` required outputs. Extracts a structured table of plan steps with module-level dependencies, computes parallel lanes, and flags merge conflict risks. Skips automatically for single-module or single-track plans.
+
+## [0.12.5.0] - 2026-03-26 — Fix Codex Hangs: 30-Minute Waits Are Gone
+
+Three bugs in `/codex` caused 30+ minute hangs with zero output during plan reviews and adversarial checks. All three are fixed.
+
+### Fixed
+
+- **Plan files now visible to Codex sandbox.** Codex runs sandboxed to the repo root and couldn't see plan files at `~/.claude/plans/`. It would waste 10+ tool calls searching before giving up. Now the plan content is embedded directly in the prompt, and referenced source files are listed so Codex reads them immediately.
+- **Streaming output actually streams.** Python's stdout buffering meant zero output visible until the process exited. Added `PYTHONUNBUFFERED=1`, `python3 -u`, and `flush=True` on every print call across all three Codex modes.
+- **Sane reasoning effort defaults.** Replaced hardcoded `xhigh` (23x more tokens, known 50+ min hangs per OpenAI issues #8545, #8402, #6931) with per-mode defaults: `high` for review and challenge, `medium` for consult. Users can override with `--xhigh` flag when they want maximum reasoning.
+- **`--xhigh` override works in all modes.** The override reminder was missing from challenge and consult mode instructions. Found by adversarial review.
+
+## [0.12.4.0] - 2026-03-26 — Full Commit Coverage in /ship
+
+When you ship a branch with 12 commits spanning performance work, dead code removal, and test infra, the PR should mention all three. It wasn't. The CHANGELOG and PR summary biased toward whatever happened most recently, silently dropping earlier work.
+
+### Fixed
+
+- **/ship Step 5 (CHANGELOG):** Now forces explicit commit enumeration before writing. You list every commit, group by theme, write the entry, then cross-check that every commit maps to a bullet. No more recency bias.
+- **/ship Step 8 (PR body):** Changed from "bullet points from CHANGELOG" to explicit commit-by-commit coverage. Groups commits into logical sections. Excludes the VERSION/CHANGELOG metadata commit (bookkeeping, not a change). Every substantive commit must appear somewhere.
+
+## [0.12.3.0] - 2026-03-26 — Voice Directive: Every Skill Sounds Like a Builder
+
+Every gstack skill now has a voice. Not a personality, not a persona, but a consistent set of instructions that make Claude sound like someone who shipped code today and cares whether the thing works for real users. Direct, concrete, sharp. Names the file, the function, the command. Connects technical work to what the user actually experiences.
+
+Two tiers: lightweight skills get a trimmed version (tone + writing rules). Full skills get the complete directive with context-dependent tone (YC partner energy for strategy, senior eng for code review, blog-post clarity for debugging), concreteness standards, humor calibration, and user-outcome guidance.
+
+### Added
+
+- **Voice directive in all 25 skills.** Generated from `preamble.ts`, injected via the template resolver. Tier 1 skills get a 4-line version. Tier 2+ skills get the full directive.
+- **Context-dependent tone.** Match the context: YC partner for `/plan-ceo-review`, senior eng for `/review`, best-technical-blog-post for `/investigate`.
+- **Concreteness standard.** "Show the exact command. Use real numbers. Point at the exact line." Not aspirational... enforced.
+- **User outcome connection.** "This matters because your user will see a 3-second spinner." Make the user's user real.
+- **LLM eval test.** Judge scores directness, concreteness, anti-corporate tone, AI vocabulary avoidance, and user outcome connection. All dimensions must score 4/5+.
+
+## [0.12.2.0] - 2026-03-26 — Deploy with Confidence: First-Run Dry Run
+
+The first time you run `/land-and-deploy` on a project, it does a dry run. It detects your deploy infrastructure, tests that every command works, and shows you exactly what will happen... before it touches anything. You confirm, and from then on it just works.
+
+If your deploy config changes later (new platform, different workflow, updated URLs), it automatically re-runs the dry run. Trust is earned, maintained, and re-validated when the ground shifts.
+
+### Added
+
+- **First-run dry run.** Shows your deploy infrastructure in a validation table: platform, CLI status, production URL reachability, staging detection, merge method, merge queue status. You confirm before anything irreversible happens.
+- **Staging-first option.** If staging is detected (CLAUDE.md config, GitHub Actions workflow, or Vercel/Netlify preview), you can deploy there first, verify it works, then proceed to production.
+- **Config decay detection.** The dry-run confirmation stores a fingerprint of your deploy config. If CLAUDE.md's deploy section or your deploy workflows change, the dry run re-triggers automatically.
+- **Inline review gate.** If no recent code review exists, offers a quick safety check on the diff before merging. Catches SQL safety, race conditions, and security issues at deploy time.
+- **Merge queue awareness.** Detects when your repo uses merge queues and explains what's happening while it waits.
+- **CI auto-deploy detection.** Identifies deploy workflows triggered by the merge and monitors them.
+
+### Changed
+
+- **Full copy rewrite.** Every user-facing message rewritten to narrate what's happening, explain why, and be specific. First run = teacher mode. Subsequent runs = efficient mode.
+- **Voice & Tone section.** New guidelines for how the skill communicates: be a senior release engineer sitting next to the developer, not a robot.
+
+## [0.12.1.0] - 2026-03-26 — Smarter Browsing: Network Idle, State Persistence, Iframes
+
+Every click, fill, and select now waits for the page to settle before returning. No more stale snapshots because an XHR was still in-flight. Chain accepts pipe-delimited format for faster multi-step flows. You can save and restore browser sessions (cookies + open tabs). And iframe content is now reachable.
+
+### Added
+
+- **Network idle detection.** `click`, `fill`, and `select` auto-wait up to 2s for network requests to settle before returning. Catches XHR/fetch triggered by interactions. Uses Playwright's built-in `waitForLoadState('networkidle')`, not a custom tracker.
+
+- **`$B state save/load`.** Save your browser session (cookies + open tabs) to a named file, load it back later. Files stored at `.gstack/browse-states/{name}.json` with 0o600 permissions. V1 saves cookies + URLs only (not localStorage, which breaks on load-before-navigate). Load replaces the current session, not merge.
+
+- **`$B frame` command.** Switch command context into an iframe: `$B frame iframe`, `$B frame --name checkout`, `$B frame --url stripe`, or `$B frame @e5`. All subsequent commands (click, fill, snapshot, etc.) operate inside the iframe. `$B frame main` returns to the main page. Snapshot shows `[Context: iframe src="..."]` header. Detached frames auto-recover.
+
+- **Chain pipe format.** Chain now accepts `$B chain 'goto url | click @e5 | snapshot -ic'` as a fallback when JSON parsing fails. Pipe-delimited with quote-aware tokenization.
+
+### Changed
+
+- **Chain post-loop idle wait.** After executing all commands in a chain, if the last was a write command, chain waits for network idle before returning.
+
+### Fixed
+
+- **Iframe ref scoping.** Snapshot ref locators, cursor-interactive scan, and cursor locators now use the frame-aware target instead of always scoping to the main page.
+- **Detached frame recovery.** `getActiveFrameOrPage()` checks `isDetached()` and auto-recovers.
+- **State load resets frame context.** Loading a saved state clears the active frame reference.
+- **elementHandle leak in frame command.** Now properly disposed after getting contentFrame.
+- **Upload command frame-aware.** `upload` uses the frame-aware target for file input locators.
+
+## [0.12.0.0] - 2026-03-26 — Headed Mode + Sidebar Agent
+
+You can now watch Claude work in a real Chrome window and direct it from a sidebar chat.
+
+### Added
+
+- **Headed mode with sidebar agent.** `$B connect` launches a visible Chrome window with the gstack extension. The Side Panel shows a live activity feed of every command AND a chat interface where you type natural language instructions. A child Claude instance executes your requests in the browser ... navigate pages, click buttons, fill forms, extract data. Each task gets up to 5 minutes.
+
+- **Personal automation.** The sidebar agent handles repetitive browser tasks beyond dev workflows. Browse your kid's school parent portal and add parent contact info to Google Contacts. Fill out vendor onboarding forms. Extract data from dashboards. Log in once in the headed browser or import cookies from your real Chrome with `/setup-browser-cookies`.
+
+- **Chrome extension.** Toolbar badge (green=connected, gray=not), Side Panel with activity feed + chat + refs tab, @ref overlays on the page, and a connection pill showing which window gstack controls. Auto-loads when you run `$B connect`.
+
+- **`/connect-chrome` skill.** Guided setup: launches Chrome, verifies the extension, demos the activity feed, and introduces the sidebar chat.
+
+### Changed
+
+- **Sidebar agent ungated.** Previously required `--chat` flag. Now always available in headed mode. The sidebar agent has the same security model as Claude Code itself (Bash, Read, Glob, Grep on localhost).
+
+- **Agent timeout raised to 5 minutes.** Multi-page tasks (navigating directories, filling forms across pages) need more than the previous 2-minute limit.
+
+## [0.11.21.0] - 2026-03-26
+
+### Fixed
+
+- **`/autoplan` reviews now count toward the ship readiness gate.** When `/autoplan` ran full CEO + Design + Eng reviews, `/ship` still showed "0 runs" for Eng Review because autoplan-logged entries weren't being read correctly. Now the dashboard shows source attribution (e.g., "CLEAR (PLAN via /autoplan)") so you can see exactly which tool satisfied each review.
+- **`/ship` no longer tells you to "run /review first."** Ship runs its own pre-landing review in Step 3.5 — asking you to run the same review separately was redundant. The gate is removed; ship just does it.
+- **`/land-and-deploy` now checks all 8 review types.** Previously missed `review`, `adversarial-review`, and `codex-plan-review` — if you only ran `/review` (not `/plan-eng-review`), land-and-deploy wouldn't see it.
+- **Dashboard Outside Voice row now works.** Was showing "0 runs" even after outside voices ran in `/plan-ceo-review` or `/plan-eng-review`. Now correctly maps to `codex-plan-review` entries.
+- **`/codex review` now tracks staleness.** Added the `commit` field to codex review log entries so the dashboard can detect when a codex review is outdated.
+- **`/autoplan` no longer hardcodes "clean" status.** Review log entries from autoplan used to always record `status:"clean"` even when issues were found. Now uses proper placeholder tokens that Claude substitutes with real values.
+
+## [0.11.20.0] - 2026-03-26
+
+### Added
+
+- **GitLab support for `/retro` and `/ship`.** You can now run `/ship` on GitLab repos — it creates merge requests via `glab mr create` instead of `gh pr create`. `/retro` detects default branches on both platforms. All 11 skills using `BASE_BRANCH_DETECT` automatically get GitHub, GitLab, and git-native fallback detection.
+- **GitHub Enterprise and self-hosted GitLab detection.** If the remote URL doesn't match `github.com` or `gitlab`, gstack checks `gh auth status` / `glab auth status` to detect authenticated platforms — no manual config needed.
+- **`/document-release` works on GitLab.** After `/ship` creates a merge request, the auto-invoked `/document-release` reads and updates the MR body via `glab` instead of failing silently.
+- **GitLab safety gate for `/land-and-deploy`.** Instead of silently failing on GitLab repos, `/land-and-deploy` now stops early with a clear message that GitLab merge support is not yet implemented.
+
+### Fixed
+
+- **Deduplicated gen-skill-docs resolvers.** The template generator had duplicate inline resolver functions that shadowed the modular versions, causing generated SKILL.md files to miss recent resolver updates.
+
 ## [0.11.19.0] - 2026-03-24
 
 ### Fixed
