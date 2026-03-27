@@ -23,7 +23,7 @@ let _skillMap: Record<string, string> | null = null;
 function getSkillMap(): Record<string, string> {
   if (_skillMap) return _skillMap;
   try {
-    const filePath = path.join(process.cwd(), "memory", "skill-taxonomy.yaml");
+    const filePath = path.join(process.cwd(), "src", "data", "skills.yaml");
     const raw = fs.readFileSync(filePath, "utf-8");
     const data = parse(raw) as TaxonomyData;
     const map: Record<string, string> = {};

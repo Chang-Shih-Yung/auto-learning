@@ -7,7 +7,7 @@ import { getAllPosts } from "@/lib/posts";
 
 function getSkillStats() {
   try {
-    const filePath = path.join(process.cwd(), "memory", "skill-taxonomy.yaml");
+    const filePath = path.join(process.cwd(), "src", "data", "skills.yaml");
     const raw = fs.readFileSync(filePath, "utf-8");
     const data = parse(raw) as {
       current_skills?: unknown[];

@@ -1,0 +1,60 @@
+# src/data/skills.yaml
+# 公開版技能清單 — 只含 id + label，無私人備註
+# 對應來源：memory/skill-taxonomy.yaml（gitignored）
+# 更新時機：與 memory/skill-taxonomy.yaml 同步更新
+
+current_skills:
+  - id: angular
+    label: Angular
+  - id: rxjs
+    label: RxJS
+  - id: ngrx
+    label: NgRx
+  - id: vue3
+    label: Vue 3
+  - id: typescript
+    label: TypeScript
+  - id: react
+    label: React / Next.js
+  - id: tailwind
+    label: Tailwind CSS
+  - id: css-custom-properties
+    label: CSS Custom Properties
+  - id: oklch
+    label: OKLCH Color Space
+  - id: figma
+    label: Figma
+  - id: ant-design
+    label: Ant Design
+  - id: echarts
+    label: ECharts
+  - id: signalr
+    label: SignalR
+  - id: monorepo-pnpm
+    label: Monorepo (PNPM Workspace)
+  - id: ci-cd
+    label: CI/CD
+  - id: lottie
+    label: Lottie Web
+  - id: webgl
+    label: WebGL
+
+learning_now:
+  - id: sql
+    label: SQL
+  - id: containers
+    label: Containers
+  - id: ai-workflow
+    label: AI Workflow
+
+interests:
+  - id: ai-agents
+    label: AI Agents
+  - id: data-viz
+    label: Data Visualization
+  - id: design-systems
+    label: Design Systems
+  - id: realtime-data
+    label: Real-time Data Flow
+  - id: design-code-bridge
+    label: Design ↔ Code Bidirectional
