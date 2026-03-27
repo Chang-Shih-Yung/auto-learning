@@ -134,54 +134,94 @@ The AnnotationCard is the most distinctive element of this site. Design decision
 6. **Connection/Adjacent text:** `Noto Serif JP` 12px, `--color-text-2`, line-height 1.65
 7. **Default open:** relevance ≥ 3/5
 
-## CSS Variable Reference
+## shadcn/ui Integration
+
+**Stack:** shadcn v2 (base-nova style) + Tailwind v4.2.2 + OKLCH color space
+
+### How tokens work
+
+`globals.css` is the single source of truth. All design tokens live there as CSS custom properties, mapped into shadcn's semantic slot system via `@theme inline`. This means:
+
+- **shadcn components** (`Button`, `Sheet`, `Card`, etc.) automatically use our palette — no overrides needed
+- **Custom components** (`AnnotationCard`, `prose-journal`) use the same underlying CSS vars
+- **Dark mode** is activated by `.dark` class on `<html>` (shadcn standard) or `[data-theme="dark"]`
+
+### Adding new shadcn components
+
+```bash
+pnpm dlx shadcn@latest add <component-name>
+```
+
+The component will automatically inherit our palette. No additional token wiring needed.
+
+### Token usage rules
+
+| Need | Use | Example |
+|------|-----|---------|
+| shadcn component | Tailwind utility class | `bg-background`, `text-foreground`, `bg-primary` |
+| Editorial prose | `var(--background)`, `var(--foreground)`, `var(--primary)` | `.prose-journal a { color: var(--primary); }` |
+| Annotation accent | `var(--annotation)` / `bg-annotation` | AnnotationCard header, pip fills |
+| Never use | hardcoded hex in component code | ❌ `color: #3d6b5e` → ✅ `color: var(--primary)` |
+
+### Adding new design tokens
+
+Define in `globals.css` under `:root` + `.dark`, then expose to Tailwind via `@theme inline`:
 
 ```css
-:root {
-  --color-bg:               #fdfcfa;
-  --color-bg-soft:          #f8f6f3;
-  --color-bg-muted:         #f0ede8;
-  --color-text-1:           #1a1a18;
-  --color-text-2:           #5a5856;
-  --color-text-3:           #767472;
-  --color-brand:            #3d6b5e;
-  --color-brand-soft:       rgba(61, 107, 94, 0.08);
-  --color-annotation:       #bf7a26;
-  --color-annotation-soft:  rgba(191, 122, 38, 0.08);
-  --color-annotation-border:rgba(191, 122, 38, 0.25);
-  --color-divider:          rgba(26, 26, 24, 0.06);
-  --color-border:           rgba(26, 26, 24, 0.10);
-  --color-border-strong:    rgba(26, 26, 24, 0.18);
+/* In :root */
+--warning: oklch(0.84 0.16 84);
 
-  --font-serif: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
-  --font-sans:  'Geist Sans', system-ui, -apple-system, sans-serif;
-  --font-mono:  'Geist Mono', 'SF Mono', 'Fira Code', monospace;
+/* In .dark */
+--warning: oklch(0.41 0.11 46);
 
-  --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
-  --sp-5: 24px;  --sp-6: 32px;  --sp-7: 48px;  --sp-8: 64px;  --sp-9: 96px;
+/* In @theme inline */
+--color-warning: var(--warning);
+```
 
-  --r-sm:   4px;
-  --r-md:   6px;
-  --r-lg:   10px;
-  --r-full: 9999px;
-}
+Then use as `bg-warning` in Tailwind classes.
 
-[data-theme="dark"] {
-  --color-bg:               #161614;
-  --color-bg-soft:          #1e1e1b;
-  --color-bg-muted:         #252520;
-  --color-text-1:           #e8e6e3;
-  --color-text-2:           #a09e9b;
-  --color-text-3:           #6e6c69;
-  --color-brand:            #5a9a8a;
-  --color-brand-soft:       rgba(90, 154, 138, 0.12);
-  --color-annotation:       #d4943a;
-  --color-annotation-soft:  rgba(212, 148, 58, 0.12);
-  --color-annotation-border:rgba(212, 148, 58, 0.30);
-  --color-divider:          rgba(232, 230, 227, 0.06);
-  --color-border:           rgba(232, 230, 227, 0.10);
-  --color-border-strong:    rgba(232, 230, 227, 0.18);
-}
+## CSS Variable Reference (Authoritative)
+
+> **Source:** `src/app/globals.css` — this section mirrors it for quick reference.
+> If they conflict, `globals.css` wins.
+
+### Semantic tokens (OKLCH — used by shadcn components)
+
+| Token | Light value | Dark value | Semantic meaning |
+|-------|------------|------------|-----------------|
+| `--background` | oklch(99.2% 0.003 75) = #fdfcfa | oklch(9.5% 0.005 75) = #161614 | Page background |
+| `--foreground` | oklch(12.5% 0.005 75) = #1a1a18 | oklch(91.5% 0.007 75) = #e8e6e3 | Primary text |
+| `--primary` | oklch(43.8% 0.063 169) = #3d6b5e | oklch(62.5% 0.076 183) = #5a9a8a | Brand green — active states, links |
+| `--muted` | oklch(97.5% 0.006 75) = #f8f6f3 | oklch(12.5% 0.007 100) = #1e1e1b | Bg-soft — code blocks, card bg |
+| `--muted-foreground` | oklch(47.5% 0.007 55) = #767472 | oklch(66.5% 0.006 55) = #a09e9b | Subdued text (text-3) |
+| `--secondary` | oklch(94.5% 0.009 75) = #f0ede8 | oklch(16.5% 0.007 100) = #252520 | Bg-muted — hover states |
+| `--border` | oklch(12.5% 0.005 75 / 10%) | oklch(91.5% 0.007 75 / 10%) | Dividers, card borders |
+| `--ring` | = `--primary` | = `--primary` | Focus rings |
+
+### Custom extension tokens (not in shadcn's slots)
+
+| Token | Light | Dark | Rule |
+|-------|-------|------|------|
+| `--annotation` | oklch(59.0% 0.129 58) = #bf7a26 | oklch(66.5% 0.133 58) = #d4943a | **AnnotationCard only** |
+| `--annotation-soft` | oklch(59.0% 0.129 58 / 8%) | oklch(66.5% 0.133 58 / 12%) | AnnotationCard header bg |
+| `--annotation-border` | oklch(59.0% 0.129 58 / 25%) | oklch(66.5% 0.133 58 / 30%) | AnnotationCard outer border |
+
+### Font variables
+
+```css
+--font-serif  → var(--font-noto-serif-jp)  → Noto Serif JP   (body / headings)
+--font-sans   → var(--font-geist-sans)     → Geist Sans      (nav / UI chrome)
+--font-mono   → var(--font-geist-mono)     → Geist Mono      (code / data)
+```
+
+### Radius scale (derived from `--radius: 0.5rem`)
+
+```
+--radius-sm   calc(radius × 0.6) ≈ 4px   chips, tags
+--radius-md   calc(radius × 0.8) ≈ 6px   cards, inputs
+--radius-lg   = radius           = 8px   panels, nav containers
+--radius-xl   calc(radius × 1.6) ≈ 13px  large cards
+--radius-full 9999px                      pills, avatars
 ```
 
 ## Decisions Log
@@ -194,3 +234,4 @@ The AnnotationCard is the most distinctive element of this site. Design decision
 | 2026-03-27 | Added #bf7a26 annotation amber | Exclusive to AnnotationCard; signals marginalia/commentary layer, visually distinct from brand green |
 | 2026-03-27 | Dark mode with warm darks (#161614) | Preserves warm paper aesthetic in dark mode; avoids cold #000 that breaks the editorial character |
 | 2026-03-27 | Formalized 4px spacing scale | Existing code was using ad-hoc values; 4px base provides consistent 4/8/12/16/24/32/48/64 rhythm |
+| 2026-03-27 | Upgrade to Tailwind v4 + shadcn v2 (Route C) | Resolved two-system conflict — globals.css is now single source of truth; shadcn semantic tokens mapped to our DESIGN.md palette; OKLCH for native color manipulation; pnpm as package manager |
