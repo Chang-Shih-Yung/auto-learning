@@ -40,7 +40,7 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1" style={{ fontFamily: "var(--font-sans)" }}>
           {navLinks.map(({ href, label }) => {
             const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
             return (
@@ -48,7 +48,7 @@ export default function Navbar() {
                 key={href}
                 href={href}
                 className={cn(
-                  "px-3 py-1.5 rounded-md text-sm transition-colors",
+                  "px-3 py-2.5 rounded-md text-sm transition-colors",
                   isActive
                     ? "text-[#3d6b5e] bg-[rgba(61,107,94,0.08)] font-medium"
                     : "text-[#5a5856] hover:text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)]"
@@ -63,7 +63,7 @@ export default function Navbar() {
             href="https://github.com/Chang-Shih-Yung/auto-learning"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-2 px-3 py-1.5 rounded-md text-sm text-[#5a5856] hover:text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)] transition-colors"
+            className="ml-2 px-3 py-2.5 rounded-md text-sm text-[#5a5856] hover:text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)] transition-colors"
           >
             GitHub
           </a>
