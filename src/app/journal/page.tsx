@@ -38,8 +38,8 @@ export default function JournalIndexPage() {
               className="flex flex-col items-center justify-center py-20 rounded-xl text-center"
               style={{ background: "#f8f6f3", border: "1px solid rgba(26,26,24,0.06)" }}
             >
-              <FileText className="h-8 w-8 text-[#9a9896] mb-3" />
-              <p className="text-sm text-[#9a9896]">尚無日誌</p>
+              <FileText className="h-8 w-8 text-[#767472] mb-3" />
+              <p className="text-sm text-[#767472]">尚無日誌</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -51,7 +51,7 @@ export default function JournalIndexPage() {
                   style={{ border: "1px solid rgba(26,26,24,0.06)" }}
                 >
                   <span
-                    className="text-xs font-mono text-[#9a9896] flex-shrink-0 mt-0.5"
+                    className="text-xs font-mono text-[#767472] flex-shrink-0 mt-0.5"
                     style={{ fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace" }}
                   >
                     {post.date}
@@ -65,7 +65,7 @@ export default function JournalIndexPage() {
                     </h2>
                     {post.excerpt && (
                       <p
-                        className="text-xs text-[#9a9896] line-clamp-1"
+                        className="text-xs text-[#767472] line-clamp-1"
                         style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
                       >
                         {post.excerpt}

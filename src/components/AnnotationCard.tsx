@@ -99,7 +99,7 @@ export default function AnnotationCard({
         </span>
 
         <span className="text-[#c0beba]">·</span>
-        <span className="text-[#9a9896]">相關度 {score}/5</span>
+        <span className="text-[#767472]">相關度 {score}/5</span>
 
         {/* Relevance pip bar */}
         <span className="ml-auto flex items-center gap-0.5">
@@ -118,11 +118,8 @@ export default function AnnotationCard({
 
       {/* ── Card body ── */}
       <div
-        className="grid gap-3 border-t px-4 py-3 text-sm"
-        style={{
-          borderColor: "rgba(26,26,24,0.08)",
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-        }}
+        className="grid grid-cols-1 md:grid-cols-2 gap-3 border-t px-4 py-3 text-sm"
+        style={{ borderColor: "rgba(26,26,24,0.08)" }}
       >
         {/* Matched skills */}
         <div className="flex flex-col gap-1.5">
@@ -176,7 +173,7 @@ export default function AnnotationCard({
 function Label({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <span
-      className="text-[#9a9896]"
+      className="text-[#767472]"
       style={{
         fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
         fontSize: "10px",
@@ -221,7 +218,7 @@ function Chip({
       className={base}
       style={{
         border: "1px solid rgba(26,26,24,0.15)",
-        color: "#9a9896",
+        color: "#767472",
       }}
     >
       {children}

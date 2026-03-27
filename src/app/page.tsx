@@ -1,14 +1,37 @@
+import fs from "node:fs";
+import path from "node:path";
+import { parse } from "yaml";
 import Link from "next/link";
-import { BookOpen, ArrowRight, Cpu, Search, TrendingUp } from "lucide-react";
+import { BookOpen, ArrowRight, Cpu } from "lucide-react";
 import { getAllPosts } from "@/lib/posts";
 
+function getSkillStats() {
+  try {
+    const filePath = path.join(process.cwd(), "memory", "skill-taxonomy.yaml");
+    const raw = fs.readFileSync(filePath, "utf-8");
+    const data = parse(raw) as {
+      current_skills?: unknown[];
+      learning_now?: unknown[];
+    };
+    return {
+      total: (data.current_skills?.length ?? 0) + (data.learning_now?.length ?? 0),
+      learningNow: data.learning_now?.length ?? 0,
+    };
+  } catch {
+    return { total: 0, learningNow: 0 };
+  }
+}
+
 export default function HomePage() {
-  const recentPosts = getAllPosts().slice(0, 10);
+  const allPosts = getAllPosts();
+  const recentPosts = allPosts.slice(0, 10);
+  const { total: skillTotal, learningNow } = getSkillStats();
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div className="py-16 md:py-24">
       {/* Hero */}
-      <section className="mb-20">
+      <section className="mb-16">
         <div className="max-w-[860px]">
           <div
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6"
@@ -40,7 +63,7 @@ export default function HomePage() {
             每一篇日誌都是可搜尋的知識節點。
           </p>
 
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap mb-10">
             <Link
               href="/journal"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90"
@@ -55,68 +78,35 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-[#3d6b5e] transition-colors hover:bg-[rgba(61,107,94,0.08)]"
                 style={{ border: "1px solid rgba(61,107,94,0.25)" }}
               >
-                今日journal
+                今日 journal
                 <ArrowRight className="h-4 w-4" />
               </Link>
             )}
           </div>
-        </div>
-      </section>
 
-      {/* Feature cards */}
-      <section className="mb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              icon: Cpu,
-              title: "每日 AI 技術摘要",
-              desc: "自動追蹤 Anthropic Claude、GitHub Copilot、OpenAI 的最新動態，每天早上整理好等你來讀。",
-            },
-            {
-              icon: Search,
-              title: "針對 UI 前端的關聯分析",
-              desc: "不只是新聞，而是分析這些技術跟前端開發、設計系統的實際關聯，讓你知道該學什麼、怎麼用。",
-            },
-            {
-              icon: TrendingUp,
-              title: "累積式成長記錄",
-              desc: "每一篇日誌都是可搜尋的知識節點，按年月日組織，隨時回顧、持續迭代。",
-            },
-          ].map(({ icon: Icon, title, desc }) => (
-            <div
-              key={title}
-              className="p-5 rounded-xl"
-              style={{
-                background: "#f8f6f3",
-                border: "1px solid rgba(26,26,24,0.06)",
-              }}
-            >
-              <div
-                className="inline-flex p-2 rounded-lg mb-3"
-                style={{ background: "rgba(61, 107, 94, 0.08)" }}
-              >
-                <Icon className="h-4 w-4 text-[#3d6b5e]" />
-              </div>
-              <h3
-                className="text-sm font-semibold text-[#1a1a18] mb-2"
-                style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-              >
-                {title}
-              </h3>
-              <p
-                className="text-sm text-[#5a5856] leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif", lineHeight: 1.7 }}
-              >
-                {desc}
-              </p>
-            </div>
-          ))}
+          {/* Stats row */}
+          <div
+            className="flex items-center gap-2 text-sm"
+            style={{ fontFamily: "var(--font-geist-mono), 'Source Code Pro', monospace" }}
+          >
+            <span className="text-[#767472]">
+              <span className="text-[#1a1a18] font-medium">{allPosts.length}</span> 篇日誌
+            </span>
+            <span className="text-[rgba(26,26,24,0.2)]">·</span>
+            <span className="text-[#767472]">
+              <span className="text-[#1a1a18] font-medium">{skillTotal}</span> 個技能
+            </span>
+            <span className="text-[rgba(26,26,24,0.2)]">·</span>
+            <span className="text-[#767472]">
+              <span className="text-[#1a1a18] font-medium">{learningNow}</span> 個學習中
+            </span>
+          </div>
         </div>
       </section>
 
       {/* Recent entries */}
       {recentPosts.length > 0 && (
-        <section className="max-w-[860px]">
+        <section className="max-w-[860px] mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2
               className="text-lg font-semibold text-[#1a1a18]"
@@ -141,12 +131,12 @@ export default function HomePage() {
               <thead>
                 <tr style={{ background: "#f8f6f3", borderBottom: "1px solid rgba(26,26,24,0.08)" }}>
                   <th
-                    className="px-4 py-3 text-left text-xs font-medium text-[#9a9896] uppercase tracking-wider"
-                    style={{ width: "120px" }}
+                    className="px-4 py-3 text-left text-xs font-medium text-[#767472] uppercase tracking-wider"
+                    style={{ width: "160px" }}
                   >
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[#9a9896] uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-[#767472] uppercase tracking-wider">
                     主題
                   </th>
                 </tr>
@@ -164,12 +154,22 @@ export default function HomePage() {
                     }}
                   >
                     <td className="px-4 py-3">
-                      <span
-                        className="text-xs font-mono text-[#9a9896]"
-                        style={{ fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace" }}
-                      >
-                        {post.date}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="text-xs font-mono text-[#767472]"
+                          style={{ fontFamily: "var(--font-geist-mono), 'Source Code Pro', monospace" }}
+                        >
+                          {post.date}
+                        </span>
+                        {post.date === today && (
+                          <span
+                            className="px-1.5 py-0.5 text-[10px] rounded font-medium"
+                            style={{ background: "rgba(61,107,94,0.1)", color: "#3d6b5e" }}
+                          >
+                            今天
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       <Link
@@ -185,21 +185,24 @@ export default function HomePage() {
               </tbody>
             </table>
           </div>
-
-          <blockquote
-            className="mt-8 pl-4 text-sm text-[#5a5856] italic"
-            style={{
-              borderLeft: "3px solid #3d6b5e",
-              fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif",
-              lineHeight: 1.85,
-            }}
-          >
-            <strong className="text-[#1a1a18]">Context Window = RAM，Filesystem = Disk</strong>
-            <br />
-            重要的東西要寫到磁碟，這個網站就是我的磁碟。
-          </blockquote>
         </section>
       )}
+
+      {/* Blockquote — always visible */}
+      <div className="max-w-[860px]">
+        <blockquote
+          className="pl-4 text-sm text-[#5a5856] italic"
+          style={{
+            borderLeft: "3px solid #3d6b5e",
+            fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif",
+            lineHeight: 1.85,
+          }}
+        >
+          <strong className="text-[#1a1a18]">Context Window = RAM，Filesystem = Disk</strong>
+          <br />
+          重要的東西要寫到磁碟，這個網站就是我的磁碟。
+        </blockquote>
+      </div>
     </div>
   );
 }

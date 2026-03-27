@@ -19,7 +19,7 @@ export default function ShowcasePage() {
         className="flex flex-col items-center justify-center py-20 rounded-xl text-center"
         style={{ background: "#f8f6f3", border: "1px solid rgba(26,26,24,0.06)" }}
       >
-        <Construction className="h-8 w-8 text-[#9a9896] mb-4" />
+        <Construction className="h-8 w-8 text-[#767472] mb-4" />
         <h2
           className="text-base font-medium text-[#5a5856] mb-3"
           style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
@@ -27,7 +27,7 @@ export default function ShowcasePage() {
           這個區塊正在規劃中
         </h2>
         <p
-          className="text-sm text-[#9a9896] max-w-xs leading-relaxed"
+          className="text-sm text-[#767472] max-w-xs leading-relaxed"
           style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif", lineHeight: 1.85 }}
         >
           目前正在思考：如何讓 Claude 不只整理文章，而是能迭代出可展示的成果。
@@ -42,7 +42,7 @@ export default function ShowcasePage() {
           可能的方向：
         </h3>
         <ul
-          className="space-y-2 text-sm text-[#9a9896]"
+          className="space-y-2 text-sm text-[#767472]"
           style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif", lineHeight: 1.85 }}
         >
           <li className="flex items-start gap-2">
@@ -61,7 +61,7 @@ export default function ShowcasePage() {
       </div>
 
       <p
-        className="mt-10 text-sm text-[#9a9896] italic"
+        className="mt-10 text-sm text-[#767472] italic"
         style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
       >
         等想清楚了再來填這裡。

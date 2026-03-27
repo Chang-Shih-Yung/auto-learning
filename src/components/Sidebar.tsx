@@ -51,7 +51,7 @@ export default function Sidebar({ tree }: SidebarProps) {
       <ScrollArea className="h-full">
         <div className="py-4 pr-4">
           <div className="mb-3 px-2">
-            <span className="text-xs font-medium text-[#9a9896] uppercase tracking-wider">
+            <span className="text-xs font-medium text-[#767472] uppercase tracking-wider">
               學習日誌
             </span>
           </div>
