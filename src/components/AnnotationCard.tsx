@@ -73,14 +73,18 @@ export default function AnnotationCard({
       open={defaultOpen}
       className="group my-4 overflow-hidden rounded-md"
       style={{
-        border: "1px solid rgba(26,26,24,0.08)",
+        border: "1px solid var(--color-annotation-border, rgba(191,122,38,0.25))",
         background: "#faf9f7",
       }}
     >
       {/* ── Toggle header ── */}
       <summary
-        className="flex cursor-pointer select-none items-center gap-2 px-4 py-2.5 text-xs text-[#5a5856] transition-colors hover:bg-[rgba(26,26,24,0.03)] [&::-webkit-details-marker]:hidden"
-        style={{ borderTop: "2px solid #1a1a18", listStyle: "none" }}
+        className="flex cursor-pointer select-none items-center gap-2 px-4 py-2.5 text-xs text-[#5a5856] transition-colors [&::-webkit-details-marker]:hidden"
+        style={{
+          borderTop: "2px solid var(--color-annotation, #bf7a26)",
+          background: "var(--color-annotation-soft, rgba(191,122,38,0.08))",
+          listStyle: "none",
+        }}
       >
         {/* Chevron — rotates 90° when open */}
         <span className="inline-block text-[10px] transition-transform duration-200 group-open:rotate-90">
@@ -90,9 +94,10 @@ export default function AnnotationCard({
         <span
           className="tracking-wide"
           style={{
-            fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
+            fontFamily: "var(--font-mono, var(--font-geist-mono), 'Source Code Pro', monospace)",
             fontSize: "11px",
             letterSpacing: "0.05em",
+            color: "var(--color-annotation, #bf7a26)",
           }}
         >
           Henry's Take
@@ -109,7 +114,7 @@ export default function AnnotationCard({
               className="inline-block h-2 w-2 rounded-sm"
               style={{
                 background:
-                  i < score ? "#1a1a18" : "rgba(26,26,24,0.10)",
+                  i < score ? "var(--color-annotation, #bf7a26)" : "var(--color-border, rgba(26,26,24,0.10))",
               }}
             />
           ))}
