@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 import type { Metadata } from "next";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = { title: "關於" };
 
@@ -35,25 +36,25 @@ const CATEGORY_LABELS: Record<string, string> = {
 // ── Chip variants ──────────────────────────────────────────
 function SkillChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs bg-foreground text-background">
+    <Badge className="font-mono bg-foreground text-background border-transparent hover:bg-foreground/90">
       {label}
-    </span>
+    </Badge>
   );
 }
 
 function LearningChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs border border-primary/40 text-primary">
+    <Badge variant="outline" className="font-mono border-primary/40 text-primary">
       {label}
-    </span>
+    </Badge>
   );
 }
 
 function InterestChip({ label }: Readonly<{ label: string }>) {
   return (
-    <span className="inline-block rounded px-2.5 py-1 font-mono text-xs border border-border text-muted-foreground">
+    <Badge variant="outline" className="font-mono text-muted-foreground">
       {label}
-    </span>
+    </Badge>
   );
 }
 
