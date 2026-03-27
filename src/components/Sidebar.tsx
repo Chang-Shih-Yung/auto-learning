@@ -29,16 +29,16 @@ const MONTH_NAMES: Record<string, string> = {
 export default function Sidebar({ tree }: Readonly<SidebarProps>) {
   const pathname = usePathname();
 
-  // Default expand all years and months
-  const defaultExpanded: Record<string, boolean> = {};
-  Object.keys(tree).forEach((year) => {
-    defaultExpanded[year] = true;
-    Object.keys(tree[year]).forEach((month) => {
-      defaultExpanded[`${year}-${month}`] = true;
-    });
+  // Lazy initializer — runs once on mount (client-side), avoids hydration mismatch
+  // at UTC midnight / timezone boundary. Only current year + current month expanded.
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => {
+    const currentYear = String(new Date().getFullYear());
+    const currentMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+    return {
+      [currentYear]: true,
+      [`${currentYear}-${currentMonth}`]: true,
+    };
   });
-
-  const [expanded, setExpanded] = useState<Record<string, boolean>>(defaultExpanded);
 
   const toggle = (key: string) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -58,7 +58,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
 
           <nav>
             {years.map((year) => {
-              const isYearOpen = expanded[year] ?? true;
+              const isYearOpen = expanded[year] ?? false;
               const months = Object.keys(tree[year]).sort((a, b) => b.localeCompare(a));
 
               return (
@@ -66,8 +66,11 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
                   {/* Year row */}
                   <button
                     onClick={() => toggle(year)}
-                    className="flex w-full items-center px-2 py-1.5 rounded-md text-sm font-medium text-foreground hover:bg-foreground/4 transition-colors"
+                    className="flex w-full items-center gap-1.5 px-2 py-1.5 rounded-md text-sm font-medium text-foreground hover:bg-foreground/4 transition-colors"
                   >
+                    <span className={`inline-block text-xs transition-transform duration-200 text-muted-foreground ${isYearOpen ? "rotate-90" : ""}`}>
+                      ▶
+                    </span>
                     {year}年
                   </button>
 
@@ -75,7 +78,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
                     <div className="ml-3 border-l border-border pl-2">
                       {months.map((month) => {
                         const monthKey = `${year}-${month}`;
-                        const isMonthOpen = expanded[monthKey] ?? true;
+                        const isMonthOpen = expanded[monthKey] ?? false;
                         const posts = tree[year][month];
 
                         return (
@@ -83,8 +86,11 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
                             {/* Month row */}
                             <button
                               onClick={() => toggle(monthKey)}
-                              className="flex w-full items-center px-2 py-1 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
+                              className="flex w-full items-center gap-1.5 px-2 py-1 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
                             >
+                              <span className={`inline-block text-xs transition-transform duration-200 text-muted-foreground ${isMonthOpen ? "rotate-90" : ""}`}>
+                                ▶
+                              </span>
                               {MONTH_NAMES[month] || month + "月"}
                             </button>
 

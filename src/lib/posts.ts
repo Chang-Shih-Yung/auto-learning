@@ -52,12 +52,12 @@ export function getAllPosts(): PostMeta[] {
 
       const { data, content } = matter(rawContent);
 
-      // Infer date from path if not in frontmatter
-      // The filename (parts[2]) is already "YYYY-MM-DD" — use it directly
+      // Date always derived from path (year/month/filename) — not frontmatter.
+      // Frontmatter date can be non-ISO format which breaks lexicographic sort.
       const year = parts[0] || "";
       const month = parts[1] || "";
       const day = parts[2] || "";
-      const date = data.date ? String(data.date) : day;
+      const date = `${year}-${month}-${day}`;
 
       // Extract title from frontmatter or first heading
       let title = data.title as string | undefined;
