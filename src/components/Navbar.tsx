@@ -74,7 +74,7 @@ export default function Navbar() {
             aria-label="GitHub"
             className="ml-2 p-2 rounded-md text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
           >
-            <GithubIcon className="h-4 w-4" />
+            <GithubIcon className="h-5 w-5" />
           </a>
 
           <ThemeToggle />
@@ -89,14 +89,14 @@ export default function Navbar() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="p-2 rounded-md text-text-2 hover:text-foreground transition-colors"
+            className="p-2 rounded-md text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
           >
-            <GithubIcon className="h-4 w-4" />
+            <GithubIcon className="h-5 w-5" />
           </a>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger
-              className="p-2 rounded-md text-text-2 hover:text-foreground transition-colors"
+              className="p-2 rounded-md text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
