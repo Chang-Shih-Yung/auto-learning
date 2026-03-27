@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu } from "lucide-react";
+import { Menu, Github } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Sheet,
@@ -63,9 +63,10 @@ export default function Navbar() {
             href="https://github.com/Chang-Shih-Yung/auto-learning"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-2 px-3 py-2.5 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
+            aria-label="GitHub"
+            className="ml-2 p-2 rounded-md text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
           >
-            GitHub
+            <Github className="h-4 w-4" />
           </a>
 
           <ThemeToggle />
@@ -79,9 +80,10 @@ export default function Navbar() {
             href="https://github.com/Chang-Shih-Yung/auto-learning"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 rounded-md text-sm text-text-2 hover:text-foreground transition-colors"
+            aria-label="GitHub"
+            className="p-2 rounded-md text-text-2 hover:text-foreground transition-colors"
           >
-            GitHub
+            <Github className="h-4 w-4" />
           </a>
 
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

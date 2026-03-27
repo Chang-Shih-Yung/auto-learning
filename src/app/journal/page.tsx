@@ -1,7 +1,7 @@
 import { getJournalTree } from "@/lib/posts";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
-import { FileText } from "lucide-react";
+import { FileText, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -73,9 +73,7 @@ export default function JournalIndexPage() {
                 >
                   {/* Month section header */}
                   <summary className="flex cursor-pointer select-none items-center gap-2 px-4 py-3 rounded-md hover:bg-foreground/4 transition-colors [list-style:none] [&::-webkit-details-marker]:hidden">
-                    <span className="inline-block text-xs transition-transform duration-200 group-open:rotate-90 text-muted-foreground">
-                      ▶
-                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90 text-muted-foreground" />
                     <span className="font-serif text-sm font-medium text-foreground">
                       {year}年{MONTH_NAMES[month] || month + "月"}
                     </span>

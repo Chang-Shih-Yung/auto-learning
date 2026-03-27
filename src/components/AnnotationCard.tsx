@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
+import { ChevronRight } from "lucide-react";
 
 // ──────────────────────────────────────────────
 // Skill taxonomy — loaded from memory/skill-taxonomy.yaml at build time (SSG)
@@ -75,9 +76,7 @@ export default function AnnotationCard({
       {/* ── Toggle header ── */}
       <summary className="flex cursor-pointer select-none items-center gap-2 border-t-2 border-t-annotation bg-annotation-soft px-4 py-2.5 text-xs text-text-2 [list-style:none] [&::-webkit-details-marker]:hidden">
         {/* Chevron — rotates 90° when open */}
-        <span className="inline-block text-xs transition-transform duration-200 group-open:rotate-90">
-          ▶
-        </span>
+        <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" />
 
         <span className="font-mono text-xs tracking-[0.05em] text-annotation">
           Henry's Take
