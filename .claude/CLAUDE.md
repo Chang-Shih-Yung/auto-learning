@@ -46,3 +46,16 @@ Next.js + shadcn/ui + React 的個人學習系統。每天自動抓取 AI 技術
 - `/gstack-upgrade` — 更新 gstack
 
 如果 gstack 技能無法運作，執行：`cd .claude/skills/gstack && ./setup`
+
+## Design System
+
+**Always read `DESIGN.md` before making any visual or UI decisions.**
+
+- All font choices, colors, spacing, and aesthetic direction are defined in `DESIGN.md`
+- Do not deviate from the design tokens without explicit user approval
+- Key rules:
+  - `--color-annotation` (#bf7a26) is **exclusively** for AnnotationCard — do not use elsewhere
+  - UI chrome (nav, buttons, labels) uses **Geist Sans**, NOT Noto Serif JP
+  - Code/data uses **Geist Mono**
+  - Dark mode uses warm darks (#161614), not cold black
+- In QA mode, flag any code that doesn't match `DESIGN.md`
