@@ -57,7 +57,9 @@ export function getAllPosts(): PostMeta[] {
       const year = parts[0] || "";
       const month = parts[1] || "";
       const day = parts[2] || "";
-      const date = `${year}-${month}-${day}`;
+      // day (parts[2]) is already the full ISO date (e.g. "2026-03-27" — the filename).
+      // Do not re-join with year/month or it becomes "2026-03-2026-03-27".
+      const date = day;
 
       // Extract title from frontmatter or first heading
       let title = data.title as string | undefined;

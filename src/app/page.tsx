@@ -3,6 +3,7 @@ import path from "node:path";
 import { parse } from "yaml";
 import Link from "next/link";
 import { BookOpen, ArrowRight, Cpu } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { getAllPosts } from "@/lib/posts";
 
 function getSkillStats() {
@@ -126,9 +127,9 @@ export default function HomePage() {
                           {post.date}
                         </span>
                         {post.date === today && (
-                          <span className="px-1.5 py-0.5 text-xs rounded font-medium bg-primary/10 text-primary">
+                          <Badge variant="outline" className="text-primary border-primary/30 bg-primary/8 font-sans">
                             今天
-                          </span>
+                          </Badge>
                         )}
                       </div>
                     </td>
