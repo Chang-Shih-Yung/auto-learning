@@ -104,7 +104,7 @@ export default function AnnotationCard({
         {connection && (
           <div className="flex flex-col gap-1">
             <Label>與你的關聯</Label>
-            <p className="m-0 font-serif text-[13px] leading-[1.65] text-foreground/80">
+            <p className="m-0 font-serif text-xs leading-[1.65] text-text-2">
               {connection}
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function AnnotationCard({
 
         {/* Skills — label prefix + inline chips */}
         <div className="flex items-start gap-2">
-          <span className="font-mono text-xs tracking-[0.07em] uppercase text-muted-foreground shrink-0 mt-0.75">
+          <span className="font-mono text-xs tracking-[0.07em] uppercase text-muted-foreground shrink-0 mt-1">
             匹配技能
           </span>
           <div className="flex flex-wrap gap-1">
@@ -132,7 +132,7 @@ export default function AnnotationCard({
             <Label>延伸探索</Label>
             <Chip outline>{adjacent}</Chip>
             {adjacentNote && (
-              <p className="m-0 font-serif text-[12px] leading-relaxed text-text-2">
+              <p className="m-0 font-serif text-xs leading-relaxed text-text-2">
                 {adjacentNote}
               </p>
             )}

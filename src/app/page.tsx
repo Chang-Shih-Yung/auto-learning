@@ -126,7 +126,7 @@ export default function HomePage() {
                           {post.date}
                         </span>
                         {post.date === today && (
-                          <span className="px-1.5 py-0.5 text-[10px] rounded font-medium bg-primary/10 text-primary">
+                          <span className="px-1.5 py-0.5 text-xs rounded font-medium bg-primary/10 text-primary">
                             今天
                           </span>
                         )}

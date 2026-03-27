@@ -98,7 +98,7 @@ export default function Navbar() {
             >
               <SheetTitle className="sr-only">導覽選單</SheetTitle>
               <SheetDescription className="sr-only">網站主要導覽連結</SheetDescription>
-              <nav className="flex flex-col gap-1 font-serif">
+              <nav className="flex flex-col gap-1 font-sans">
                 {navLinks.map(({ href, label }) => {
                   const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
                   return (
@@ -108,7 +108,7 @@ export default function Navbar() {
                         <Link
                           href={href}
                           className={cn(
-                            "px-4 py-3 rounded-md text-base transition-colors text-right",
+                            "px-4 py-3 rounded-md text-sm transition-colors text-right",
                             isActive
                               ? "text-primary bg-primary/8 font-medium"
                               : "text-text-2 hover:text-foreground hover:bg-foreground/4"
