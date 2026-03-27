@@ -47,7 +47,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
   const years = Object.keys(tree).sort((a, b) => b.localeCompare(a));
 
   return (
-    <aside className="hidden md:block w-56 flex-shrink-0">
+    <aside className="hidden md:block w-56 shrink-0">
       <ScrollArea className="h-full">
         <div className="py-4 pr-4">
           <div className="mb-3 px-2">
@@ -98,6 +98,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
                                     <Link
                                       key={href}
                                       href={href}
+                                      prefetch={false}
                                       className={cn(
                                         "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors leading-snug",
                                         isActive

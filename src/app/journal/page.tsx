@@ -38,6 +38,7 @@ export default function JournalIndexPage() {
                 <Link
                   key={post.slug.join("/")}
                   href={`/journal/${post.slug.join("/")}`}
+                  prefetch={false}
                   className="group flex items-start gap-4 px-4 py-3.5 rounded-lg border border-foreground/6 transition-colors hover:bg-primary/4"
                 >
                   <span className="font-mono text-xs text-muted-foreground shrink-0 mt-0.5">

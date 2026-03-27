@@ -135,6 +135,7 @@ export default function HomePage() {
                     <td className="px-4 py-3">
                       <Link
                         href={`/journal/${post.slug.join("/")}`}
+                        prefetch={false}
                         className="font-serif text-sm text-foreground group-hover:text-primary transition-colors"
                       >
                         {post.title}
