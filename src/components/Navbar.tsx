@@ -5,9 +5,15 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
-import * as SheetPrimitive from "@radix-ui/react-dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const navLinks = [
   { href: "/", label: "首頁" },
@@ -60,10 +66,14 @@ export default function Navbar() {
           >
             GitHub
           </a>
+
+          <ThemeToggle />
         </nav>
 
         {/* Mobile hamburger */}
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+
           <a
             href="https://github.com/Chang-Shih-Yung/auto-learning"
             target="_blank"
@@ -83,28 +93,30 @@ export default function Navbar() {
             <SheetContent
               side="right"
               className="w-full max-w-xs pt-14 bg-background border-l border-foreground/6"
+              showCloseButton={false}
             >
-              <VisuallyHidden>
-                <SheetTitle>導覽選單</SheetTitle>
-                <SheetDescription>網站主要導覽連結</SheetDescription>
-              </VisuallyHidden>
+              <SheetTitle className="sr-only">導覽選單</SheetTitle>
+              <SheetDescription className="sr-only">網站主要導覽連結</SheetDescription>
               <nav className="flex flex-col gap-1 font-serif">
                 {navLinks.map(({ href, label }) => {
                   const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
                   return (
-                    <SheetPrimitive.Close asChild key={href}>
-                      <Link
-                        href={href}
-                        className={cn(
-                          "px-4 py-3 rounded-md text-base transition-colors text-right",
-                          isActive
-                            ? "text-primary bg-primary/8 font-medium"
-                            : "text-text-2 hover:text-foreground hover:bg-foreground/4"
-                        )}
-                      >
-                        {label}
-                      </Link>
-                    </SheetPrimitive.Close>
+                    <SheetClose
+                      key={href}
+                      render={
+                        <Link
+                          href={href}
+                          className={cn(
+                            "px-4 py-3 rounded-md text-base transition-colors text-right",
+                            isActive
+                              ? "text-primary bg-primary/8 font-medium"
+                              : "text-text-2 hover:text-foreground hover:bg-foreground/4"
+                          )}
+                        />
+                      }
+                    >
+                      {label}
+                    </SheetClose>
                   );
                 })}
               </nav>
