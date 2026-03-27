@@ -1,30 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
-import { parse } from "yaml";
 import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
+import { getSkills, type SkillEntry } from "@/lib/skills";
 
 export const metadata: Metadata = { title: "關於" };
-
-interface SkillEntry {
-  id: string;
-  label: string;
-  category?: string;
-}
-
-interface SkillsData {
-  current_skills: SkillEntry[];
-  learning_now: SkillEntry[];
-  interests: SkillEntry[];
-}
-
-function loadSkills(): SkillsData {
-  const raw = fs.readFileSync(
-    path.join(process.cwd(), "src", "data", "skills.yaml"),
-    "utf-8"
-  );
-  return parse(raw) as SkillsData;
-}
 
 const CATEGORY_LABELS: Record<string, string> = {
   framework: "框架 & 語言",
@@ -59,7 +37,7 @@ function InterestChip({ label }: Readonly<{ label: string }>) {
 }
 
 export default function AboutPage() {
-  const { current_skills, learning_now, interests } = loadSkills();
+  const { current_skills, learning_now, interests } = getSkills();
 
   // Group current skills by category
   const grouped = current_skills.reduce<Record<string, SkillEntry[]>>((acc, s) => {

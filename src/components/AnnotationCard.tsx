@@ -1,46 +1,5 @@
-import fs from "node:fs";
-import path from "node:path";
-import { parse } from "yaml";
 import { ChevronRight } from "lucide-react";
-
-// ──────────────────────────────────────────────
-// Skill taxonomy — loaded from memory/skill-taxonomy.yaml at build time (SSG)
-// ──────────────────────────────────────────────
-
-interface SkillEntry {
-  id: string;
-  label: string;
-  note?: string;
-}
-
-interface TaxonomyData {
-  current_skills?: SkillEntry[];
-  learning_now?: SkillEntry[];
-  interests?: SkillEntry[];
-}
-
-let _skillMap: Record<string, string> | null = null;
-
-function getSkillMap(): Record<string, string> {
-  if (_skillMap) return _skillMap;
-  try {
-    const filePath = path.join(process.cwd(), "src", "data", "skills.yaml");
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const data = parse(raw) as TaxonomyData;
-    const map: Record<string, string> = {};
-    for (const skill of [
-      ...(data.current_skills ?? []),
-      ...(data.learning_now ?? []),
-      ...(data.interests ?? []),
-    ]) {
-      if (skill.id && skill.label) map[skill.id] = skill.label;
-    }
-    _skillMap = map;
-  } catch {
-    _skillMap = {};
-  }
-  return _skillMap;
-}
+import { getSkillMap } from "@/lib/skills";
 
 // ──────────────────────────────────────────────
 // Component

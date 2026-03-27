@@ -1,27 +1,8 @@
-import fs from "node:fs";
-import path from "node:path";
-import { parse } from "yaml";
 import Link from "next/link";
 import { BookOpen, ArrowRight, Cpu } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getAllPosts } from "@/lib/posts";
-
-function getSkillStats() {
-  try {
-    const filePath = path.join(process.cwd(), "src", "data", "skills.yaml");
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const data = parse(raw) as {
-      current_skills?: unknown[];
-      learning_now?: unknown[];
-    };
-    return {
-      total: (data.current_skills?.length ?? 0) + (data.learning_now?.length ?? 0),
-      learningNow: data.learning_now?.length ?? 0,
-    };
-  } catch {
-    return { total: 0, learningNow: 0 };
-  }
-}
+import { getSkillStats } from "@/lib/skills";
 
 export default function HomePage() {
   const allPosts = getAllPosts();
