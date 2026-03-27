@@ -19,27 +19,18 @@ export default function JournalIndexPage() {
 
       {/* Main content */}
       <div className="flex-1 min-w-0">
-        <div className="max-w-[860px]">
-          <h1
-            className="text-2xl font-semibold text-[#1a1a18] mb-2"
-            style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-          >
+        <div className="max-w-215">
+          <h1 className="font-serif text-2xl font-semibold text-foreground mb-2">
             journal
           </h1>
-          <p
-            className="text-sm text-[#5a5856] mb-8"
-            style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-          >
+          <p className="font-serif text-sm text-text-2 mb-8">
             共 {posts.length} 篇紀錄
           </p>
 
           {posts.length === 0 ? (
-            <div
-              className="flex flex-col items-center justify-center py-20 rounded-xl text-center"
-              style={{ background: "#f8f6f3", border: "1px solid rgba(26,26,24,0.06)" }}
-            >
-              <FileText className="h-8 w-8 text-[#767472] mb-3" />
-              <p className="text-sm text-[#767472]">尚無日誌</p>
+            <div className="flex flex-col items-center justify-center py-20 rounded-xl text-center bg-muted border border-foreground/6">
+              <FileText className="h-8 w-8 text-muted-foreground mb-3" />
+              <p className="text-sm text-muted-foreground">尚無日誌</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -47,27 +38,17 @@ export default function JournalIndexPage() {
                 <Link
                   key={post.slug.join("/")}
                   href={`/journal/${post.slug.join("/")}`}
-                  className="group flex items-start gap-4 px-4 py-3.5 rounded-lg transition-colors hover:bg-[rgba(61,107,94,0.04)]"
-                  style={{ border: "1px solid rgba(26,26,24,0.06)" }}
+                  className="group flex items-start gap-4 px-4 py-3.5 rounded-lg border border-foreground/6 transition-colors hover:bg-primary/4"
                 >
-                  <span
-                    className="text-xs font-mono text-[#767472] flex-shrink-0 mt-0.5"
-                    style={{ fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace" }}
-                  >
+                  <span className="font-mono text-xs text-muted-foreground shrink-0 mt-0.5">
                     {post.date}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <h2
-                      className="text-sm font-medium text-[#1a1a18] group-hover:text-[#3d6b5e] transition-colors mb-1 line-clamp-1"
-                      style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-                    >
+                    <h2 className="font-serif text-sm font-medium text-foreground group-hover:text-primary transition-colors mb-1 line-clamp-1">
                       {post.title}
                     </h2>
                     {post.excerpt && (
-                      <p
-                        className="text-xs text-[#767472] line-clamp-1"
-                        style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-                      >
+                      <p className="font-serif text-xs text-muted-foreground line-clamp-1">
                         {post.excerpt}
                       </p>
                     )}

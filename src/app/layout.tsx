@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW" className={cn(notoSerifJP.variable, GeistSans.variable, GeistMono.variable)}>
-      <body className="min-h-screen" style={{ background: "#fdfcfa", color: "#1a1a18" }}>
+      <body className="min-h-screen bg-background text-foreground">
         <Navbar />
         <main className="mx-auto max-w-[1200px] px-4 md:px-6">
           {children}

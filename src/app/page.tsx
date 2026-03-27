@@ -32,33 +32,17 @@ export default function HomePage() {
     <div className="py-16 md:py-24">
       {/* Hero */}
       <section className="mb-16">
-        <div className="max-w-[860px]">
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6"
-            style={{
-              background: "rgba(61, 107, 94, 0.08)",
-              color: "#3d6b5e",
-              border: "1px solid rgba(61, 107, 94, 0.15)",
-            }}
-          >
+        <div className="max-w-215">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6 bg-primary/8 text-primary border border-primary/15">
             <Cpu className="h-3.5 w-3.5" />
             Claude Code 驅動
           </div>
 
-          <h1
-            className="text-4xl md:text-5xl font-semibold tracking-tight mb-6 text-[#1a1a18]"
-            style={{
-              fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif",
-              lineHeight: 1.3,
-            }}
-          >
+          <h1 className="font-serif text-4xl md:text-5xl font-semibold tracking-tight leading-[1.3] mb-6 text-foreground">
             Henry's Learning Hub
           </h1>
 
-          <p
-            className="text-lg md:text-xl text-[#5a5856] mb-8 leading-relaxed max-w-[600px]"
-            style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif", lineHeight: 1.85 }}
-          >
+          <p className="font-serif text-lg md:text-xl text-text-2 mb-8 leading-[1.85] max-w-150">
             用 Claude Code 驅動的自我學習系統，每天自動整理最新技術動態。
             每一篇日誌都是可搜尋的知識節點。
           </p>
@@ -66,8 +50,7 @@ export default function HomePage() {
           <div className="flex items-center gap-3 flex-wrap mb-10">
             <Link
               href="/journal"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-white transition-opacity hover:opacity-90"
-              style={{ background: "#3d6b5e" }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-primary-foreground bg-primary transition-opacity hover:opacity-90"
             >
               <BookOpen className="h-4 w-4" />
               所有日誌
@@ -75,8 +58,7 @@ export default function HomePage() {
             {recentPosts[0] && (
               <Link
                 href={`/journal/${recentPosts[0].slug.join("/")}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-[#3d6b5e] transition-colors hover:bg-[rgba(61,107,94,0.08)]"
-                style={{ border: "1px solid rgba(61,107,94,0.25)" }}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium text-primary border border-primary/25 transition-colors hover:bg-primary/8"
               >
                 今日 journal
                 <ArrowRight className="h-4 w-4" />
@@ -85,20 +67,17 @@ export default function HomePage() {
           </div>
 
           {/* Stats row */}
-          <div
-            className="flex items-center gap-2 text-sm"
-            style={{ fontFamily: "var(--font-geist-mono), 'Source Code Pro', monospace" }}
-          >
-            <span className="text-[#767472]">
-              <span className="text-[#1a1a18] font-medium">{allPosts.length}</span> 篇日誌
+          <div className="flex items-center gap-2 text-sm font-mono">
+            <span className="text-muted-foreground">
+              <span className="text-foreground font-medium">{allPosts.length}</span> 篇日誌
             </span>
-            <span className="text-[rgba(26,26,24,0.2)]">·</span>
-            <span className="text-[#767472]">
-              <span className="text-[#1a1a18] font-medium">{skillTotal}</span> 個技能
+            <span className="text-foreground/20">·</span>
+            <span className="text-muted-foreground">
+              <span className="text-foreground font-medium">{skillTotal}</span> 個技能
             </span>
-            <span className="text-[rgba(26,26,24,0.2)]">·</span>
-            <span className="text-[#767472]">
-              <span className="text-[#1a1a18] font-medium">{learningNow}</span> 個學習中
+            <span className="text-foreground/20">·</span>
+            <span className="text-muted-foreground">
+              <span className="text-foreground font-medium">{learningNow}</span> 個學習中
             </span>
           </div>
         </div>
@@ -106,37 +85,31 @@ export default function HomePage() {
 
       {/* Recent entries */}
       {recentPosts.length > 0 && (
-        <section className="max-w-[860px] mb-8">
+        <section className="max-w-215 mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2
-              className="text-lg font-semibold text-[#1a1a18]"
-              style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
-            >
+            <h2 className="font-serif text-lg font-semibold text-foreground">
               最近更新
             </h2>
             <Link
               href="/journal"
-              className="text-sm text-[#3d6b5e] hover:opacity-80 transition-opacity inline-flex items-center gap-1"
+              className="text-sm text-primary hover:opacity-80 transition-opacity inline-flex items-center gap-1"
             >
               查看全部
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          <div
-            className="rounded-xl overflow-hidden"
-            style={{ border: "1px solid rgba(26,26,24,0.06)" }}
-          >
+          <div className="rounded-xl overflow-hidden border border-foreground/6">
             <table className="w-full">
               <thead>
-                <tr style={{ background: "#f8f6f3", borderBottom: "1px solid rgba(26,26,24,0.08)" }}>
+                <tr className="bg-muted border-b border-border">
                   <th
-                    className="px-4 py-3 text-left text-xs font-medium text-[#767472] uppercase tracking-wider"
+                    className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                     style={{ width: "160px" }}
                   >
                     日期
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-[#767472] uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     主題
                   </th>
                 </tr>
@@ -145,27 +118,15 @@ export default function HomePage() {
                 {recentPosts.map((post, i) => (
                   <tr
                     key={post.slug.join("/")}
-                    className="group transition-colors hover:bg-[rgba(61,107,94,0.04)]"
-                    style={{
-                      borderBottom:
-                        i < recentPosts.length - 1
-                          ? "1px solid rgba(26,26,24,0.06)"
-                          : "none",
-                    }}
+                    className={`group transition-colors hover:bg-primary/4 ${i < recentPosts.length - 1 ? "border-b border-foreground/6" : ""}`}
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span
-                          className="text-xs font-mono text-[#767472]"
-                          style={{ fontFamily: "var(--font-geist-mono), 'Source Code Pro', monospace" }}
-                        >
+                        <span className="font-mono text-xs text-muted-foreground">
                           {post.date}
                         </span>
                         {post.date === today && (
-                          <span
-                            className="px-1.5 py-0.5 text-[10px] rounded font-medium"
-                            style={{ background: "rgba(61,107,94,0.1)", color: "#3d6b5e" }}
-                          >
+                          <span className="px-1.5 py-0.5 text-[10px] rounded font-medium bg-primary/10 text-primary">
                             今天
                           </span>
                         )}
@@ -174,8 +135,7 @@ export default function HomePage() {
                     <td className="px-4 py-3">
                       <Link
                         href={`/journal/${post.slug.join("/")}`}
-                        className="text-sm text-[#1a1a18] group-hover:text-[#3d6b5e] transition-colors"
-                        style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
+                        className="font-serif text-sm text-foreground group-hover:text-primary transition-colors"
                       >
                         {post.title}
                       </Link>
@@ -189,16 +149,9 @@ export default function HomePage() {
       )}
 
       {/* Blockquote — always visible */}
-      <div className="max-w-[860px]">
-        <blockquote
-          className="pl-4 text-sm text-[#5a5856] italic"
-          style={{
-            borderLeft: "3px solid #3d6b5e",
-            fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif",
-            lineHeight: 1.85,
-          }}
-        >
-          <strong className="text-[#1a1a18]">Context Window = RAM，Filesystem = Disk</strong>
+      <div className="max-w-215">
+        <blockquote className="font-serif pl-4 text-sm text-text-2 italic leading-[1.85] border-l-[3px] border-primary">
+          <strong className="text-foreground">Context Window = RAM，Filesystem = Disk</strong>
           <br />
           重要的東西要寫到磁碟，這個網站就是我的磁碟。
         </blockquote>

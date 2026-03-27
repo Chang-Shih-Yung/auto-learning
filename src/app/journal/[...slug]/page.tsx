@@ -26,7 +26,7 @@ interface PageProps {
 const mdxComponents = {
   AnnotationCard,
   table: ({ children, ...props }: React.HTMLAttributes<HTMLTableElement>) => (
-    <div className="my-6 rounded-md border border-[rgba(26,26,24,0.08)] overflow-hidden">
+    <div className="my-6 rounded-md border border-border overflow-hidden">
       <Table {...props}>{children}</Table>
     </div>
   ),
@@ -58,7 +58,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return { title: post.title };
 }
 
-export default function JournalPostPage({ params }: PageProps) {
+export default function JournalPostPage({ params }: Readonly<PageProps>) {
   const post = getPost(params.slug);
   if (!post) notFound();
 
@@ -75,22 +75,18 @@ export default function JournalPostPage({ params }: PageProps) {
       <Sidebar tree={tree} />
 
       <article className="flex-1 min-w-0">
-        <div className="max-w-[860px]">
+        <div className="max-w-215">
           <Link
             href="/journal"
-            className="inline-flex items-center gap-1.5 text-xs text-[#767472] hover:text-[#3d6b5e] transition-colors mb-6"
-            style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors mb-6"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
             journal
           </Link>
 
           <div className="flex items-center gap-1.5 mb-4">
-            <CalendarDays className="h-3.5 w-3.5 text-[#767472]" />
-            <span
-              className="text-xs text-[#767472]"
-              style={{ fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace" }}
-            >
+            <CalendarDays className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="font-mono text-xs text-muted-foreground">
               {post.date}
             </span>
           </div>
@@ -105,17 +101,13 @@ export default function JournalPostPage({ params }: PageProps) {
 
           {/* Mobile prev/next — hidden on md+ (sidebar handles navigation there) */}
           {(olderPost || newerPost) && (
-            <div
-              className="flex items-center justify-between mt-10 pt-6 md:hidden"
-              style={{ borderTop: "1px solid rgba(26,26,24,0.08)" }}
-            >
+            <div className="flex items-center justify-between mt-10 pt-6 border-t border-border md:hidden">
               {olderPost ? (
                 <Link
                   href={`/journal/${olderPost.slug.join("/")}`}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#767472] hover:text-[#3d6b5e] transition-colors"
-                  style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
-                  <ChevronLeft className="h-3.5 w-3.5 flex-shrink-0" />
+                  <ChevronLeft className="h-3.5 w-3.5 shrink-0" />
                   {olderPost.date}
                 </Link>
               ) : (
@@ -124,11 +116,10 @@ export default function JournalPostPage({ params }: PageProps) {
               {newerPost ? (
                 <Link
                   href={`/journal/${newerPost.slug.join("/")}`}
-                  className="inline-flex items-center gap-1.5 text-xs text-[#767472] hover:text-[#3d6b5e] transition-colors"
-                  style={{ fontFamily: "var(--font-noto-serif-jp), 'Noto Serif JP', serif" }}
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
                   {newerPost.date}
-                  <ChevronRight className="h-3.5 w-3.5 flex-shrink-0" />
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0" />
                 </Link>
               ) : (
                 <span />

@@ -43,7 +43,7 @@
   --color-bg-soft:           var(--muted);
   --color-bg-muted:          var(--secondary);
   --color-text-1:            var(--foreground);
-  --color-text-2:            var(--muted-foreground);
+  --color-text-2:            var(--text-2);
   --color-divider:           var(--border);
 
   /* ── Radius scale (Tailwind v4 derives from --radius) ── */
@@ -102,6 +102,9 @@
   --annotation-soft:   oklch(59.0% 0.129 58 / 8%);
   --annotation-border: oklch(59.0% 0.129 58 / 25%);
 
+  /* Text-2 — secondary body text (#5a5856), distinct from text-3 (--muted-foreground = #767472) */
+  --text-2: oklch(37.5% 0.007 55);   /* #5a5856 */
+
   /* Sidebar (unused for now but keeps shadcn components happy) */
   --sidebar:            var(--background);
   --sidebar-foreground: var(--foreground);
@@ -157,6 +160,8 @@
   --annotation:        oklch(66.5% 0.133 58);          /* #d4943a */
   --annotation-soft:   oklch(66.5% 0.133 58 / 12%);
   --annotation-border: oklch(66.5% 0.133 58 / 30%);
+
+  --text-2: oklch(66.5% 0.006 55);   /* #a09e9b — secondary body text dark */
 
   --sidebar:            var(--background);
   --sidebar-foreground: var(--foreground);

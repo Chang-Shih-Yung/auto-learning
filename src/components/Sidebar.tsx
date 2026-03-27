@@ -26,7 +26,7 @@ const MONTH_NAMES: Record<string, string> = {
   "12": "12月",
 };
 
-export default function Sidebar({ tree }: SidebarProps) {
+export default function Sidebar({ tree }: Readonly<SidebarProps>) {
   const pathname = usePathname();
 
   // Default expand all years and months
@@ -51,7 +51,7 @@ export default function Sidebar({ tree }: SidebarProps) {
       <ScrollArea className="h-full">
         <div className="py-4 pr-4">
           <div className="mb-3 px-2">
-            <span className="text-xs font-medium text-[#767472] uppercase tracking-wider">
+            <span className="font-mono text-xs font-medium text-muted-foreground uppercase tracking-wider">
               學習日誌
             </span>
           </div>
@@ -66,13 +66,13 @@ export default function Sidebar({ tree }: SidebarProps) {
                   {/* Year row */}
                   <button
                     onClick={() => toggle(year)}
-                    className="flex w-full items-center px-2 py-1.5 rounded-md text-sm font-medium text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)] transition-colors"
+                    className="flex w-full items-center px-2 py-1.5 rounded-md text-sm font-medium text-foreground hover:bg-foreground/4 transition-colors"
                   >
                     {year}年
                   </button>
 
                   {isYearOpen && (
-                    <div className="ml-3 border-l border-[rgba(26,26,24,0.08)] pl-2">
+                    <div className="ml-3 border-l border-border pl-2">
                       {months.map((month) => {
                         const monthKey = `${year}-${month}`;
                         const isMonthOpen = expanded[monthKey] ?? true;
@@ -83,13 +83,13 @@ export default function Sidebar({ tree }: SidebarProps) {
                             {/* Month row */}
                             <button
                               onClick={() => toggle(monthKey)}
-                              className="flex w-full items-center px-2 py-1 rounded-md text-sm text-[#5a5856] hover:text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)] transition-colors"
+                              className="flex w-full items-center px-2 py-1 rounded-md text-sm text-text-2 hover:text-foreground hover:bg-foreground/4 transition-colors"
                             >
                               {MONTH_NAMES[month] || month + "月"}
                             </button>
 
                             {isMonthOpen && (
-                              <div className="ml-3 border-l border-[rgba(26,26,24,0.06)] pl-2">
+                              <div className="ml-3 border-l border-border/60 pl-2">
                                 {posts.map((post) => {
                                   const href = `/journal/${post.slug.join("/")}`;
                                   const isActive = pathname === href;
@@ -101,8 +101,8 @@ export default function Sidebar({ tree }: SidebarProps) {
                                       className={cn(
                                         "flex items-center px-2 py-1.5 rounded-md text-xs transition-colors leading-snug",
                                         isActive
-                                          ? "text-[#3d6b5e] bg-[rgba(61,107,94,0.08)] font-medium"
-                                          : "text-[#5a5856] hover:text-[#1a1a18] hover:bg-[rgba(26,26,24,0.04)]"
+                                          ? "text-primary bg-primary/8 font-medium"
+                                          : "text-text-2 hover:text-foreground hover:bg-foreground/4"
                                       )}
                                     >
                                       <span className="truncate">{post.day}</span>

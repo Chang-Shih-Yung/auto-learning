@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 import { parse } from "yaml";
 
 // ──────────────────────────────────────────────
@@ -68,71 +68,44 @@ export default function AnnotationCard({
     skills.length > 0 ? skills.map((id) => skillMap[id] ?? id) : null;
 
   return (
-    // `group` enables group-open:* variants on children
     <details
       open={defaultOpen}
-      className="group my-4 overflow-hidden rounded-md"
-      style={{
-        border: "1px solid var(--color-annotation-border, rgba(191,122,38,0.25))",
-        background: "#faf9f7",
-      }}
+      className="group my-4 overflow-hidden rounded-md border border-annotation-border bg-muted"
     >
       {/* ── Toggle header ── */}
-      <summary
-        className="flex cursor-pointer select-none items-center gap-2 px-4 py-2.5 text-xs text-[#5a5856] transition-colors [&::-webkit-details-marker]:hidden"
-        style={{
-          borderTop: "2px solid var(--color-annotation, #bf7a26)",
-          background: "var(--color-annotation-soft, rgba(191,122,38,0.08))",
-          listStyle: "none",
-        }}
-      >
+      <summary className="flex cursor-pointer select-none items-center gap-2 border-t-2 border-t-annotation bg-annotation-soft px-4 py-2.5 text-xs text-text-2 [list-style:none] [&::-webkit-details-marker]:hidden">
         {/* Chevron — rotates 90° when open */}
         <span className="inline-block text-[10px] transition-transform duration-200 group-open:rotate-90">
           ▶
         </span>
 
-        <span
-          className="tracking-wide"
-          style={{
-            fontFamily: "var(--font-mono, var(--font-geist-mono), 'Source Code Pro', monospace)",
-            fontSize: "11px",
-            letterSpacing: "0.05em",
-            color: "var(--color-annotation, #bf7a26)",
-          }}
-        >
+        <span className="font-mono text-[11px] tracking-[0.05em] text-annotation">
           Henry's Take
         </span>
 
-        <span className="text-[#c0beba]">·</span>
-        <span className="text-[#767472]">相關度 {score}/5</span>
+        <span className="text-muted-foreground/60">·</span>
+        <span className="text-muted-foreground">相關度 {score}/5</span>
 
         {/* Relevance pip bar */}
         <span className="ml-auto flex items-center gap-0.5">
-          {Array.from({ length: 5 }).map((_, i) => (
+          {([1, 2, 3, 4, 5] as const).map((pip) => (
             <span
-              key={i}
-              className="inline-block h-2 w-2 rounded-sm"
-              style={{
-                background:
-                  i < score ? "var(--color-annotation, #bf7a26)" : "var(--color-border, rgba(26,26,24,0.10))",
-              }}
+              key={pip}
+              className={`inline-block h-2 w-2 rounded-sm ${pip <= score ? "bg-annotation" : "bg-border"}`}
             />
           ))}
         </span>
       </summary>
 
       {/* ── Card body ── */}
-      <div
-        className="grid grid-cols-1 md:grid-cols-2 gap-3 border-t px-4 py-3 text-sm"
-        style={{ borderColor: "rgba(26,26,24,0.08)" }}
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 border-t border-border px-4 py-3 text-sm">
         {/* Matched skills */}
         <div className="flex flex-col gap-1.5">
           <Label>匹配技能</Label>
           <div className="flex flex-wrap gap-1">
             {skillLabels ? (
-              skillLabels.map((label, i) => (
-                <Chip key={i} filled>
+              skillLabels.map((label) => (
+                <Chip key={label} filled>
                   {label}
                 </Chip>
               ))
@@ -146,7 +119,7 @@ export default function AnnotationCard({
         {connection && (
           <div className="flex flex-col gap-1.5">
             <Label>與你的關聯</Label>
-            <p className="m-0 text-[12px] leading-relaxed text-[#5a5856]">
+            <p className="m-0 text-[12px] leading-relaxed text-text-2">
               {connection}
             </p>
           </div>
@@ -159,7 +132,7 @@ export default function AnnotationCard({
             <div className="flex flex-col gap-1">
               <Chip outline>{adjacent}</Chip>
               {adjacentNote && (
-                <p className="m-0 text-[12px] leading-relaxed text-[#5a5856]">
+                <p className="m-0 text-[12px] leading-relaxed text-text-2">
                   {adjacentNote}
                 </p>
               )}
@@ -177,15 +150,7 @@ export default function AnnotationCard({
 
 function Label({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <span
-      className="text-[#767472]"
-      style={{
-        fontFamily: "var(--font-geist-mono), 'Geist Mono', monospace",
-        fontSize: "10px",
-        letterSpacing: "0.07em",
-        textTransform: "uppercase",
-      }}
-    >
+    <span className="font-mono text-[10px] tracking-[0.07em] uppercase text-muted-foreground">
       {children}
     </span>
   );
@@ -202,31 +167,10 @@ function Chip({
 }>) {
   const base = "inline-block self-start rounded px-2 py-0.5 text-[11px]";
   if (filled) {
-    return (
-      <span className={base} style={{ background: "#1a1a18", color: "#fdfcfa" }}>
-        {children}
-      </span>
-    );
+    return <span className={`${base} bg-foreground text-background`}>{children}</span>;
   }
   if (outline) {
-    return (
-      <span
-        className={base}
-        style={{ border: "1px solid #1a1a18", color: "#1a1a18" }}
-      >
-        {children}
-      </span>
-    );
+    return <span className={`${base} border border-foreground text-foreground`}>{children}</span>;
   }
-  return (
-    <span
-      className={base}
-      style={{
-        border: "1px solid rgba(26,26,24,0.15)",
-        color: "#767472",
-      }}
-    >
-      {children}
-    </span>
-  );
+  return <span className={`${base} border border-border text-muted-foreground`}>{children}</span>;
 }
