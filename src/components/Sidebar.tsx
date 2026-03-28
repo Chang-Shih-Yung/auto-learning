@@ -10,6 +10,8 @@ import type { JournalTree } from "@/lib/posts";
 
 interface SidebarProps {
   tree: JournalTree;
+  label?: string;
+  basePath?: string;
 }
 
 const MONTH_NAMES: Record<string, string> = {
@@ -27,8 +29,8 @@ const MONTH_NAMES: Record<string, string> = {
   "12": "12月",
 };
 
-function PostLink({ post, pathname }: Readonly<{ post: JournalTree[string][string][number]; pathname: string }>) {
-  const href = `/journal/${post.slug.join("/")}`;
+function PostLink({ post, pathname, basePath }: Readonly<{ post: JournalTree[string][string][number]; pathname: string; basePath: string }>) {
+  const href = `${basePath}/${post.slug.join("/")}`;
   const isActive = pathname === href;
   return (
     <Link
@@ -53,6 +55,7 @@ function MonthSection({
   isOpen,
   onToggle,
   pathname,
+  basePath,
 }: Readonly<{
   year: string;
   month: string;
@@ -60,6 +63,7 @@ function MonthSection({
   isOpen: boolean;
   onToggle: () => void;
   pathname: string;
+  basePath: string;
 }>) {
   const monthKey = `${year}-${month}`;
   return (
@@ -74,7 +78,7 @@ function MonthSection({
       {isOpen && (
         <div className="ml-3 border-l border-border/60 pl-2">
           {posts.map((post) => (
-            <PostLink key={post.slug.join("/")} post={post} pathname={pathname} />
+            <PostLink key={post.slug.join("/")} post={post} pathname={pathname} basePath={basePath} />
           ))}
         </div>
       )}
@@ -82,7 +86,7 @@ function MonthSection({
   );
 }
 
-export default function Sidebar({ tree }: Readonly<SidebarProps>) {
+export default function Sidebar({ tree, label = "學習日誌", basePath = "/journal" }: Readonly<SidebarProps>) {
   const pathname = usePathname();
 
   // Lazy initializer — runs once on mount (client-side), avoids hydration mismatch
@@ -108,7 +112,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
         <div className="py-4 pr-4">
           <div className="mb-3 px-2">
             <span className="font-mono text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              學習日誌
+              {label}
             </span>
           </div>
 
@@ -139,6 +143,7 @@ export default function Sidebar({ tree }: Readonly<SidebarProps>) {
                           isOpen={expanded[`${year}-${month}`] ?? false}
                           onToggle={() => toggle(`${year}-${month}`)}
                           pathname={pathname}
+                          basePath={basePath}
                         />
                       ))}
                     </div>
