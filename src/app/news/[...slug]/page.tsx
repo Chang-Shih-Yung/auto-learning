@@ -59,9 +59,10 @@ export default function NewsPostPage({ params }: Readonly<PageProps>) {
   const post = getNews(params.slug);
   if (!post) notFound();
 
-  const tree = getNewsTree();
-
+  // Fetch once — shared by tree (sidebar) and prev/next
   const allPosts = getAllNews();
+  const tree = getNewsTree(allPosts);
+
   const currentIndex = allPosts.findIndex((p) => p.slug.join("/") === post.slug.join("/"));
   const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
   const olderPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;

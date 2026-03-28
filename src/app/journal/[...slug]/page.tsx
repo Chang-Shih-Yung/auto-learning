@@ -62,10 +62,10 @@ export default function JournalPostPage({ params }: Readonly<PageProps>) {
   const post = getPost(params.slug);
   if (!post) notFound();
 
-  const tree = getJournalTree();
-
-  // Prev / next for mobile navigation (posts sorted desc: index 0 = newest)
+  // Fetch once — shared by tree (sidebar) and prev/next
   const allPosts = getAllPosts();
+  const tree = getJournalTree(allPosts);
+
   const currentIndex = allPosts.findIndex((p) => p.slug.join("/") === post.slug.join("/"));
   const newerPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
   const olderPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;

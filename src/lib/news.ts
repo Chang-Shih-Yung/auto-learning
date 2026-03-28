@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import type { JournalTree } from "@/lib/posts";
+import { walkDir } from "@/lib/fs";
 
 const NEWS_DIR = path.join(process.cwd(), "news");
 
@@ -18,21 +19,6 @@ export interface NewsMeta {
 
 export interface NewsPost extends NewsMeta {
   content: string;
-}
-
-function walkDir(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  const files: string[] = [];
-  for (const entry of entries) {
-    const fullPath = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...walkDir(fullPath));
-    } else if (entry.name.endsWith(".md") && entry.name !== "index.md") {
-      files.push(fullPath);
-    }
-  }
-  return files;
 }
 
 export function getAllNews(): NewsMeta[] {
@@ -117,11 +103,11 @@ export function getNews(slug: string[]): NewsPost | null {
   };
 }
 
-export function getNewsTree(): JournalTree {
-  const posts = getAllNews();
+export function getNewsTree(posts?: NewsMeta[]): JournalTree {
+  const allPosts = posts ?? getAllNews();
   const tree: JournalTree = {};
 
-  for (const post of posts) {
+  for (const post of allPosts) {
     if (!tree[post.year]) tree[post.year] = {};
     if (!tree[post.year][post.month]) tree[post.year][post.month] = [];
     tree[post.year][post.month].push(post);
