@@ -1,0 +1,34 @@
+# memory/domain-rotation-log.yaml
+# 用途：news session 的跨域領域輪換
+# 由 memory/news-context.md Step 3 維護
+#
+# 輪換邏輯：
+#   - current_domain = 本次 news run 要搜尋的領域
+#   - 搜尋完畢後，將 current_domain 加入 history（保留最近 7 筆）
+#   - 從 domains 清單中，從當前位置往後找（到底則循環），選出第一個不在 history 的領域
+#   - 更新 current_domain 為該領域，寫回此檔案
+#   - history 視窗 = 7 = N-1（共 8 個領域，確保永遠有 1 個可用）
+
+current_domain: finance  # 2026-03-28 更新（design_industry 已入 history）
+
+domains:
+  - id: healthcare
+    label: "AI 醫療 / 診斷 / 藥物研發 / 基因體學"
+  - id: design_industry
+    label: "建築設計 / 工業設計 / 時尚 AI 應用"
+  - id: finance
+    label: "AI 風控 / 量化交易 / 合規自動化"
+  - id: climate
+    label: "AI 氣候模型 / 能源優化 / 碳排追蹤"
+  - id: biology
+    label: "蛋白質折疊 / 序列分析 / 合成生物學"
+  - id: education
+    label: "AI 個人化學習 / 學習分析 / 自動出題"
+  - id: legal
+    label: "AI 合規 / 合同分析 / 法律研究自動化"
+  - id: manufacturing
+    label: "預測維護 / 視覺檢測 / 機器人協作"
+
+history:
+  - design_industry  # 2026-03-28
+  - healthcare  # 2026-03-28

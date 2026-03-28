@@ -1,0 +1,79 @@
+# memory/sources.yaml
+# Claude 執行 session 時，learning-context.md 步驟 1 會明確呼叫 Read 工具讀取本檔案
+
+primary_sources:
+  # weight: high = 每次最多取 5 筆；medium = 最多取 2 筆
+  # prefer: 關鍵字提示，Claude 優先挑選標題 / 內容包含這些詞的項目（軟性排序，非硬過濾）
+
+  - name: Hacker News Top Stories
+    url: https://hn.algolia.com/api/v1/search?tags=story&numericFilters=points>50&hitsPerPage=20
+    weight: high
+    prefer: ["Show HN", "Ask HN", "open source", "release", "library", "tool"]
+
+  - name: Hacker News AI Discussion
+    url: https://hn.algolia.com/api/v1/search?tags=story&query=AI+LLM+agent&numericFilters=points>30&hitsPerPage=10
+    weight: medium
+    prefer: ["如何用", "踩坑", "比較", "production", "實作"]
+
+  # 注意：GitHub Trending 無官方 JSON API，需要 WebFetch 抓 HTML 解析
+  # 若 WebFetch 回傳解析困難，可改用 WebSearch 搜「github trending AI today」
+  - name: GitHub Trending (daily)
+    url: https://github.com/trending?since=daily&spoken_language_code=en
+    weight: high
+    prefer: ["AI", "LLM", "frontend", "Next.js", "tool", "CLI"]
+    note: "HTML page — Claude 讀取後擷取 repo 名稱、star 數、描述即可，不需要完整解析"
+
+secondary_sources:
+  - name: GitHub Releases (tracked repos)
+    # 用 WebFetch 抓各 repo 的 /releases/latest JSON
+    repos:
+      - vercel/next.js
+      - anthropics/anthropic-sdk-python
+      - anthropics/claude-code
+      - shadcn-ui/ui
+    weight: medium
+
+  # ── 實踐者發現視角（新增）────────────────────────────────────────
+  - name: ProductHunt (AI / Dev Tools)
+    # ProductHunt 封鎖 headless fetch，以 WebSearch 為主要路徑
+    weight: medium
+    prefer: ["developer tool", "Mac app", "AI assistant", "productivity", "open source"]
+    fetch_strategy: "WebSearch: \"site:producthunt.com AI developer tool 2026\" 取前 3 筆"
+
+  - name: Reddit r/webdev
+    url: https://www.reddit.com/r/webdev/top/.json?t=day&limit=10
+    weight: medium
+    prefer: ["tool", "release", "just built", "show off", "tip"]
+    fallback: "WebSearch: \"site:reddit.com/r/webdev top posts today\""
+
+  - name: Reddit r/MacApps
+    url: https://www.reddit.com/r/macapps/top/.json?t=day&limit=10
+    weight: medium
+    prefer: ["AI", "productivity", "developer", "free", "open source"]
+    fallback: "WebSearch: \"site:reddit.com/r/macapps top posts today\""
+    note: "兩個 Reddit 來源需間隔呼叫（先 r/webdev 完成後再抓 r/macapps），避免 rate limit"
+
+  - name: dev.to (Top AI / Webdev)
+    url: https://dev.to/api/articles?tag=ai&top=1&per_page=8
+    weight: medium
+    prefer: ["tutorial", "just shipped", "how I built", "tool review"]
+
+content_filters:
+  include:
+    - library / tool release 附有 repo 連結
+    - open source 專案首次發布
+    - 技術設計決策討論（不是公告，是爭論）
+    - Show HN 附 live demo 或 repo
+    - 有人分享「我用了 X 之後發現...」的第一手經驗
+  exclude:
+    - 純 press release（沒有 repo / code / demo）
+    - 融資公告
+    - 政策 / 安全聲明
+    - vendor blog 沒有技術實質內容
+    - 只出現在 PRNewswire / BusinessWire 的內容
+
+fallback:
+  # 若 primary_sources 全部抓取失敗或回傳空結果
+  - 改用 WebSearch 搜尋以下 query：
+    - "site:github.com release AI tool today"
+    - "hacker news top AI discussion today"

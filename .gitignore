@@ -15,4 +15,9 @@ npm-debug.log*
 .claude/skills/gstack/node_modules/
 .claude/skills/gstack/.agents/
 .gstack/
-memory/
+memory/*
+!memory/seen-tools.yaml
+!memory/domain-rotation-log.yaml
+!memory/learning-context.md
+!memory/news-context.md
+!memory/sources.yaml

@@ -1,0 +1,191 @@
+# 學習 Context 追蹤
+
+> 這個檔案是每次 session 的方向指引，同時追蹤 Henry 目前的學習狀態。每次 session 結束後更新。
+
+---
+
+## 核心工作流
+
+每次 session 依照以下步驟執行：
+
+   **幂等性檢查（每次 run 第一步）：**
+   確認今天的 journal 檔案 `journal/YYYY/MM/YYYY-MM-DD.md` 是否已存在。
+   若已存在，代表今日 session 已執行過，**跳過 Steps 1–4，直接進入 Step 5**。
+
+1. **用 Read 工具讀取 `memory/sources.yaml`**，然後依照以下順序抓取（WebFetch / WebSearch）：
+   1. GitHub Trending（weight: high，最多取 5 筆）
+   2. HN Top Stories（weight: high，最多取 5 筆）
+   3. HN AI Discussion（weight: medium，最多取 2 筆）
+   4. GitHub Releases tracked repos（weight: medium，每個取最新 1 筆）
+   5. ProductHunt AI/Dev（WebSearch 為主，最多取 3 筆）
+   6. Reddit r/webdev top（先抓，最多取 2 筆）
+   7. Reddit r/MacApps top（r/webdev 完成後再抓，最多取 2 筆，避免 rate limit）
+   8. dev.to AI/Webdev top（最多取 2 筆）
+
+   套用 content_filters：優先選有 repo / demo / 實際使用的內容，排除純公告。
+   若任何來源抓取失敗，改用 fallback 中定義的 WebSearch query。
+
+   **去重過濾（每次 run 必做）：**
+   用 Read 工具讀取 `memory/seen-tools.yaml`，取得 `seen` 清單。
+   對每個候選條目，識別其工具名稱與版本（無版本號則 version = `any`）。
+   若在 `seen` 中找到相同 tool + version，且 `date` 距今 **14 天以內**，跳過此條目，不進入 Step 2。
+   超過 14 天或不在清單中的條目，全部通過。
+   若 `seen-tools.yaml` 不存在，視為空清單，全部通過。
+2. **整理與消化** — 分兩個子步驟：
+
+   **2a. 入選過濾**（先判斷要不要寫，再動筆）
+   先用 Read 工具讀取 `memory/user-profile.md` 取得 Henry 的職涯背景與專案脈絡。
+   對每個候選條目，用這個框架判斷是否入選：「因為 Henry 已經會 X，這件事讓他可以 Y」（X 必須對應 Henry 的實際技能或專案經驗）。
+   - 無法套進框架的條目（即無法連結到 Henry 的技能樹或工作流）→ **直接跳過，不寫**
+   - 官方公告可以入選，但必須能轉換成應用層語言；純宣傳、純政策敘述一律排除
+   - 找不到具體數字的條目 → **直接跳過，不寫**
+
+   **2b. 寫作格式**（通過 2a 的條目才進入此步）
+   每篇文章用**三段結構**寫，缺任何一段就不收：
+
+   - **第一段：你能做什麼**
+     從使用者視角出發，說明用你的具體設備 / 場景能做到什麼。必須有具體數字（記憶體大小、速度倍數、token 數、時間等）。禁用「開發者可以…」，換成「你可以…」或指名設備/職業。
+
+   - **第二段：背後怎麼運作**
+     用一段話解釋技術機制——讓讀者理解「為什麼這件事現在變得可能」。不需要教學，只需要說清楚原理讓數字有說服力。
+
+   - **第三段：這改變了什麼**
+     Before → After 的世界觀轉換。「以前需要 X（工作站 / 訂閱 / 上傳資料）→ 現在 Y（MacBook / 免費 / 本地跑）」。結尾可以是使用者感受（風扇不狂轉、資料不外洩）。
+
+   篇數不設上限，以質量為門檻。
+
+   對標品質範例：
+   > Atomic Chat 內建 Google TurboQuant 技術，讓你在 16GB 的 Mac 上跑 Qwen3.5-9B 這種等級的模型，context window 直接開到 50,000 tokens——同樣的記憶體，換來 3 倍大的上下文、3 倍快的處理速度。20,000 字的文件，幾秒內摘要完畢，風扇不狂轉、記憶體不爆表。
+   >
+   > 這背後是 Google 的技術在撐腰。Google TurboQuant 把 KV cache 壓縮 6 倍、推理速度提升 8 倍，量化到 3-bit 卻零精度損失——以前要跑這種規模的 AI，你需要一台配備大顯卡的工作站，或是花錢租 Google 的雲端算力。
+   >
+   > 現在，同樣來自 Google 的技術，直接跑在你的 MacBook 上。一次下載，永久免費，所有運算留在你的機器上，沒有訂閱、沒有雲端、沒有資料外洩的風險。
+3. **讀取技能分類表並加上個人化標註** — 步驟如下：
+   a. 使用 Read 工具讀取 `memory/skill-taxonomy.yaml`（不是 user-profile.md）
+   b. 對每篇文章，依照下方的相關度評分標準（1–5）打分
+   c. 找出匹配的技能 ID（用 `id` 欄位，例如 `"figma"` 而非 `"Figma"`）
+   d. 提出一個延伸探索方向（`adjacent`），加上一句說明（`adjacentNote`）
+   e. 寫一句說明這篇文章如何連結到 Henry 既有知識的句子（`connection`）
+   f. 在每篇文章內容結束後插入 `<AnnotationCard />` 區塊（格式見下方）
+4. **寫進 journal** — 檔案路徑：`journal/YYYY/MM/YYYY-MM-DD.md`
+   - 先執行 `mkdir -p journal/YYYY/MM` 確保資料夾存在
+   - 路徑用 `journal/`，不是 `學習日誌/`
+   - 每篇文章後插入 AnnotationCard（格式見下方）
+   - 最後必須有「今日總結」區塊，整合當天的洞察與應用點
+   - **寫完後立即用 Read 工具重新讀取剛寫入的檔案，逐一確認每個 `<AnnotationCard />` 的 `{` `}` 對稱、字串閉合，確認無誤才繼續**（MDX 解析錯誤會中斷 Vercel build）
+   - 將本次實際寫進日誌的每個工具記入 `memory/seen-tools.yaml`：
+     在 `seen` 清單開頭插入新條目（格式：`tool` / `version` / `date: YYYY-MM-DD`）。
+     工具名稱規則：**全小寫、kebab-case**（例：`claude-code`、`next.js`、`mistral-small-4`），每次 session 必須一致，否則去重失效。
+     同時刪除所有 `date` 距今超過 14 天的舊條目。
+   - 然後執行：
+     ```bash
+     git add journal/ memory/seen-tools.yaml
+     git commit -m "daily: YYYY-MM-DD AI tech digest"
+     git push origin main
+     ```
+5. **自我優化迴圈** — session 結束後，只允許修改以下區塊：
+   - `memory/learning-context.md` 的「近期討論紀錄」和「重要洞察記錄」
+   - `memory/skill-taxonomy.yaml`（技能升級，例如 SQL 從 `learning_now` 畢業到 `current_skills`）
+   - `memory/user-profile.md`（技能樹實質更新，需 Henry 確認）
+
+   **🔒 禁止修改：** Steps 1–6 的核心工作流、AnnotationCard 格式、評分標準、任何「規則」性描述。這些段落的任何修改都必須由 Henry 明確指示，Claude 不得自行更動。
+
+   **重要：** 每次修改 `memory/skill-taxonomy.yaml` 後，必須同步更新 `src/data/skills.yaml`（只同步 `id` + `label`，不含 `note`）。前者是私有完整版（gitignored），後者是網站讀取的公開版（已 commit）。
+
+   自我優化修改完成後，執行：
+   ```bash
+   git add memory/learning-context.md memory/user-profile.md memory/skill-taxonomy.yaml
+   git commit -m "memory: YYYY-MM-DD session self-update"
+   git push origin main
+   ```
+
+6. **AI 世界新聞生成** — journal 完成後，讀取 `memory/news-context.md`，按照其步驟獨立生成今天的跨域 AI 新聞條目，寫進 `news/`，單獨 commit 並 push。
+
+---
+
+## 相關度評分標準（1–5）
+
+在 prompt 中使用這個標準，確保每次 session 的評分一致：
+
+| 分數 | 意義 |
+|------|------|
+| 1 | 無關領域 — 與 Henry 的技能或興趣無實質關聯 |
+| 2 | 邊緣相關 — 同樣是 AI/前端產業，但無直接技能重疊 |
+| 3 | 相鄰 — 涉及 Henry 正在學習的技術（SQL、containers）或可應用的概念 |
+| 4 | 直接相關 — 觸及現有技能（Angular、Vue、Figma、ECharts、CI/CD、AI agents） |
+| 5 | 核心命中 — 直接推進 Henry 正在主攻的專案目標或技能 |
+
+---
+
+## AnnotationCard MDX 格式
+
+每篇文章結束後（`---` 分隔線之前）插入以下格式。**所有含有中文的字串屬性必須使用 `={"..."}` 語法**，不可使用單引號或裸字串，避免 MDX 解析錯誤。
+
+```mdx
+<AnnotationCard
+  relevance={4}
+  skills={["figma", "angular", "ai-agents"]}
+  adjacent="Claude MCP + Figma API"
+  adjacentNote={"你已懂 Figma → JSON → Token 流程。下一步：研究 Figma MCP plugin，讓 Claude 直接讀 node-id 並輸出 Angular component。"}
+  connection={"Claude Computer Use 直接打中你的 design-to-code 工作流——未來可能省去 Figma 手動 export 這一步。"}
+/>
+```
+
+**屬性規則：**
+- `relevance`：數字 1–5，依上方標準
+- `skills`：使用 `skill-taxonomy.yaml` 中的 `id` 欄位（小寫、連字號格式，如 `"figma"`、`"ai-agents"`）
+- `adjacent`：一個延伸技能名稱（可以是 YAML 以外的新技能）
+- `adjacentNote`：一句話，說明從 Henry 既有知識出發，怎麼走到這個延伸方向（**前瞻**）
+- `connection`：一句話，說明這篇文章如何連結到 Henry 既有的工作經驗（**回顧**）
+
+**輸出前驗證：** 在寫入日誌檔案之前，請確認每個 `<AnnotationCard />` 區塊中所有 `{` 和 `}` 都對稱配對，所有 `="..."` 字串都有正確閉合，避免 MDX 解析失敗導致 Vercel 部署中斷。
+
+> **重要：** `next-mdx-remote` 預設會 block JS 表達式（`blockJS: true`），導致 `relevance={4}` 等 `{...}` 格式的屬性被靜默刪除。本專案已在 `[...slug]/page.tsx` 設定 `blockJS: false`，請勿移除此設定，否則所有數值與陣列屬性將失效。
+
+---
+
+## 學習方向
+
+每次 session 的學習方向請直接參照 `user-profile.md` 裡 Henry 的技術背景與技能樹，不在此重複定義。技能的機器可讀版本在 `skill-taxonomy.yaml`，prompt 讀取技能資料時以 YAML 為準。
+
+## 特別關注主題
+
+- **Code ↔ Design 雙向流（高優先）**：Claude/AI agent 與 Figma 的雙向整合、MCP plugin for design tools、AI 輔助 design token 同步、design spec to code 自動化、Figma → code → Figma 的 round-trip 工作流。凡觸及這個方向的文章，relevance 至少 4，connection 要特別說明可如何套用到 Henry 現有的 Figma → JSON → CSS Token 工作流。
+
+---
+
+## 近期討論紀錄
+
+> 規則：每次 session 自我優化時，只保留最近 7 天的紀錄，超過 7 天的條目自動刪除。
+
+### 2026-03-28
+- 抓取 HN today (#1: jai 409pts)、GitHub Trending、GitHub Releases（claude-code v2.1.86、next.js v16.2.1）、dev.to、ProductHunt（Crossnode, CrabTalk, Aera Browser）
+- 整理 5 篇文章：jai filesystem isolation（HN #1）、Claude Code v2.1.86、3-agent GitHub→Gemini→Notion pipeline（Mastra）、AI 軟體開發未來 HN 討論、Next.js v16.2.1 Turbopack 修復
+- news: Healthcare AI（AI 藥物研發 70% 加速、臨床試驗 AI 模擬、精準醫療基因報告縮短到幾小時）
+- domain-rotation-log 更新：healthcare → design_industry
+
+### 2026-03-27
+- 抓取 HN、GitHub Trending、GitHub Releases（claude-code v2.1.85、next.js v16.2.1）
+- 整理 6 篇文章：Claude Code hooks 條件觸發、MCP 97M milestone、AI 程式碼安全研究、Mistral Small 4、Axe Unix pipeline agent
+- 所有文章完成應用層轉換並加上 AnnotationCard
+
+### 2026-03-26
+- /office-hours 設計：個人化日誌標註功能（AnnotationCard）
+- /plan-eng-review 審查：確認架構（Server Component + details/summary + YAML import）
+- 實作 AnnotationCard 功能，含 skill-taxonomy.yaml、更新 learning-context.md prompt
+
+---
+
+## 重要洞察記錄
+
+> 值得記住的核心概念，跨 session 保留
+
+- **Context Window = RAM，Filesystem = Disk**：重要資料要寫到磁碟，不能只存在 context 裡
+- **這些架構的價值不是解鎖能力，是約束失敗模式**：AI 傾向「完成」而不是「正確地完成」
+- **Long-running 的核心是交接零成本**：問題從來不是怎麼讓 session 撐更久
+- **UI.SH 的產品論述**：展示問題（50次迭代才能達到專業水準）→ 賣解法（預先打包設計原則）
+- **個人化 = 標註，不是過濾**：保留所有文章，用 AnnotationCard 說明「這篇與你的關係」
+
+---
+
+*最後更新：2026-03-28*
