@@ -11,12 +11,21 @@
    若檔案不存在，預設 healthcare。
 
 2. **搜尋跨域 AI 應用**
+   計算今天日期往前推 14 天（格式 YYYY-MM-DD），加入搜尋 query 限制來源新鮮度。
    執行 WebSearch：
-   - `"AI {current_domain} applications 2026"`
-   - `"AI {current_domain} breakthrough 2026"`
+   - `"AI {current_domain} applications 2026" after:{14天前日期}`
+   - `"AI {current_domain} breakthrough 2026" after:{14天前日期}`
    各取最多 3 筆，過濾條件：
    - 優先：.edu / .org / 知名產業媒體（Nature、MIT、IEEE、Wired）
    - 排除：無機構的個人 blog、PRNewswire、純商業宣傳
+
+   **去重過濾（文章層級）：**
+   用 Read 工具讀取 `memory/seen-articles.yaml`，取得 `seen` 清單。
+   對每個候選條目，依序比對：
+   - URL 完全一致 且距今 14 天以內 → **跳過**，換下一筆
+   - 標題去除版本號後高度相似（>80% 字元重疊）且距今 14 天以內 → **跳過**，換下一筆
+   - 以上皆不符 → 通過，進入寫作
+   若 `seen-articles.yaml` 不存在，視為空清單，全部通過。
 
 3. **寫進 news 日誌**
    檔案路徑：`news/YYYY/MM/YYYY-MM-DD.md`
@@ -25,18 +34,20 @@
    - 格式：每條目 2-3 段，包含：這個領域發生了什麼 + 技術機制 + 對普通人的意義
    - 不需要 AnnotationCard（news 條目不連結到 Henry 的技能樹）
 
-4. **更新 domain-rotation-log.yaml**（news 檔案寫入成功後才執行此步）
+4. **更新 domain-rotation-log.yaml 與 seen-articles.yaml**（news 檔案寫入成功後才執行此步）
    - 將 current_domain 加入 history（保留最近 7 筆）
    - 從 domains 清單中從當前位置往後找，選第一個不在 history 的領域更新 current_domain
-   - commit message：`news: YYYY-MM-DD AI digest [{current_domain}]`
+   - 將本次每篇文章來源記入 `memory/seen-articles.yaml`：
+     在 `seen` 清單開頭插入新條目（格式：`title` / `url` / `source: news` / `domain: {current_domain}` / `date: YYYY-MM-DD`）。
+     同時刪除所有 `date` 距今超過 14 天的舊條目。
    - 執行：
      ```bash
-     git add news/ memory/domain-rotation-log.yaml
+     git add news/ memory/domain-rotation-log.yaml memory/seen-articles.yaml
      git commit -m "news: YYYY-MM-DD AI digest [{current_domain}]"
      git push origin main
      ```
 
-   > **順序保護**：domain-rotation-log.yaml 必須在 news 檔案確認寫入後才更新。若 session 在此步之前中斷，下次 run 重新執行時：冪等性檢查會偵測到 news 檔案不存在，正確地用相同 domain 重跑，不會跳域。
+   > **順序保護**：domain-rotation-log.yaml 與 seen-articles.yaml 必須在 news 檔案確認寫入後才更新。若 session 在此步之前中斷，下次 run 重新執行時：冪等性檢查會偵測到 news 檔案不存在，正確地用相同 domain 重跑，不會跳域。
 
 ## 寫作風格
 

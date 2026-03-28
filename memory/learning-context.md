@@ -25,12 +25,24 @@
    套用 content_filters：優先選有 repo / demo / 實際使用的內容，排除純公告。
    若任何來源抓取失敗，改用 fallback 中定義的 WebSearch query。
 
-   **去重過濾（每次 run 必做）：**
+   **去重過濾（每次 run 必做）：兩層檢查，兩層都通過才進入 Step 2**
+
+   **Layer 1 — 工具層級（seen-tools.yaml）**
    用 Read 工具讀取 `memory/seen-tools.yaml`，取得 `seen` 清單。
-   對每個候選條目，識別其工具名稱與版本（無版本號則 version = `any`）。
-   若在 `seen` 中找到相同 tool + version，且 `date` 距今 **14 天以內**，跳過此條目，不進入 Step 2。
-   超過 14 天或不在清單中的條目，全部通過。
+   對每個候選條目，識別工具名稱與版本（無版本號則 version = `any`）。判斷邏輯：
+   - seen 中有 `version: any` 且距今 14 天以內 → **封鎖**（any = 此工具所有版本）
+   - seen 中有完全相同的 tool + version 且距今 14 天以內 → **封鎖**
+   - seen 中只有「其他版本號」的記錄（例如只有 v2.1.85，現在是 v2.1.87）→ **通過**（新版本自動 bypass）
+   - 不在清單中，或距今超過 14 天 → **通過**
    若 `seen-tools.yaml` 不存在，視為空清單，全部通過。
+
+   **Layer 2 — 文章層級（seen-articles.yaml）**
+   用 Read 工具讀取 `memory/seen-articles.yaml`，取得 `seen` 清單。
+   對每個候選條目，依序比對：
+   - URL 完全一致 且距今 14 天以內 → **封鎖**
+   - 標題去除版本號後高度相似（>80% 字元重疊）且距今 14 天以內 → **封鎖**
+   - 以上皆不符 → **通過**
+   若 `seen-articles.yaml` 不存在，視為空清單，全部通過。
 2. **整理與消化** — 分兩個子步驟：
 
    **2a. 入選過濾**（先判斷要不要寫，再動筆）
@@ -77,9 +89,12 @@
      在 `seen` 清單開頭插入新條目（格式：`tool` / `version` / `date: YYYY-MM-DD`）。
      工具名稱規則：**全小寫、kebab-case**（例：`claude-code`、`next.js`、`mistral-small-4`），每次 session 必須一致，否則去重失效。
      同時刪除所有 `date` 距今超過 14 天的舊條目。
+   - 將本次每篇文章來源記入 `memory/seen-articles.yaml`：
+     在 `seen` 清單開頭插入新條目（格式：`title` / `url` / `source: journal` / `date: YYYY-MM-DD`）。
+     同時刪除所有 `date` 距今超過 14 天的舊條目。
    - 然後執行：
      ```bash
-     git add journal/ memory/seen-tools.yaml
+     git add journal/ memory/seen-tools.yaml memory/seen-articles.yaml
      git commit -m "daily: YYYY-MM-DD AI tech digest"
      git push origin main
      ```

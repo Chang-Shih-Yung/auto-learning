@@ -1,0 +1,10 @@
+# memory/seen-articles.yaml
+# Journal 和 News 共用的文章層級去重
+# 格式：title + url + source + date（YYYY-MM-DD）
+# ⚠️ source 欄位：journal 或 news（news 條目額外加 domain 欄位）
+# 去重規則：
+#   - URL 完全一致 且 date 距今 14 天以內 → 封鎖
+#   - 標題去除版本號後高度相似（>80% 重疊）且 date 距今 14 天以內 → 封鎖
+# 清理：每次寫回時，自動刪除超過 14 天的舊條目
+
+seen: []
