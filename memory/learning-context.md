@@ -25,24 +25,13 @@
    套用 content_filters：優先選有 repo / demo / 實際使用的內容，排除純公告。
    若任何來源抓取失敗，改用 fallback 中定義的 WebSearch query。
 
-   **去重過濾（每次 run 必做）：兩層檢查，兩層都通過才進入 Step 2**
-
-   **Layer 1 — 工具層級（seen-tools.yaml）**
-   用 Read 工具讀取 `memory/seen-tools.yaml`，取得 `seen` 清單。
-   對每個候選條目，識別工具名稱與版本（無版本號則 version = `any`）。判斷邏輯：
-   - seen 中有 `version: any` 且距今 14 天以內 → **封鎖**（any = 此工具所有版本）
-   - seen 中有完全相同的 tool + version 且距今 14 天以內 → **封鎖**
-   - seen 中只有「其他版本號」的記錄（例如只有 v2.1.85，現在是 v2.1.87）→ **通過**（新版本自動 bypass）
-   - 不在清單中，或距今超過 14 天 → **通過**
-   若 `seen-tools.yaml` 不存在，視為空清單，全部通過。
-
-   **Layer 2 — 文章層級（seen-articles.yaml）**
-   用 Read 工具讀取 `memory/seen-articles.yaml`，取得 `seen` 清單。
-   對每個候選條目，依序比對：
-   - URL 完全一致 且距今 14 天以內 → **封鎖**
-   - 標題去除版本號後高度相似（>80% 字元重疊）且距今 14 天以內 → **封鎖**
-   - 以上皆不符 → **通過**
-   若 `seen-articles.yaml` 不存在，視為空清單，全部通過。
+   **去重參考（每次 run 必做）：**
+   用 Read 工具讀取 `memory/session-log.md`，掌握最近 14 天已整理過的工具與文章脈絡。
+   根據 session-log 的內容，自行判斷候選條目是否值得寫：
+   - 相同工具的全新版本 → 值得寫
+   - 相同工具但全新使用角度 → 值得寫
+   - 14 天內已整理過的相同工具相同角度 → 跳過
+   不需要機械式比對，用 session-log 提供的脈絡做聰明判斷。
 2. **整理與消化** — 分兩個子步驟：
 
    **2a. 入選過濾**（先判斷要不要寫，再動筆）
@@ -85,16 +74,9 @@
    - 每篇文章後插入 AnnotationCard（格式見下方）
    - 最後必須有「今日總結」區塊，整合當天的洞察與應用點
    - **寫完後立即用 Read 工具重新讀取剛寫入的檔案，逐一確認每個 `<AnnotationCard />` 的 `{` `}` 對稱、字串閉合，確認無誤才繼續**（MDX 解析錯誤會中斷 Vercel build）
-   - 將本次實際寫進日誌的每個工具記入 `memory/seen-tools.yaml`：
-     在 `seen` 清單開頭插入新條目（格式：`tool` / `version` / `date: YYYY-MM-DD`）。
-     工具名稱規則：**全小寫、kebab-case**（例：`claude-code`、`next.js`、`mistral-small-4`），每次 session 必須一致，否則去重失效。
-     同時刪除所有 `date` 距今超過 14 天的舊條目。
-   - 將本次每篇文章來源記入 `memory/seen-articles.yaml`：
-     在 `seen` 清單開頭插入新條目（格式：`title` / `url` / `source: journal` / `date: YYYY-MM-DD`）。
-     同時刪除所有 `date` 距今超過 14 天的舊條目。
    - 然後執行：
      ```bash
-     git add journal/ memory/seen-tools.yaml memory/seen-articles.yaml
+     git add journal/
      git commit -m "daily: YYYY-MM-DD AI tech digest"
      git push origin main
      ```

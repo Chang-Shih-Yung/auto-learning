@@ -27,6 +27,7 @@ const navLinks = [
   { href: "/", label: "首頁" },
   { href: "/journal", label: "學習日誌" },
   { href: "/news", label: "AI 世界" },
+  { href: "/bookmarks", label: "書籤" },
   { href: "/showcase", label: "成果展示" },
   { href: "/about", label: "關於" },
 ];
