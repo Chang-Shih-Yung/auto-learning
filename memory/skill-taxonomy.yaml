@@ -1,0 +1,89 @@
+# memory/skill-taxonomy.yaml
+# 機器可讀的技能分類表 — 由日誌生成 prompt 讀取，不由 user-profile.md 取代
+# 更新時機：每月或技能升級時（learning_now 升格為 current_skills）
+
+current_skills:
+  # 框架與語言
+  - id: angular
+    label: Angular
+    note: "企業專案主力，CDK / Signals / NgRx / MVVM"
+  - id: rxjs
+    label: RxJS
+    note: "forkJoin 並行 API、Observable 狀態管理、subscription 快取"
+  - id: ngrx
+    label: NgRx
+    note: "Angular 狀態管理"
+  - id: vue3
+    label: Vue 3
+    note: "個人/新專案，搭配 Pinia"
+  - id: typescript
+    label: TypeScript
+    note: "strict mode"
+  - id: react
+    label: React / Next.js
+    note: "Claude_auto 專案（shadcn/ui + App Router）"
+
+  # 樣式與設計系統
+  - id: tailwind
+    label: Tailwind CSS
+    note: "主力樣式工具"
+  - id: css-custom-properties
+    label: CSS Custom Properties
+    note: "Light/Dark mode Design Token 實作"
+  - id: oklch
+    label: OKLCH Color Space
+    note: "Nexus 5 色彩主題設計"
+  - id: figma
+    label: Figma
+    note: "設計到工程的橋樑，Figma → JSON → CSS Token → 元件"
+  - id: ant-design
+    label: Ant Design
+    note: "4.23，EQS 企業系統"
+
+  # 數據與即時通訊
+  - id: echarts
+    label: ECharts
+    note: "戰情室、Dashboard、即時看板"
+  - id: signalr
+    label: SignalR
+    note: "即時通訊，MES 生產數據推送"
+
+  # 架構與工具
+  - id: monorepo-pnpm
+    label: Monorepo (PNPM Workspace)
+    note: "packages/ui, packages/cli, apps/demo, apps/www"
+  - id: ci-cd
+    label: CI/CD
+    note: "GitLab、SAST 白箱資安整合"
+  - id: lottie
+    label: Lottie Web
+    note: "動畫整合"
+  - id: webgl
+    label: WebGL
+    note: "3D / 創意互動技術"
+
+learning_now:
+  - id: sql
+    label: SQL
+    note: "資料查詢"
+  - id: containers
+    label: Containers
+    note: "雲端、Docker"
+  - id: ai-workflow
+    label: AI Workflow
+    note: "Claude Code 排程任務、Agent 自動化"
+
+role: frontend-architect-design-background
+
+interests:
+  - id: ai-agents
+    label: AI Agents
+  - id: data-viz
+    label: Data Visualization
+  - id: design-systems
+    label: Design Systems
+  - id: realtime-data
+    label: Real-time Data Flow
+  - id: design-code-bridge
+    label: Design ↔ Code Bidirectional
+    note: "Claude+Figma 雙向整合、MCP plugin for design tools、AI 驅動 design token 同步、design spec to code 自動化"
