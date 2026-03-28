@@ -83,19 +83,18 @@
      git commit -m "daily: YYYY-MM-DD AI tech digest"
      git push origin main
      ```
-5. **自我優化迴圈** — session 結束後，只允許修改以下區塊：
-   - `memory/learning-context.md` 的「近期討論紀錄」和「重要洞察記錄」
-   - `memory/skill-taxonomy.yaml`（技能升級，例如 SQL 從 `learning_now` 畢業到 `current_skills`）
-   - `memory/user-profile.md`（技能樹實質更新，需 Henry 確認）
+5. **自我優化迴圈** — session 結束後，**只允許修改 `memory/session-log.md`**：
+   - 在「近期討論紀錄」開頭插入今日條目，刪除超過 14 天的舊條目
+   - 若有值得跨 session 保留的洞察，追加至「重要洞察記錄」
 
-   **🔒 禁止修改：** Steps 1–6 的核心工作流、AnnotationCard 格式、評分標準、任何「規則」性描述。這些段落的任何修改都必須由 Henry 明確指示，Claude 不得自行更動。
+   **🔒 禁止修改 `learning-context.md` 本身**（包含 Steps 1–6、AnnotationCard 格式、評分標準、任何規則性描述）。此檔案的任何修改都必須由 Henry 明確指示。
 
-   **重要：** 每次修改 `memory/skill-taxonomy.yaml` 後，必須同步更新 `src/data/skills.yaml`（只同步 `id` + `label`，不含 `note`）。前者是私有完整版（gitignored），後者是網站讀取的公開版（已 commit）。
+   若 Henry 的技能升級（例如 SQL 從 `learning_now` 畢業），更新 `memory/skill-taxonomy.yaml`，並同步 `src/data/skills.yaml`（只同步 `id` + `label`，不含 `note`）。
 
    自我優化修改完成後，執行：
    ```bash
-   git add memory/learning-context.md memory/user-profile.md memory/skill-taxonomy.yaml
-   git commit -m "memory: YYYY-MM-DD session self-update"
+   git add memory/session-log.md
+   git commit -m "memory: YYYY-MM-DD session log"
    git push origin main
    ```
 
@@ -154,38 +153,5 @@
 
 ---
 
-## 近期討論紀錄
-
-> 規則：每次 session 自我優化時，只保留最近 7 天的紀錄，超過 7 天的條目自動刪除。
-
-### 2026-03-28
-- 抓取 HN today (#1: jai 409pts)、GitHub Trending、GitHub Releases（claude-code v2.1.86、next.js v16.2.1）、dev.to、ProductHunt（Crossnode, CrabTalk, Aera Browser）
-- 整理 5 篇文章：jai filesystem isolation（HN #1）、Claude Code v2.1.86、3-agent GitHub→Gemini→Notion pipeline（Mastra）、AI 軟體開發未來 HN 討論、Next.js v16.2.1 Turbopack 修復
-- news: Healthcare AI（AI 藥物研發 70% 加速、臨床試驗 AI 模擬、精準醫療基因報告縮短到幾小時）
-- domain-rotation-log 更新：healthcare → design_industry
-
-### 2026-03-27
-- 抓取 HN、GitHub Trending、GitHub Releases（claude-code v2.1.85、next.js v16.2.1）
-- 整理 6 篇文章：Claude Code hooks 條件觸發、MCP 97M milestone、AI 程式碼安全研究、Mistral Small 4、Axe Unix pipeline agent
-- 所有文章完成應用層轉換並加上 AnnotationCard
-
-### 2026-03-26
-- /office-hours 設計：個人化日誌標註功能（AnnotationCard）
-- /plan-eng-review 審查：確認架構（Server Component + details/summary + YAML import）
-- 實作 AnnotationCard 功能，含 skill-taxonomy.yaml、更新 learning-context.md prompt
-
----
-
-## 重要洞察記錄
-
-> 值得記住的核心概念，跨 session 保留
-
-- **Context Window = RAM，Filesystem = Disk**：重要資料要寫到磁碟，不能只存在 context 裡
-- **這些架構的價值不是解鎖能力，是約束失敗模式**：AI 傾向「完成」而不是「正確地完成」
-- **Long-running 的核心是交接零成本**：問題從來不是怎麼讓 session 撐更久
-- **UI.SH 的產品論述**：展示問題（50次迭代才能達到專業水準）→ 賣解法（預先打包設計原則）
-- **個人化 = 標註，不是過濾**：保留所有文章，用 AnnotationCard 說明「這篇與你的關係」
-
----
-
-*最後更新：2026-03-28*
+> 近期討論紀錄與重要洞察記錄已移至 `memory/session-log.md`。
+> 此檔案（learning-context.md）為**鎖定狀態**，Claude 禁止自行修改。

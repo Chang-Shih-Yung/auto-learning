@@ -21,3 +21,4 @@ memory/*
 !memory/learning-context.md
 !memory/news-context.md
 !memory/sources.yaml
+!memory/session-log.md

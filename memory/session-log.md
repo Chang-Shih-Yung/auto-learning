@@ -1,0 +1,38 @@
+# Session Log
+
+> 這個檔案是唯一允許 Claude 自行寫入的 memory 檔案。
+> `learning-context.md` 是鎖定的，禁止修改。
+
+---
+
+## 近期討論紀錄
+
+> 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
+
+### 2026-03-28
+- 抓取 HN today (#1: jai 409pts)、GitHub Trending、GitHub Releases（claude-code v2.1.86、next.js v16.2.1）、dev.to、ProductHunt（Crossnode, CrabTalk, Aera Browser）
+- 整理 5 篇文章：jai filesystem isolation（HN #1）、Claude Code v2.1.86、3-agent GitHub→Gemini→Notion pipeline（Mastra）、AI 軟體開發未來 HN 討論、Next.js v16.2.1 Turbopack 修復
+- news: Healthcare AI（AI 藥物研發 70% 加速、臨床試驗 AI 模擬、精準醫療基因報告縮短到幾小時）
+- domain-rotation-log 更新：healthcare → design_industry
+
+### 2026-03-27
+- 抓取 HN、GitHub Trending、GitHub Releases（claude-code v2.1.85、next.js v16.2.1）
+- 整理 6 篇文章：Claude Code hooks 條件觸發、MCP 97M milestone、AI 程式碼安全研究、Mistral Small 4、Axe Unix pipeline agent
+- 所有文章完成應用層轉換並加上 AnnotationCard
+
+### 2026-03-26
+- /office-hours 設計：個人化日誌標註功能（AnnotationCard）
+- /plan-eng-review 審查：確認架構（Server Component + details/summary + YAML import）
+- 實作 AnnotationCard 功能，含 skill-taxonomy.yaml、更新 learning-context.md prompt
+
+---
+
+## 重要洞察記錄
+
+> 值得記住的核心概念，跨 session 保留
+
+- **Context Window = RAM，Filesystem = Disk**：重要資料要寫到磁碟，不能只存在 context 裡
+- **這些架構的價值不是解鎖能力，是約束失敗模式**：AI 傾向「完成」而不是「正確地完成」
+- **Long-running 的核心是交接零成本**：問題從來不是怎麼讓 session 撐更久
+- **UI.SH 的產品論述**：展示問題（50次迭代才能達到專業水準）→ 賣解法（預先打包設計原則）
+- **個人化 = 標註，不是過濾**：保留所有文章，用 AnnotationCard 說明「這篇與你的關係」
