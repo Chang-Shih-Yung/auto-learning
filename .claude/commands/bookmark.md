@@ -54,4 +54,5 @@ Add a bookmark article. The user provides a URL and/or brief description after `
    git add bookmarks/
    git commit -m "bookmark: YYYY-MM-DD {slug}"
    git push origin HEAD:main
+   git -C /Users/henry/Desktop/auto-learning pull
    ```
