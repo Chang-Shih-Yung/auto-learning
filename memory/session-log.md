@@ -9,6 +9,13 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-03-29
+- 抓取 HN today（CSS is DOOMed 171pts、I decompiled White House app 357pts、Linux is an interpreter 158pts）、GitHub Trending（chroma/chroma、apache/superset）、HN AI Discussion（HumanLayer 354pts、Magnitude 179pts）、dev.to（ZeroToRepo、6 AI Agents dev team）
+- 整理 4 篇文章：HumanLayer（Human-in-the-Loop API，relevance 5）、Magnitude（AI-native test 7行自然語言，relevance 4）、Chroma v1.5.5（Rust 重寫 4x 速度，relevance 4）、CSS is DOOM（CSS 3D 渲染，relevance 3）
+- news: Finance AI（AML alert overload AI Forensics 自動結案、LSTM 詐欺偵測 94.2%、AI 量化基金超越傳統策略 3-7%）
+- domain-rotation-log 更新：finance → climate
+- Push 失敗（osxkeychain 在排程環境無法解鎖）；commit 已在本地，需 Henry 手動 push 或重新設定 credential
+
 ### 2026-03-28
 - 抓取 HN today (#1: jai 409pts)、GitHub Trending、GitHub Releases（claude-code v2.1.86、next.js v16.2.1）、dev.to、ProductHunt（Crossnode, CrabTalk, Aera Browser）
 - 整理 5 篇文章：jai filesystem isolation（HN #1）、Claude Code v2.1.86、3-agent GitHub→Gemini→Notion pipeline（Mastra）、AI 軟體開發未來 HN 討論、Next.js v16.2.1 Turbopack 修復
