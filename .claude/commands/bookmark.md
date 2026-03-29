@@ -53,5 +53,8 @@ Add a bookmark article. The user provides a URL and/or brief description after `
    ```bash
    git add bookmarks/
    git commit -m "bookmark: YYYY-MM-DD {slug}"
+   git checkout main
+   git merge -
    git push origin main
+   git checkout -
    ```
