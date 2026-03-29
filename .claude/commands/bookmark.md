@@ -50,9 +50,23 @@ Add a bookmark article. The user provides a URL and/or brief description after `
    After writing, re-read the file to verify all `{` `}` are balanced.
 
 5. **Commit and push**
+
+   先偵測目前是否在 worktree 環境：
    ```bash
-   git add bookmarks/
-   git commit -m "bookmark: YYYY-MM-DD {slug}"
-   git push origin HEAD:main
-   git -C /Users/henry/Desktop/auto-learning pull
+   git rev-parse --git-dir
    ```
+
+   - 回傳 `.git` → 在本地 main，正常推送：
+     ```bash
+     git add bookmarks/
+     git commit -m "bookmark: YYYY-MM-DD {slug}"
+     git push origin main
+     ```
+
+   - 回傳含 `worktrees` 的路徑 → 在 worktree，推送後同步本地 main：
+     ```bash
+     git add bookmarks/
+     git commit -m "bookmark: YYYY-MM-DD {slug}"
+     git push origin HEAD:main
+     git -C /Users/henry/Desktop/auto-learning pull
+     ```
