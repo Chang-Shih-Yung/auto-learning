@@ -5,6 +5,8 @@ url: https://github.com/chenglou/pretext
 note: "純 JS/TS 文字排版函式庫，完全不碰 DOM，layout() 耗時 0.09ms/500段落，比 offsetHeight 快約 500 倍，支援 Canvas/SVG/WebGL/SSR 輸出"
 ---
 
+來源：[github.com/chenglou/pretext](https://github.com/chenglou/pretext)
+
 用 Pretext 的 `prepare()` + `layout()` 兩步 API，可以在完全不碰 DOM 的情況下精準計算出任意段落在指定寬度下的高度——500 段文字的 layout 計算耗時僅 **0.09ms**，比傳統 `offsetHeight` 快約 500 倍；`prepare()` 的一次性分析成本也只有 19ms。不只是純英文，中文、阿拉伯文、Emoji、混排雙向文字全部支援；進階模式可以拿到每一行的精確座標資訊，直接輸出到 Canvas、SVG、WebGL，或在伺服器端做排版預算，讓文字繞圖流動、多欄分布、適配任意形狀等雜誌級排版效果成為可能。
 
 傳統 Web 排版的效能殺手在於「layout reflow」——每次問 DOM「這段文字多高」，瀏覽器就必須重新跑整套盒模型計算，`getBoundingClientRect`、`offsetHeight` 這類操作是公認最昂貴的瀏覽器操作之一。Pretext 的解法是把文字分析拆成兩個明確階段：`prepare()` 一次性呼叫瀏覽器的 Canvas `measureText` API，取得字元寬度、字形邊界等原始字型數據；之後所有 `layout()` 呼叫都是**純算術**——用記錄下來的字元尺寸自己跑 word-wrapping 和 line-break 邏輯，完全不碰 DOM。這讓 `layout()` 的複雜度從「觸發瀏覽器重排」降到「幾個乘法加法」，0.09ms / 500 段落的數字由此而來。

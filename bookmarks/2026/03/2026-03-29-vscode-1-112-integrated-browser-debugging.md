@@ -5,6 +5,8 @@ url: https://code.visualstudio.com/updates/v1_112
 note: "integrated browser debug、Copilot CLI autopilot、MCP sandboxing"
 ---
 
+來源：[code.visualstudio.com/updates/v1_112](https://code.visualstudio.com/updates/v1_112?fbclid=IwdGRjcAQ0lrpleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeWq5CAp8Ve5DEDeozibYwo3MOdmUwrTSzBVrNmEJixxMYjp2RN6vkS8PuUsc_aem_WJVD0i6v8_IGBI0sDu0Pcw#_debug-web-apps-with-the-integrated-browser)
+
 把 `launch.json` 裡的 `type` 從 `chrome` 改成 `editor-browser`，你就能在 VS Code 內建瀏覽器直接下中斷點、逐步執行、檢查變數，完全不需要切到外部 Chrome DevTools。這次同版本還帶來三個獨立升級：Copilot CLI 新增 Autopilot 模式、本地 MCP server 沙盒化、以及 monorepo 子資料夾現在也能自動讀到上層 repo 的 copilot-instructions.md。整包遷移成本趨近於 0——原本的 msedge/chrome 所有設定選項幾乎全部相容。
 
 整合式瀏覽器偵錯的技術核心是新增了 `editor-browser` debug adapter，它橋接 VS Code 的 Debug Protocol 與內建 Chromium WebView。當你用 Launch 模式啟動，VS Code 同時開啟頁面與 debug session；用 Attach 模式，則連到已開啟的 tab。截圖輸出現在也掛進 chat 回應，讓 AI agent 能直接以圖片作為 context 繼續推理——二進位檔案則以 hexdump 格式傳入。MCP 沙盒化（macOS/Linux）在 `mcp.json` 加一行 `"sandboxEnabled": true`，之後每次 MCP server 嘗試存取新路徑或網域時，VS Code 會彈出授權確認並自動更新沙盒設定。

@@ -5,6 +5,8 @@ url: https://atomic.chat/
 note: "本地 LLM、TurboQuant 量化、MCP 整合、agent workflow、免費永久"
 ---
 
+來源：[atomic.chat](https://atomic.chat/)
+
 在 16GB Mac 上一鍵下載 Atomic Chat，從 1,000+ 個模型（Llama、Qwen、DeepSeek、Kimi、Mistral）裡挑一個，30 秒內開始對話——沒有訂閱費、沒有 API 金鑰、沒有網路也能跑。內建 Google TurboQuant 讓 KV cache 壓縮 6 倍，同樣 16GB 的 RAM 可以撐起比過去大 3 倍的 context window；Qwen 3.5 35B 這種等級的模型可以直接在 Apple Silicon 上流暢推論。除了聊天，還能建立 Projects（持久記憶）、跑本地 Agent workflow，以及接 MCP Servers——也就是說你的整套 Claude Code toolchain 可以直接橋接到本地模型。
 
 技術核心是 Google TurboQuant 的三個特性：KV cache 至少壓縮 6 倍（記憶體佔用大幅下降）、attention 計算速度比標準 32-bit 模型快 8 倍（H100 GPU 基準）、量化到 3-bit 但不需要 retraining 或 fine-tuning 且零精度損失。客戶端本身開源，支援 GGUF、MLX、ONNX 三種格式，模型直接從 Hugging Face 下載，所有推論都在本機執行——0 bytes 資料離開裝置。實驗性功能還包含 Claude Code 整合，可以從 Atomic Chat 內部呼叫 Code session。
