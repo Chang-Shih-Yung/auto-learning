@@ -42,6 +42,8 @@ Add a bookmark article. The user provides a URL and/or brief description after `
    - **第二段：背後怎麼運作** — one paragraph on the technical mechanism
    - **第三段：這改變了什麼** — Before → After world-view shift
 
+   **使用方式區塊（選填，自行判斷）** — 讀取文章內容後，若文章屬於工具、CLI、SDK、workflow 等有實際操作步驟的技術內容，主動在三段式內容與 AnnotationCard 之間加入 `## 使用方式` 區塊（以水平線分隔），整理安裝指令、核心功能、工作流程等。格式自由配合內容調整，不強制固定結構。純概念或新聞類文章不需要。
+
    **AnnotationCard** at the end (same format as journal, same rules):
    ```mdx
    <AnnotationCard
