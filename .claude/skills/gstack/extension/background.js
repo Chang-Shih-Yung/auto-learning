@@ -30,6 +30,19 @@ function getBaseUrl() {
   return serverPort ? `http://127.0.0.1:${serverPort}` : null;
 }
 
+// ─── Auth Token Bootstrap ─────────────────────────────────────
+
+async function loadAuthToken() {
+  if (authToken) return;
+  try {
+    const resp = await fetch(chrome.runtime.getURL('.auth.json'));
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.token) authToken = data.token;
+    }
+  } catch {}
+}
+
 // ─── Health Polling ────────────────────────────────────────────
 
 async function checkHealth() {
@@ -39,13 +52,14 @@ async function checkHealth() {
     return;
   }
 
+  // Retry loading auth token if we don't have one yet
+  if (!authToken) await loadAuthToken();
+
   try {
     const resp = await fetch(`${base}/health`, { signal: AbortSignal.timeout(3000) });
     if (!resp.ok) { setDisconnected(); return; }
     const data = await resp.json();
     if (data.status === 'healthy') {
-      // Capture auth token from health response
-      if (data.token) authToken = data.token;
       // Forward chatEnabled so sidepanel can show/hide chat tab
       setConnected({ ...data, chatEnabled: !!data.chatEnabled });
     } else {
@@ -62,8 +76,8 @@ function setConnected(healthData) {
   chrome.action.setBadgeBackgroundColor({ color: '#F59E0B' });
   chrome.action.setBadgeText({ text: ' ' });
 
-  // Broadcast health to popup and side panel
-  chrome.runtime.sendMessage({ type: 'health', data: healthData }).catch(() => {});
+  // Broadcast health to popup and side panel (include token for sidepanel auth)
+  chrome.runtime.sendMessage({ type: 'health', data: { ...healthData, token: authToken } }).catch(() => {});
 
   // Notify content scripts on connection change
   if (wasDisconnected) {
@@ -74,7 +88,7 @@ function setConnected(healthData) {
 function setDisconnected() {
   const wasConnected = isConnected;
   isConnected = false;
-  authToken = null;
+  // Keep authToken — it comes from .auth.json, not /health
   chrome.action.setBadgeText({ text: '' });
 
   chrome.runtime.sendMessage({ type: 'health', data: null }).catch(() => {});
@@ -128,7 +142,9 @@ async function fetchAndRelayRefs() {
   if (!base || !isConnected) return;
 
   try {
-    const resp = await fetch(`${base}/refs`, { signal: AbortSignal.timeout(3000) });
+    const headers = {};
+    if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+    const resp = await fetch(`${base}/refs`, { signal: AbortSignal.timeout(3000), headers });
     if (!resp.ok) return;
     const data = await resp.json();
 
@@ -145,6 +161,21 @@ async function fetchAndRelayRefs() {
 // ─── Message Handling ──────────────────────────────────────────
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  // Security: only accept messages from this extension's own scripts
+  if (sender.id !== chrome.runtime.id) {
+    console.warn('[gstack] Rejected message from unknown sender:', sender.id);
+    return;
+  }
+
+  const ALLOWED_TYPES = new Set([
+    'getPort', 'setPort', 'getServerUrl', 'fetchRefs',
+    'openSidePanel', 'command', 'sidebar-command'
+  ]);
+  if (!ALLOWED_TYPES.has(msg.type)) {
+    console.warn('[gstack] Rejected unknown message type:', msg.type);
+    return;
+  }
+
   if (msg.type === 'getPort') {
     sendResponse({ port: serverPort, connected: isConnected });
     return true;
@@ -163,10 +194,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === 'getToken') {
-    sendResponse({ token: authToken });
-    return true;
-  }
+  // getToken handler removed — token distributed via health broadcast
 
   if (msg.type === 'fetchRefs') {
     fetchAndRelayRefs().then(() => sendResponse({ ok: true }));
@@ -237,7 +265,10 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 // ─── Startup ────────────────────────────────────────────────────
 
-loadPort().then(() => {
-  checkHealth();
-  healthInterval = setInterval(checkHealth, 10000);
+// Load auth token BEFORE first health poll (token no longer in /health response)
+loadAuthToken().then(() => {
+  loadPort().then(() => {
+    checkHealth();
+    healthInterval = setInterval(checkHealth, 10000);
+  });
 });
