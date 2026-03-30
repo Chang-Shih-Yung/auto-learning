@@ -32,6 +32,12 @@ Add a bookmark article. The user provides a URL and/or brief description after `
 
    **Content — same three-paragraph format as journal:**
 
+   If the user provided a URL, include it as the first line of the content body (before the three paragraphs):
+   ```
+   來源：{original URL as provided by the user, including any tracking params}
+   ```
+   Then a blank line, then the three paragraphs.
+
    - **第一段：你能做什麼** — concrete capability, must include specific numbers
    - **第二段：背後怎麼運作** — one paragraph on the technical mechanism
    - **第三段：這改變了什麼** — Before → After world-view shift
