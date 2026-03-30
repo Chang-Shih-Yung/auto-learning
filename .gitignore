@@ -19,6 +19,7 @@ memory/*
 !memory/domain-rotation-log.yaml
 !memory/learning-context.md
 !memory/news-context.md
+!memory/showcase-context.md
 !memory/sources.yaml
 !memory/session-log.md
 !memory/user-profile.md

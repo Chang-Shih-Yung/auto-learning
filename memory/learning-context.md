@@ -101,6 +101,17 @@
 
 6. **AI 世界新聞生成** — journal 完成後，讀取 `memory/news-context.md`，按照其步驟獨立生成今天的跨域 AI 新聞條目，寫進 `news/`，單獨 commit 並 push。
 
+7. **Showcase 週成果生成（條件執行）** — Step 6 完成後，執行以下檢查：
+
+   用 Bash 工具取得本週 ISO 週數：
+   ```bash
+   YEAR=$(date +%Y); WEEK=$(printf "%02d" $(date +%V)); echo "$YEAR/W$WEEK"
+   ```
+
+   用 Glob 工具檢查 `showcase/$YEAR/W$WEEK/meta.json` 是否存在：
+   - **若已存在**：本週 showcase 已完成，直接結束 session。
+   - **若不存在**：載入並執行 `memory/showcase-context.md` 的所有步驟。
+
 ---
 
 ## 相關度評分標準（1–5）
