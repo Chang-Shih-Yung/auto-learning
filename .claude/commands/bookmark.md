@@ -32,9 +32,9 @@ Add a bookmark article. The user provides a URL and/or brief description after `
 
    **Content — same three-paragraph format as journal:**
 
-   If the user provided a URL, include it as the first line of the content body (before the three paragraphs):
+   If the user provided a URL, include it as the first line of the content body (before the three paragraphs) as a Markdown link to avoid layout-breaking long URLs:
    ```
-   來源：{original URL as provided by the user, including any tracking params}
+   來源：[{clean domain/path}]({original URL as provided by the user, including any tracking params})
    ```
    Then a blank line, then the three paragraphs.
 
