@@ -1,0 +1,22 @@
+{
+  "year": 2026,
+  "week": "W13",
+  "week_start": "2026-03-23",
+  "week_end": "2026-03-29",
+  "articles_read": ["2026-03-25.md", "2026-03-26.md", "2026-03-27.md", "2026-03-28.md", "2026-03-29.md"],
+  "articles_read_titles": [
+    "Long-running Agent 的真正意涵 × Steve Schoger 設計工作流",
+    "Claude Code 三月密集更新 × GPT-5.4 × AI 工具生態",
+    "Claude Code v2.1.85 × MCP 97M installs × AI 生成程式碼安全研究",
+    "3-agent Pipeline 設計模式 × Pieces 開發者長期記憶",
+    "HumanLayer × Magnitude 視覺測試 × Chroma v1.5.5"
+  ],
+  "skills_extracted": ["ai-agents", "ai-workflow", "ci-cd", "figma", "tailwind", "design-systems"],
+  "skills_used_in_demo": ["ai-agents", "ai-workflow"],
+  "cross_week_reference": [],
+  "synthesis_note": "本週五篇文章指向同一主題：AI agent 的價值不在跑得快，而在於在正確節點暫停。Long-running agent 的 7 步 loop、HumanLayer 的 approval gate、3-agent pipeline 的職責分離，都是把確定性邏輯與 LLM 明確分開的設計哲學。選擇做 protocol-simulator 是因為這個模式必須親手操作才能感受其中的設計直覺。",
+  "demo_type": "protocol-simulator",
+  "demo_available": true,
+  "demo_title": "AI Agent Pipeline × Human Approval Gate 模擬器",
+  "generated_at": "2026-03-30T09:05:38Z"
+}

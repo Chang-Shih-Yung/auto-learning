@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Pipeline × Human Approval Gate</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #fdfcfa;
+  color: #1a1a18;
+  padding: 20px;
+}
+h1 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+.subtitle {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 16px;
+}
+.legend {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #888;
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+.ld-gray { background: #d8d3cc; }
+.ld-amber { background: #e8c547; }
+.ld-green { background: #3d6b5e; }
+
+.start-btn {
+  width: 100%;
+  padding: 10px;
+  background: #3d6b5e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 14px;
+  transition: background 0.15s;
+}
+.start-btn:hover:not(:disabled) { background: #2d5248; }
+.start-btn:disabled { background: #8fb0a9; cursor: default; }
+
+.pipeline { display: flex; flex-direction: column; gap: 6px; }
+
+.agent {
+  border: 1px solid #e5e0d8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #fff;
+  transition: border-color 0.25s, background 0.25s;
+}
+.agent.active {
+  border-color: #3d6b5e;
+  background: #f2f7f5;
+}
+.agent.done {
+  border-color: #b8d4cc;
+  background: #f8fbfa;
+}
+.agent.error {
+  border-color: #d4756b;
+  background: #fdf5f4;
+}
+.agent-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.agent-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #eae5de;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: background 0.25s;
+}
+.agent.active .agent-icon { background: #3d6b5e; }
+.agent.done .agent-icon { background: #b8d4cc; }
+.agent-name {
+  font-size: 12px;
+  font-weight: 600;
+  flex: 1;
+}
+.badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #eae5de;
+  color: #666;
+  font-weight: 500;
+}
+.badge.llm { background: #fef3e0; color: #9a6700; }
+
+.log {
+  font-size: 10px;
+  font-family: monospace;
+  color: #777;
+  line-height: 1.7;
+  min-height: 16px;
+}
+.log .ok { color: #2d7a55; }
+.log .thinking { color: #9a6700; }
+.log .err { color: #c0392b; }
+
+.connector {
+  text-align: center;
+  font-size: 16px;
+  color: #c8c0b4;
+  line-height: 1.2;
+}
+
+/* Approval gate */
+.gate {
+  border: 2px solid #e8c547;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fffef0;
+  display: none;
+}
+.gate.visible { display: block; }
+.gate-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #7a5800;
+  margin-bottom: 10px;
+}
+.gate-preview {
+  font-size: 10px;
+  font-family: monospace;
+  background: #fff;
+  border: 1px solid #e5e0d8;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  color: #2a2a28;
+  max-height: 140px;
+  overflow-y: auto;
+}
+.gate-actions { display: flex; gap: 8px; }
+.btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-approve { background: #3d6b5e; color: #fff; }
+.btn-approve:hover { background: #2d5248; }
+.btn-reject { background: #ede8e0; color: #3a3a38; border: 1px solid #ddd8d0; }
+.btn-reject:hover { background: #e0dbd2; }
+
+/* Result banners */
+.result {
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 11px;
+  line-height: 1.7;
+  display: none;
+  margin-top: 8px;
+}
+.result.success { display: block; background: #f0f5f3; border: 1px solid #b8d4cc; color: #2d5248; }
+.result.rejected { display: block; background: #fef5f4; border: 1px solid #f0c0bc; color: #7a2828; }
+.result .note { font-size: 9px; color: #888; margin-top: 4px; display: block; }
+
+/* Spinner */
+.spin {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border: 1.5px solid #b8d4cc;
+  border-top-color: #3d6b5e;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<h1>AI Agent Pipeline × Human Approval Gate</h1>
+<p class="subtitle">W13 學習展示 — Harvest → Narrate → Approve → Publish</p>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot ld-gray"></div>確定性（無 LLM）</div>
+  <div class="legend-item"><div class="legend-dot ld-amber"></div>需人工審批</div>
+  <div class="legend-item"><div class="legend-dot ld-green"></div>執行中 / 完成</div>
+</div>
+
+<button class="start-btn" id="startBtn" onclick="startPipeline()">▶ 執行 Pipeline</button>
+
+<div class="pipeline">
+
+  <div class="agent" id="ag-harvest">
+    <div class="agent-header">
+      <div class="agent-icon">📡</div>
+      <span class="agent-name">Harvest Agent</span>
+      <span class="badge">確定性</span>
+    </div>
+    <div class="log" id="log-harvest">等待執行…</div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="agent" id="ag-narrator">
+    <div class="agent-header">
+      <div class="agent-icon">✍️</div>
+      <span class="agent-name">Narrator Agent</span>
+      <span class="badge llm">LLM</span>
+    </div>
+    <div class="log" id="log-narrator">等待上游…</div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="gate" id="gate">
+    <div class="gate-title">⏸ HumanLayer Approval Gate — 請審閱後決定</div>
+    <div class="gate-preview" id="gate-preview"></div>
+    <div class="gate-actions">
+      <button class="btn btn-approve" onclick="doApprove()">✓ Approve — 發布</button>
+      <button class="btn btn-reject" onclick="doReject()">↩ Reject — 重新生成</button>
+    </div>
+  </div>
+
+  <div class="connector">↓</div>
+
+  <div class="agent" id="ag-publisher">
+    <div class="agent-header">
+      <div class="agent-icon">📤</div>
+      <span class="agent-name">Publisher Agent</span>
+      <span class="badge">確定性</span>
+    </div>
+    <div class="log" id="log-publisher">等待審批…</div>
+  </div>
+
+</div>
+
+<div class="result success" id="res-success">
+  ✅ Pipeline 完成 — 週報已同步至 Notion + dev.to
+  <span class="note">Harvest: 0 LLM calls（GraphQL）｜Narrator: 1 LLM call｜Publisher: 0 LLM calls（確定性）</span>
+</div>
+<div class="result rejected" id="res-rejected">
+  ↩ 已拒絕，Narrator Agent 重新生成中…
+  <span class="note">Human-in-the-loop checkpoint 生效：AI 輸出在發布前須人工確認</span>
+</div>
+
+<script>
+const state = { running: false, retries: 0 };
+
+const narratorOutputs = [
+  `本週（W13）學習回顧
+
+共讀 5 篇文章，核心主題：AI agent 的可控性設計。
+
+重點摘要：
+• Long-running agent 的「交接零成本」7 步 loop 架構
+• Claude Code v2.1.85：hooks if 條件、timestamp marker
+• MCP 突破 97M installs，4000+ servers，成為基礎設施
+• HumanLayer：@require_approval() 讓 agent 暫停等人工審批
+• 3-agent pipeline：只有 Narrator 層需要 LLM，其餘確定性
+
+本週金句：AI 的上限取決於你給它的結構有多清楚。`,
+
+  `W13 週報（重新生成版）
+
+本週五篇文章收斂到一個洞察：
+「AI agent 的價值不在全自動，而在正確節點暫停。」
+
+技術亮點：
+① MCP 成基礎設施標準（97M installs，Security v1.1）
+② HumanLayer：95% 自動 + 5% 人工確認的設計模式
+③ Magnitude：7 行自然語言取代幾十行 selector 測試
+④ Chroma Rust 重寫：embedded 模式 4x 速度，zero latency
+
+下週應用：為 Nexus Copilot SDK 加入 approval gate。`
+];
+
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+function setState(id, cls) {
+  document.getElementById('ag-' + id).className = 'agent ' + cls;
+}
+
+function addLog(id, text, cls) {
+  const el = document.getElementById('log-' + id);
+  el.innerHTML += `<span class="${cls || ''}">${text}\n</span>`;
+}
+
+function setLog(id, text, cls) {
+  const el = document.getElementById('log-' + id);
+  el.innerHTML = `<span class="${cls || ''}">${text}</span>`;
+}
+
+async function startPipeline() {
+  if (state.running) return;
+  state.running = true;
+  state.retries = 0;
+
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('res-success').style.display = 'none';
+  document.getElementById('res-rejected').style.display = 'none';
+  document.getElementById('gate').classList.remove('visible');
+
+  setState('harvest', ''); setLog('harvest', '等待執行…');
+  setState('narrator', ''); setLog('narrator', '等待上游…');
+  setState('publisher', ''); setLog('publisher', '等待審批…');
+
+  await runHarvest();
+  await runNarrator();
+}
+
+async function runHarvest() {
+  setState('harvest', 'active');
+  setLog('harvest', '');
+
+  const steps = [
+    [600, '🔗 連接 GitHub GraphQL API…', ''],
+    [700, '📊 拉取本週 commits / PRs…', ''],
+    [500, '✓ commits: 23  PRs: 4  code reviews: 12', 'ok'],
+    [400, '✓ 語言統計：TypeScript 68%  CSS 22%', 'ok'],
+    [300, '✓ Harvest 完成（0 LLM calls）', 'ok'],
+  ];
+
+  for (const [delay, text, cls] of steps) {
+    await sleep(delay);
+    addLog('harvest', text, cls);
+  }
+  setState('harvest', 'done');
+}
+
+async function runNarrator() {
+  setState('narrator', 'active');
+  setLog('narrator', `<span class="spin"></span>LLM 呼叫中…`);
+
+  await sleep(900);
+  setLog('narrator', `<span class="thinking">✍️ 生成第一人稱週報摘要（casual 語氣）…</span>`);
+  await sleep(1100);
+  addLog('narrator', '✓ 摘要生成完成', 'ok');
+  setState('narrator', 'done');
+
+  await sleep(350);
+  const idx = state.retries % narratorOutputs.length;
+  document.getElementById('gate-preview').textContent = narratorOutputs[idx];
+  document.getElementById('gate').classList.add('visible');
+}
+
+async function doApprove() {
+  document.getElementById('gate').classList.remove('visible');
+  await runPublisher();
+}
+
+async function doReject() {
+  state.retries++;
+  document.getElementById('gate').classList.remove('visible');
+  document.getElementById('res-rejected').style.display = 'block';
+
+  await sleep(1200);
+  document.getElementById('res-rejected').style.display = 'none';
+
+  setState('narrator', '');
+  setLog('narrator', '重新生成中…');
+  await runNarrator();
+}
+
+async function runPublisher() {
+  setState('publisher', 'active');
+  setLog('publisher', '');
+
+  const steps = [
+    [600, '📝 同步至 Notion workspace…', ''],
+    [700, '📰 發布至 dev.to（草稿模式）…', ''],
+    [400, '✓ Notion 頁面已建立', 'ok'],
+    [300, '✓ dev.to 文章已發布', 'ok'],
+    [200, '✓ Publisher 完成（0 LLM calls）', 'ok'],
+  ];
+
+  for (const [delay, text, cls] of steps) {
+    await sleep(delay);
+    addLog('publisher', text, cls);
+  }
+
+  setState('publisher', 'done');
+  await sleep(300);
+  document.getElementById('res-success').style.display = 'block';
+
+  const btn = document.getElementById('startBtn');
+  btn.disabled = false;
+  btn.textContent = '↺ 再跑一次';
+  state.running = false;
+}
+</script>
+</body>
+</html>
