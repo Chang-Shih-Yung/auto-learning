@@ -9,6 +9,13 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-03-30
+- 抓取 HN today（ChatGPT/Cloudflare reads React state 307pts、Voyager 1 memory 383pts）、GitHub Trending（apache/superset 430stars、upscayl 77stars）、Figma MCP server write access（March 24）、WorkOS MCP 2026 ecosystem report
+- 整理 3 篇文章：Figma MCP write access（Code Connect 雙向流，relevance 5）、Cloudflare Turnstile reads React internals（55 properties / 377 samples，relevance 4）、MCP 2026 里程碑（97M 月下載、async tasks、CIMD，relevance 5）
+- news: Climate AI（Aurora 1.3B params 100% cyclone win、NeuralGCM Google open-source、Planetary Intelligence Models WEF）
+- domain-rotation-log 更新：climate → biology
+- Push 成功
+
 ### 2026-03-29
 - 抓取 HN today（CSS is DOOMed 171pts、I decompiled White House app 357pts、Linux is an interpreter 158pts）、GitHub Trending（chroma/chroma、apache/superset）、HN AI Discussion（HumanLayer 354pts、Magnitude 179pts）、dev.to（ZeroToRepo、6 AI Agents dev team）
 - 整理 4 篇文章：HumanLayer（Human-in-the-Loop API，relevance 5）、Magnitude（AI-native test 7行自然語言，relevance 4）、Chroma v1.5.5（Rust 重寫 4x 速度，relevance 4）、CSS is DOOM（CSS 3D 渲染，relevance 3）
