@@ -71,6 +71,10 @@
 4. **寫進 journal** — 檔案路徑：`journal/YYYY/MM/YYYY-MM-DD.md`
    - 先執行 `mkdir -p journal/YYYY/MM` 確保資料夾存在
    - 路徑用 `journal/`，不是 `學習日誌/`
+   - **頁面標題統一用「學習日誌」**：不論當天內容是 tech digest、新聞摘要或學習記錄，標題格式固定為：
+     - 有 frontmatter 時：`title: "YYYY-MM-DD 學習日誌"`
+     - 無 frontmatter 只有 H1 時：`# YYYY-MM-DD 學習日誌`
+     - 禁止使用「AI 技術摘要」、「AI Tech Digest」、「每日 AI 技術摘要」等變體
    - 每篇文章後插入 AnnotationCard（格式見下方）
    - 最後必須有「今日總結」區塊，整合當天的洞察與應用點
    - **寫完後立即用 Read 工具重新讀取剛寫入的檔案，逐一確認每個 `<AnnotationCard />` 的 `{` `}` 對稱、字串閉合，確認無誤才繼續**（MDX 解析錯誤會中斷 Vercel build）
