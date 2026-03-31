@@ -9,6 +9,13 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-03-31
+- 抓取 HN front page（Learn Claude Code 130pts、Cherri language 245pts、Agents of Chaos 63pts）、GitHub Trending（OpenBB 502 stars today、fastfetch 276 stars）、dev.to AI（Long-Horizon Agents 13 reactions）
+- 整理 3 篇文章：Claude Code v2.1.88（compound hook fix + Apple Silicon voice mode，relevance 5）、Cursor 2.5 Parallel Subagents（8 VMs + BugBot Autofix 35% merge rate，relevance 4）、Supervised Autonomy Pattern（long-horizon agents framework，relevance 5）
+- news: Biology AI（AI 縮短藥物研發前期 60%、Rice University AI genetic circuit design 百萬設計空間、AstraZeneca/Tempus AI 對比學習 15% 存活改善）
+- domain-rotation-log 更新：biology → education
+- Push 成功
+
 ### 2026-03-30
 - 抓取 HN today（ChatGPT/Cloudflare reads React state 307pts、Voyager 1 memory 383pts）、GitHub Trending（apache/superset 430stars、upscayl 77stars）、Figma MCP server write access（March 24）、WorkOS MCP 2026 ecosystem report
 - 整理 3 篇文章：Figma MCP write access（Code Connect 雙向流，relevance 5）、Cloudflare Turnstile reads React internals（55 properties / 377 samples，relevance 4）、MCP 2026 里程碑（97M 月下載、async tasks、CIMD，relevance 5）
