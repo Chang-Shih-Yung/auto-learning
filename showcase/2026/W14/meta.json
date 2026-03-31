@@ -1,0 +1,19 @@
+{
+  "year": 2026,
+  "week": "W14",
+  "week_start": "2026-03-30",
+  "week_end": "2026-04-05",
+  "articles_read": ["2026-03-30.md", "2026-03-31.md"],
+  "articles_read_titles": [
+    "Figma MCP write × Cloudflare Turnstile React internals × MCP 2026 里程碑",
+    "Claude Code v2.1.88 × Cursor 2.5 BugBot × Long-Horizon Agents × Ollama MLX × axios 供應鏈攻擊 × Universal Claude.md"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "figma", "design-systems", "react", "monorepo-pnpm"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents"],
+  "cross_week_reference": ["W13"],
+  "synthesis_note": "本週兩天的六篇文章聚焦在同一核心張力：AI agent 的自主性邊界。從 Claude Code PermissionDenied hook 到 Cursor BugBot 35% merge rate，再到 Long-Horizon Agents 的 supervised autonomy，都在問同一個問題：agent 應該在哪裡停下來？與 W13 的 HumanLayer approval gate 模式形成跨週呼應，決定做 hook 決策模擬器，讓使用者親手設定允許/拒絕規則，觀察 agent 如何在閘口做決策。",
+  "demo_type": "protocol-simulator",
+  "demo_available": true,
+  "demo_title": "PermissionDenied Hook × 操作守門員模擬器",
+  "generated_at": "2026-03-31T12:00:00Z"
+}
