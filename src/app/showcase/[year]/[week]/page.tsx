@@ -2,6 +2,7 @@ import { getAllShowcase, getShowcaseByWeek } from "@/lib/showcase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ShowcaseDemo from "./showcase-demo";
+import ShowcaseSidebar from "@/components/ShowcaseSidebar";
 import type { Metadata, ResolvingMetadata } from "next";
 
 interface PageProps {
@@ -39,11 +40,16 @@ export default async function ShowcaseWeekPage({ params }: PageProps) {
   const meta = getShowcaseByWeek(year, week);
   if (!meta) notFound();
 
+  const allItems = getAllShowcase();
+
   const articleDisplay = meta.articles_read.slice(0, 5);
   const articleOverflow = meta.articles_read.length - 5;
 
   return (
-    <div className="py-16 md:py-24 max-w-215">
+    <div className="flex flex-col md:flex-row gap-8 py-10 min-h-[calc(100vh-3.5rem)]">
+      <ShowcaseSidebar items={allItems} />
+
+      <div className="flex-1 min-w-0 max-w-215">
       {/* Back link */}
       <Link
         href="/showcase"
@@ -129,6 +135,7 @@ export default async function ShowcaseWeekPage({ params }: PageProps) {
 
       {/* Demo section */}
       <ShowcaseDemo meta={meta} year={year} week={week} />
+      </div>
     </div>
   );
 }
