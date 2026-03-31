@@ -10,10 +10,11 @@
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
 ### 2026-03-31
-- 抓取 HN front page（Learn Claude Code 130pts、Cherri language 245pts、Agents of Chaos 63pts）、GitHub Trending（OpenBB 502 stars today、fastfetch 276 stars）、dev.to AI（Long-Horizon Agents 13 reactions）
-- 整理 3 篇文章：Claude Code v2.1.88（compound hook fix + Apple Silicon voice mode，relevance 5）、Cursor 2.5 Parallel Subagents（8 VMs + BugBot Autofix 35% merge rate，relevance 4）、Supervised Autonomy Pattern（long-horizon agents framework，relevance 5）
-- news: Biology AI（AI 縮短藥物研發前期 60%、Rice University AI genetic circuit design 百萬設計空間、AstraZeneca/Tempus AI 對比學習 15% 存活改善）
+- 抓取 HN today（axios NPM compromise 285pts、Universal Claude.md 212pts、Ollama MLX 59pts）、GitHub Releases（claude-code v2.1.88）、Ollama 官方部落格、dev.to（Long-Horizon Agents）、Cursor 官方部落格
+- 整理 6 篇文章：Claude Code v2.1.88（PermissionDenied hook + compound command 修復，relevance 5）、Cursor 2.5（8 VM 並行 agent + BugBot 35% merge rate，relevance 4）、Long-Horizon Agents（supervised autonomy，35% merge定義邊界，relevance 5）、Ollama 0.19 MLX（prefill 1810 t/s +57%、decode 112 t/s +93%，relevance 4）、axios NPM compromise（v1.14.1/v0.30.4 含 RAT，300M 週下載，relevance 4）、Universal Claude.md（465→170 字 63% token 壓縮，relevance 5）
+- news: Biology AI（AI 縮短藥物研發前期 60%、Rice University AI genetic circuit 百萬設計空間、AstraZeneca/Tempus AI 對比學習 15% 存活改善）
 - domain-rotation-log 更新：biology → education
+- W14 showcase 生成：PermissionDenied Hook 決策模擬器（protocol-simulator）
 - Push 成功
 
 ### 2026-03-30
