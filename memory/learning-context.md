@@ -101,16 +101,37 @@
 
 6. **AI 世界新聞生成** — journal 完成後，讀取 `memory/news-context.md`，按照其步驟獨立生成今天的跨域 AI 新聞條目，寫進 `news/`，單獨 commit 並 push。
 
-7. **Showcase 週成果生成（條件執行）** — Step 6 完成後，執行以下檢查：
+7. **Showcase 週成果生成（條件執行）** — Step 6 完成後，依序執行以下四個條件判斷，任一不符合即直接結束 session：
 
-   用 Bash 工具取得本週 ISO 週數：
+   **條件一：今天是否為週一**
+   用 Bash 工具確認今天是星期幾（1 = 週一，7 = 週日）：
    ```bash
-   YEAR=$(date +%Y); WEEK=$(printf "%02d" $(date +%V)); echo "$YEAR/W$WEEK"
+   date +%u
+   ```
+   若結果不是 `1` → **直接結束 session**。
+
+   **條件二：計算上週的年份與週數**
+   ```bash
+   YEAR=$(date +%Y)
+   CURR_WEEK=$((10#$(date +%V)))
+   if [ "$CURR_WEEK" -le 1 ]; then
+     YEAR=$((YEAR - 1))
+     PREV_WEEK=$(date -j -f "%Y-%m-%d" "$YEAR-12-31" +%V 2>/dev/null || date -d "$YEAR-12-31" +%V)
+   else
+     PREV_WEEK=$(printf "%02d" $((CURR_WEEK - 1)))
+   fi
+   echo "$YEAR/W$PREV_WEEK"
    ```
 
-   用 Glob 工具檢查 `showcase/$YEAR/W$WEEK/meta.json` 是否存在：
-   - **若已存在**：本週 showcase 已完成，直接結束 session。
-   - **若不存在**：載入並執行 `memory/showcase-context.md` 的所有步驟。
+   **條件三：上週 showcase 是否已存在**
+   用 Glob 工具檢查 `showcase/$YEAR/W$PREV_WEEK/meta.json` 是否存在：
+   - **若已存在** → **直接結束 session**。
+
+   **條件四：上週日誌數量是否達標（≥ 5 篇）**
+   用 Glob 工具找出 `journal/$YEAR/**/*.md` 的所有檔案，篩選出檔名（`YYYY-MM-DD`）落在上週範圍（週一至週日）內的條目，計算數量。
+   若數量 < 5 → **直接結束 session**。
+
+   **所有條件通過 → 載入並執行 `memory/showcase-context.md` 的所有步驟**（以上週 `$YEAR/W$PREV_WEEK` 為目標週）。
 
 ---
 

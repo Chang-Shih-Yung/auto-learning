@@ -1,24 +1,30 @@
 # Showcase 週成果生成 Context
 
-> 此檔案由 `learning-context.md` Step 6 觸發執行。每週執行一次（冪等）。
+> 此檔案由 `learning-context.md` Step 7 觸發執行。條件：今天是週一 + 上週日誌 ≥ 5 篇。每週執行一次（冪等）。
 
 ---
 
 ## 前置確認
 
-執行前，用 Bash 取得本週資訊：
+YEAR 和 WEEK（上週週數）已由 learning-context.md Step 7 計算完成並傳入。再次確認：
 
 ```bash
 YEAR=$(date +%Y)
-WEEK=$(printf "%02d" $(date +%V))
-echo "本週：$YEAR/W$WEEK"
+CURR_WEEK=$((10#$(date +%V)))
+if [ "$CURR_WEEK" -le 1 ]; then
+  YEAR=$((YEAR - 1))
+  WEEK=$(date -j -f "%Y-%m-%d" "$YEAR-12-31" +%V 2>/dev/null || date -d "$YEAR-12-31" +%V)
+else
+  WEEK=$(printf "%02d" $((CURR_WEEK - 1)))
+fi
+echo "目標週（上週）：$YEAR/W$WEEK"
 ```
 
 ---
 
-## Step 1：讀取本週日誌，提取技術信號
+## Step 1：讀取上週日誌，提取技術信號
 
-用 Glob 工具找出本週所有 journal 檔案（排除 news 子目錄）：
+用 Glob 工具找出 `journal/$YEAR/**/*.md` 的所有檔案，**只保留檔名（YYYY-MM-DD）落在上週範圍（週一至週日）內的條目**（可用週一日期 ≤ 檔名 ≤ 週日日期判斷）：
 
 ```
 journal/$YEAR/**/*.md
