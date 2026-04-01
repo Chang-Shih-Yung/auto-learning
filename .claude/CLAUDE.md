@@ -43,6 +43,8 @@ Next.js + shadcn/ui + React 的個人學習系統。每天自動抓取 AI 技術
 - `/freeze` — 限制目錄編輯
 - `/guard` — careful + freeze 合併
 - `/unfreeze` — 解除目錄限制
+- `/learn` — 管理 project learnings（review、search、prune、export）
+- `/connect-chrome` — 啟動 real Chrome（含 Side Panel 擴充套件）
 - `/gstack-upgrade` — 更新 gstack
 
 如果 gstack 技能無法運作，執行：`cd .claude/skills/gstack && ./setup`
