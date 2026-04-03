@@ -9,6 +9,14 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-04-02（補跑）
+- 抓取 HN 2026-04-02 front page（Lemonade by AMD #6/469pts、Email obfuscation #11/343pts）、AMD 官方文件、spencermortensen.com 研究
+- 整理 2 篇文章：Lemonade v10.0（NPU+iGPU hybrid 55 t/s@12W、256K context、OpenAI API 相容，relevance 3）、Email 防爬蟲實測（426 爬蟲、JS 100% 防護、HTML entities 95%，relevance 3）
+- 跳過：Gemma 4、Qwen3.6-Plus（已於 04-03 整理過，相同工具相同角度）
+- news: Manufacturing AI（預測維護 40% 停機↓30% 成本↓、視覺檢測 99.9% 準確率 vs 人工漏看 20-30%、Agentic AI 工廠閉環）
+- domain-rotation-log 更新：manufacturing → healthcare
+- Push 成功
+
 ### 2026-04-03
 - 抓取 HN today（Gemma 4 #1/1235pts、Qwen3.6-Plus #4/457pts、Cursor 3 #3/326pts、LinkedIn browser scan #14/1600pts）、GitHub Trending（ink/ink 305⭐）、GitHub Releases（claude-code v2.1.91）、dev.to（claude-brain persistent memory、ContextCore MCP）
 - 整理 5 篇文章：Gemma 4（31B Ollama 可跑、τ2-bench 86.4%、AIME 89.2%，relevance 4）、Qwen3.6-Plus（1M context 免費 OpenRouter、Terminal-Bench 61.6%、2-3x 快於 Claude Opus，relevance 4）、Claude Code v2.1.91（MCP 工具回傳 500K 字元 via `_meta`、disableSkillShellExecution，relevance 5）、Ink（React for CLI、Claude Code/Anthropic/GitHub/Google 用、305⭐，relevance 4）、claude-brain（6 hooks + SQLite、67K 訊息、11 MCP 工具、14 slash commands，relevance 5）
