@@ -9,6 +9,14 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-04-03
+- 抓取 HN today（Gemma 4 #1/1235pts、Qwen3.6-Plus #4/457pts、Cursor 3 #3/326pts、LinkedIn browser scan #14/1600pts）、GitHub Trending（ink/ink 305⭐）、GitHub Releases（claude-code v2.1.91）、dev.to（claude-brain persistent memory、ContextCore MCP）
+- 整理 5 篇文章：Gemma 4（31B Ollama 可跑、τ2-bench 86.4%、AIME 89.2%，relevance 4）、Qwen3.6-Plus（1M context 免費 OpenRouter、Terminal-Bench 61.6%、2-3x 快於 Claude Opus，relevance 4）、Claude Code v2.1.91（MCP 工具回傳 500K 字元 via `_meta`、disableSkillShellExecution，relevance 5）、Ink（React for CLI、Claude Code/Anthropic/GitHub/Google 用、305⭐，relevance 4）、claude-brain（6 hooks + SQLite、67K 訊息、11 MCP 工具、14 slash commands，relevance 5）
+- Cursor 3 跳過（無具體數字）、LinkedIn browser scan 跳過（無法連結 Henry 技能樹）
+- news: Legal AI（法律事務所採用率 23%→52%、AI agents CoCounsel/LexisNexis Protégé、合約周期縮短 40%、729 件幻覺案例、EU AI Act 8 月）
+- domain-rotation-log 更新：legal → manufacturing
+- Push 成功
+
 ### 2026-03-31
 - 抓取 HN today（axios NPM compromise 285pts、Universal Claude.md 212pts、Ollama MLX 59pts）、GitHub Releases（claude-code v2.1.88）、Ollama 官方部落格、dev.to（Long-Horizon Agents）、Cursor 官方部落格
 - 整理 6 篇文章：Claude Code v2.1.88（PermissionDenied hook + compound command 修復，relevance 5）、Cursor 2.5（8 VM 並行 agent + BugBot 35% merge rate，relevance 4）、Long-Horizon Agents（supervised autonomy，35% merge定義邊界，relevance 5）、Ollama 0.19 MLX（prefill 1810 t/s +57%、decode 112 t/s +93%，relevance 4）、axios NPM compromise（v1.14.1/v0.30.4 含 RAT，300M 週下載，relevance 4）、Universal Claude.md（465→170 字 63% token 壓縮，relevance 5）
