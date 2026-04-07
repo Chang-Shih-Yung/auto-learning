@@ -9,6 +9,12 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-04-06
+- 抓取 HN today（Ghost Pepper #3/211pts、Freestyle #5/194pts、Claude Code issue #10/724pts、vibe coding cult #23/456pts）、GitHub Trending（无 AI 相关趋势项目）、GitHub Releases（claude-code v2.1.92、next.js v16.2.2）、dev.to（ctxlint AGENTS.md linter、git worktrees parallel Claude Code）
+- 整理 5 篇文章：Claude Code v2.1.92（Write tool 60% 更快、/cost per-model breakdown、Interactive Bedrock wizard，relevance 5）、ctxlint（74% AGENTS.md 浪費、91% 精準度、67% token 削減、<100ms，relevance 5）、git worktrees 並行（20分鐘→10分鐘、cast-parallel 工具，relevance 5）、Ghost Pepper（100% 本地 STT、WhisperKit + Qwen 0.8B、1-2s，relevance 3）、Freestyle（700ms VM 啟動、live fork 毫秒級、pause 不計費，relevance 4）
+- 跳過：Sam Altman article（新聞評論）、battle for Wesnoth（遊戲）、Adobe hosts file（有趣但與 Henry 技能樹無連結）、vibe coding cult（無具體數字）
+- Push 成功
+
 ### 2026-04-02（補跑）
 - 抓取 HN 2026-04-02 front page（Lemonade by AMD #6/469pts、Email obfuscation #11/343pts）、AMD 官方文件、spencermortensen.com 研究
 - 整理 2 篇文章：Lemonade v10.0（NPU+iGPU hybrid 55 t/s@12W、256K context、OpenAI API 相容，relevance 3）、Email 防爬蟲實測（426 爬蟲、JS 100% 防護、HTML entities 95%，relevance 3）
