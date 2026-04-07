@@ -69,25 +69,11 @@
 
 ## 重要專案
 
-### EQS 全球報價系統（東元機電）
-- **角色**：SD + UI/UX，第一次主導系統級專案
-- **技術**：Angular、Ant Design 4.23、CSS Custom Properties（Light/Dark mode）、Observable 多語系快取
-- **問題**：100+ 表單欄位無卡控、舊架構 ng-if 導致 DOM 銷毀重建，操作中斷率 100%
-- **解法**：前端流程卡控（必填/格式/金額門檻）、A/B 架構實測（共用主容器 + 權限模型）、購物車即時同步、多語系 Observable 快取
-- **成果**：企業內控強化、跨地域統一介面規格
-
-### MES 智慧製造系統（東元集團）
-- **角色**：前端主導 + 協同三名開發，走完完整五個階段生命週期
-- **技術**：Angular Feature/Shared 分層架構、RxJS（forkJoin）、SignalR 即時通訊、ECharts、PC + PDA 雙裝置
-- **問題**：工時紙本抄寫、設備狀態無法即時追蹤、PDA 操作不符現場工人習慣
-- **解法**：PC + PDA 雙端即時報工、WIP 看板（工單樹狀視覺化）、戰情室（forkJoin 並行 API、hover 按需打 API）、SignalR 即時推送
-- **成果**：**上工操作從 1分20秒 → 20秒（效率提升 75%）**、錯誤率降 33%
-
-### Nexus 企業級 UI 元件庫（自主主導）
-- **架構**：Monorepo（PNPM Workspace）：packages/ui、packages/cli、apps/demo、apps/www、registry、copilot-sdk
-- **完整鏈路**：Figma → JSON → CSS Token（OKLCH）→ Angular Component
-- **AI 整合**：Copilot SDK 自動元件轉換（60% 元件 AI 生成）、MCP Server 整合
-- **工具**：CLI（npx @nexus/cli add button）、SAST 白箱資安整合、Lottie 動畫、5 色彩主題、60+ 元件測試覆蓋
+| 專案 | 公司 | 角色 | 核心成果 |
+|------|------|------|---------|
+| EQS 全球報價系統 | 東元機電 | SD + UI/UX 主導 | 100+ 表單前端流程卡控；Angular + Ant Design 4.23 + Observable 多語系快取 |
+| MES 智慧製造系統 | 東元集團 | 前端主導（協同 3 人） | 上工操作 1分20秒 → 20秒（75%↑）；Angular + RxJS forkJoin + SignalR + ECharts + PC/PDA 雙端 |
+| Nexus UI 元件庫 | 自主主導 | 架構師 + AI 整合 | Monorepo（PNPM）；Figma → JSON → OKLCH Token → Angular；MCP Server；CLI；60% 元件 AI 生成 |
 
 ---
 
