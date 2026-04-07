@@ -9,6 +9,27 @@
 
 > 規則：每次 session 自我優化時，只保留最近 **14 天**的紀錄，超過 14 天的條目自動刪除。
 
+### 2026-04-07
+- 抓取 HN today（GitHub Issue #42796 Claude Code regression #10/724pts、Anthropic Google+Broadcom deal #2/69pts）
+- 整理 2 篇文章：Claude Code Feb regression（17,871 thinking blocks + 234,760 tool calls 分析、thinking redaction 導致 research-first→edit-first，relevance 5）、Anthropic 算力擴張（$30B ARR、3.5 GW TPU from 2027、1000+ $1M 客戶，relevance 4）
+- news: Design Industry AI（74% 建築師計畫增加 AI 使用、只有 20% 真整合、72% 工業設計師已採用、生成式設計 + 跨界設計語言）
+- domain-rotation-log 更新：design_industry → finance
+- Push 成功
+
+### 2026-04-05（補跑）
+- 抓取 HN 2026-04-05（Caveman #3/853pts、Gemma 4 locally #20/389pts、Parlor M3 Pro #17/261pts）
+- 整理 3 篇文章：Caveman（75% output token ↓、87% on React bug、3x 速度、26pts 準確率↑，relevance 5）、Gemma 4 local LM Studio（51 t/s M4 Pro、18GB、82.6% MMLU、88.3% AIME 2026，relevance 4）、Parlor multimodal（83 t/s M3 Pro、2.5-3s E2E、RTX 5090 was needed 6 months ago，relevance 3）
+- news: Climate AI（AI 氣候模型 40% 更準確、神經符號 AI 34min training vs 36hr、95%→34% 機器人準確率、能源 1%/5%）
+- domain-rotation-log 更新：climate → design_industry
+- Push 成功
+
+### 2026-04-04（補跑）
+- 抓取 HN 2026-04-04（Self-distillation code gen #4/649pts、Anthropic emotion research #17/187pts、Components of Coding Agent #11/292pts）
+- 整理 3 篇文章：SSD code gen（Qwen3-30B 42.4%→55.3% LiveCodeBench、無 teacher/RL，relevance 4）、Anthropic emotion concepts（171 emotion vectors、22% blackmail rate、hidden behavioral influence，relevance 5）、Components of Coding Agent（6 building blocks、2 memory layers、context quality = model quality，relevance 5）
+- news: Education AI（自適應學習 42% 成效提升、62% 測驗分數提升、71% 高等教育已部署 vs 34% in 2023）
+- domain-rotation-log 更新：education → climate
+- Push 成功
+
 ### 2026-04-06
 - 抓取 HN today（Ghost Pepper #3/211pts、Freestyle #5/194pts、Claude Code issue #10/724pts、vibe coding cult #23/456pts）、GitHub Trending（无 AI 相关趋势项目）、GitHub Releases（claude-code v2.1.92、next.js v16.2.2）、dev.to（ctxlint AGENTS.md linter、git worktrees parallel Claude Code）
 - 整理 5 篇文章：Claude Code v2.1.92（Write tool 60% 更快、/cost per-model breakdown、Interactive Bedrock wizard，relevance 5）、ctxlint（74% AGENTS.md 浪費、91% 精準度、67% token 削減、<100ms，relevance 5）、git worktrees 並行（20分鐘→10分鐘、cast-parallel 工具，relevance 5）、Ghost Pepper（100% 本地 STT、WhisperKit + Qwen 0.8B、1-2s，relevance 3）、Freestyle（700ms VM 啟動、live fork 毫秒級、pause 不計費，relevance 4）
