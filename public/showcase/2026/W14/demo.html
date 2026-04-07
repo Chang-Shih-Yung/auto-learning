@@ -354,15 +354,6 @@
       <div class="toggle-saving">−50% 時間</div>
     </div>
 
-    <div class="toggle-row" id="opt-ctxlint" onclick="toggleOpt('ctxlint')">
-      <div class="toggle-check"></div>
-      <div class="toggle-info">
-        <div class="toggle-name">ctxlint — CLAUDE.md 靜態分析</div>
-        <div class="toggle-desc">找出 stale refs、目錄樹、重複段落，額外再削 67%</div>
-      </div>
-      <div class="toggle-saving">−67% context</div>
-    </div>
-
   </div>
 </div>
 
@@ -417,8 +408,7 @@
       caveman: true,
       claudemd: true,
       cavedoc: false,
-      worktrees: false,
-      ctxlint: false
+      worktrees: false
     }
   };
 
@@ -441,7 +431,6 @@
 
     if (state.opts.claudemd) inputMult *= (1 - 0.63 * (state.claudeMdLines / (state.claudeMdLines + MEMORY_TOKENS_BASE / TOKENS_PER_LINE)));
     if (state.opts.cavedoc) inputMult *= (1 - 0.45 * (MEMORY_TOKENS_BASE / (state.claudeMdLines * TOKENS_PER_LINE + MEMORY_TOKENS_BASE)));
-    if (state.opts.ctxlint) inputMult *= (1 - 0.67 * 0.5);
     if (state.opts.caveman) outputMult *= 0.25;
 
     const baseInputPerSession = state.claudeMdLines * TOKENS_PER_LINE + MEMORY_TOKENS_BASE + state.toolCalls * TOKENS_PER_TOOL;
@@ -480,7 +469,6 @@
     const insights = [];
     if (state.opts.caveman) insights.push('Caveman 把你的 output 壓到原來的 25%——每次 Claude 「解釋一下」都在消耗 75% 的廢話 token。');
     if (state.opts.claudemd && state.claudeMdLines > 100) insights.push('你的 CLAUDE.md 有 ' + state.claudeMdLines + ' 行，Universal CLAUDE.md 原則可壓縮到 ' + Math.round(state.claudeMdLines * 0.37) + ' 行。');
-    if (state.opts.ctxlint) insights.push('ctxlint 報告顯示平均 74% 是可刪的廢話——相當於每天替你省下一份你根本不需要的文件。');
     if (state.opts.worktrees) insights.push('git worktrees 把 wall-clock 時間砍半，token 成本不變，但你得到的是 2× 的完成速度。');
     if (pct >= 70) insights.push('<strong>本週的洞察驗證了：效率的天花板不在模型，在 context 品質和 session 架構。</strong>');
     document.getElementById('insightText').innerHTML = insights.length ? insights.join('<br>') : '選擇至少一個優化選項查看分析。';
