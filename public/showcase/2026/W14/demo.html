@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code 效率堆棧計算器</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #fdfcfa;
+    color: #1a1a18;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 20px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1a1a18;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .input-label {
+    flex: 1;
+    font-size: 13px;
+    color: #333;
+  }
+
+  .input-label small {
+    display: block;
+    font-size: 11px;
+    color: #888;
+  }
+
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  input[type="range"] {
+    width: 100px;
+    accent-color: #3d6b5e;
+    cursor: pointer;
+  }
+
+  .value-badge {
+    font-size: 12px;
+    font-family: monospace;
+    font-weight: 600;
+    color: #1a1a18;
+    min-width: 52px;
+    text-align: right;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e8e4de;
+    margin: 16px 0;
+  }
+
+  .toggle-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: #f5f3f0;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .toggle-row:hover {
+    background: #edeae5;
+  }
+
+  .toggle-row.active {
+    background: #e8f0ee;
+    border-left: 3px solid #3d6b5e;
+    padding-left: 7px;
+  }
+
+  .toggle-check {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 2px solid #bbb;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .toggle-row.active .toggle-check {
+    background: #3d6b5e;
+    border-color: #3d6b5e;
+  }
+
+  .toggle-row.active .toggle-check::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .toggle-info {
+    flex: 1;
+  }
+
+  .toggle-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a18;
+  }
+
+  .toggle-desc {
+    font-size: 11px;
+    color: #777;
+  }
+
+  .toggle-saving {
+    font-size: 11px;
+    font-weight: 600;
+    color: #3d6b5e;
+    flex-shrink: 0;
+  }
+
+  .results {
+    background: #f5f3f0;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+  }
+
+  .results-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888;
+    margin-bottom: 12px;
+  }
+
+  .bar-section {
+    margin-bottom: 12px;
+  }
+
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+  }
+
+  .bar-name {
+    font-size: 12px;
+    color: #555;
+  }
+
+  .bar-value {
+    font-size: 13px;
+    font-weight: 700;
+    font-family: monospace;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: #e0dcd6;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+  }
+
+  .bar-fill.baseline { background: #c5b9ad; }
+  .bar-fill.optimized { background: #3d6b5e; }
+
+  .savings-summary {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #e0dcd6;
+    display: flex;
+    gap: 16px;
+  }
+
+  .summary-item {
+    flex: 1;
+    text-align: center;
+  }
+
+  .summary-number {
+    font-size: 22px;
+    font-weight: 800;
+    font-family: monospace;
+    color: #3d6b5e;
+    display: block;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    color: #777;
+  }
+
+  .insight {
+    margin-top: 14px;
+    font-size: 12px;
+    color: #555;
+    background: #edeae5;
+    padding: 10px 12px;
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+
+  .insight strong {
+    color: #1a1a18;
+  }
+</style>
+</head>
+<body>
+
+<h1>Claude Code 效率堆棧計算器</h1>
+<p class="subtitle">W14 洞察：本週多篇文章收斂到同一個問題——怎麼讓 Claude Code 用得更省？</p>
+
+<div class="section">
+  <div class="section-title">你的 Session 設定</div>
+
+  <div class="input-row">
+    <div class="input-label">
+      CLAUDE.md 長度
+      <small>context file 行數</small>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="claudeMdLines" min="20" max="400" value="120" step="10">
+      <span class="value-badge" id="claudeMdVal">120 行</span>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <div class="input-label">
+      平均回應長度
+      <small>每次 Claude 輸出 tokens</small>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="responseTokens" min="100" max="2000" value="600" step="50">
+      <span class="value-badge" id="responseVal">600 tok</span>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <div class="input-label">
+      每 Session 工具呼叫次數
+      <small>read / edit / bash 等</small>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="toolCalls" min="5" max="80" value="25" step="5">
+      <span class="value-badge" id="toolVal">25 次</span>
+    </div>
+  </div>
+
+  <div class="input-row">
+    <div class="input-label">
+      每天 Session 數
+      <small>含排程任務、手動 session</small>
+    </div>
+    <div class="slider-wrap">
+      <input type="range" id="sessionsPerDay" min="1" max="20" value="5" step="1">
+      <span class="value-badge" id="sessionsVal">5 次</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<div class="section">
+  <div class="section-title">選擇要套用的優化（點擊切換）</div>
+  <div class="toggle-group">
+
+    <div class="toggle-row active" id="opt-caveman" onclick="toggleOpt('caveman')">
+      <div class="toggle-check"></div>
+      <div class="toggle-info">
+        <div class="toggle-name">Caveman — 回應 token 壓縮</div>
+        <div class="toggle-desc">移除填充語，輸出 token 平均減少 75%，生成速度 3×</div>
+      </div>
+      <div class="toggle-saving">−75% output</div>
+    </div>
+
+    <div class="toggle-row active" id="opt-claudemd" onclick="toggleOpt('claudemd')">
+      <div class="toggle-check"></div>
+      <div class="toggle-info">
+        <div class="toggle-name">Universal CLAUDE.md — 指令壓縮</div>
+        <div class="toggle-desc">去除冗餘描述，CLAUDE.md 從 465 → 170 字，input 減少 63%</div>
+      </div>
+      <div class="toggle-saving">−63% input</div>
+    </div>
+
+    <div class="toggle-row" id="opt-cavedoc" onclick="toggleOpt('cavedoc')">
+      <div class="toggle-check"></div>
+      <div class="toggle-info">
+        <div class="toggle-name">Caveman Compress — memory 檔壓縮</div>
+        <div class="toggle-desc">session-log 等 memory 檔 input token 削減 45%</div>
+      </div>
+      <div class="toggle-saving">−45% memory</div>
+    </div>
+
+    <div class="toggle-row" id="opt-worktrees" onclick="toggleOpt('worktrees')">
+      <div class="toggle-check"></div>
+      <div class="toggle-info">
+        <div class="toggle-name">git worktrees — 並行 Session</div>
+        <div class="toggle-desc">6 個獨立 batch 同時跑，wall-clock 時間減少 50%</div>
+      </div>
+      <div class="toggle-saving">−50% 時間</div>
+    </div>
+
+    <div class="toggle-row" id="opt-ctxlint" onclick="toggleOpt('ctxlint')">
+      <div class="toggle-check"></div>
+      <div class="toggle-info">
+        <div class="toggle-name">ctxlint — CLAUDE.md 靜態分析</div>
+        <div class="toggle-desc">找出 stale refs、目錄樹、重複段落，額外再削 67%</div>
+      </div>
+      <div class="toggle-saving">−67% context</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="results">
+  <div class="results-title">每日 Token 估算</div>
+
+  <div class="bar-section">
+    <div class="bar-label">
+      <span class="bar-name">基準（未優化）</span>
+      <span class="bar-value" id="baselineNum">—</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill baseline" id="baselineBar" style="width:100%"></div>
+    </div>
+  </div>
+
+  <div class="bar-section">
+    <div class="bar-label">
+      <span class="bar-name">優化後</span>
+      <span class="bar-value" id="optimizedNum">—</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill optimized" id="optimizedBar" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="savings-summary">
+    <div class="summary-item">
+      <span class="summary-number" id="savingPct">0%</span>
+      <span class="summary-label">Token 節省率</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-number" id="savingTokens">0</span>
+      <span class="summary-label">每日節省 tokens</span>
+    </div>
+    <div class="summary-item">
+      <span class="summary-number" id="monthlyTokens">0</span>
+      <span class="summary-label">每月節省（M）</span>
+    </div>
+  </div>
+
+  <div class="insight" id="insightText"></div>
+</div>
+
+<script>
+  const state = {
+    claudeMdLines: 120,
+    responseTokens: 600,
+    toolCalls: 25,
+    sessionsPerDay: 5,
+    opts: {
+      caveman: true,
+      claudemd: true,
+      cavedoc: false,
+      worktrees: false,
+      ctxlint: false
+    }
+  };
+
+  const TOKENS_PER_LINE = 8;
+  const MEMORY_TOKENS_BASE = 400;
+  const TOKENS_PER_TOOL = 60;
+
+  function calcBaseline() {
+    const inputPerSession =
+      state.claudeMdLines * TOKENS_PER_LINE +
+      MEMORY_TOKENS_BASE +
+      state.toolCalls * TOKENS_PER_TOOL;
+    const outputPerSession = state.responseTokens * state.toolCalls * 0.4;
+    return (inputPerSession + outputPerSession) * state.sessionsPerDay;
+  }
+
+  function calcOptimized(baseline) {
+    let inputMult = 1;
+    let outputMult = 1;
+
+    if (state.opts.claudemd) inputMult *= (1 - 0.63 * (state.claudeMdLines / (state.claudeMdLines + MEMORY_TOKENS_BASE / TOKENS_PER_LINE)));
+    if (state.opts.cavedoc) inputMult *= (1 - 0.45 * (MEMORY_TOKENS_BASE / (state.claudeMdLines * TOKENS_PER_LINE + MEMORY_TOKENS_BASE)));
+    if (state.opts.ctxlint) inputMult *= (1 - 0.67 * 0.5);
+    if (state.opts.caveman) outputMult *= 0.25;
+
+    const baseInputPerSession = state.claudeMdLines * TOKENS_PER_LINE + MEMORY_TOKENS_BASE + state.toolCalls * TOKENS_PER_TOOL;
+    const baseOutputPerSession = state.responseTokens * state.toolCalls * 0.4;
+
+    let optInput = baseInputPerSession * inputMult;
+    let optOutput = baseOutputPerSession * outputMult;
+    let sessions = state.sessionsPerDay;
+    if (state.opts.worktrees) sessions = sessions * 0.5;
+
+    return (optInput + optOutput) * sessions;
+  }
+
+  function fmt(n) {
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(0) + 'K';
+    return Math.round(n).toString();
+  }
+
+  function update() {
+    const baseline = calcBaseline();
+    const optimized = calcOptimized(baseline);
+    const saving = baseline - optimized;
+    const pct = baseline > 0 ? Math.round(saving / baseline * 100) : 0;
+
+    document.getElementById('baselineNum').textContent = fmt(baseline) + ' tok';
+    document.getElementById('optimizedNum').textContent = fmt(optimized) + ' tok';
+    document.getElementById('savingPct').textContent = pct + '%';
+    document.getElementById('savingTokens').textContent = fmt(saving);
+    document.getElementById('monthlyTokens').textContent = fmt(saving * 30 / 1000000) + 'M';
+
+    const optFrac = baseline > 0 ? Math.max(4, Math.round(optimized / baseline * 100)) : 4;
+    document.getElementById('baselineBar').style.width = '100%';
+    document.getElementById('optimizedBar').style.width = optFrac + '%';
+
+    const insights = [];
+    if (state.opts.caveman) insights.push('Caveman 把你的 output 壓到原來的 25%——每次 Claude 「解釋一下」都在消耗 75% 的廢話 token。');
+    if (state.opts.claudemd && state.claudeMdLines > 100) insights.push('你的 CLAUDE.md 有 ' + state.claudeMdLines + ' 行，Universal CLAUDE.md 原則可壓縮到 ' + Math.round(state.claudeMdLines * 0.37) + ' 行。');
+    if (state.opts.ctxlint) insights.push('ctxlint 報告顯示平均 74% 是可刪的廢話——相當於每天替你省下一份你根本不需要的文件。');
+    if (state.opts.worktrees) insights.push('git worktrees 把 wall-clock 時間砍半，token 成本不變，但你得到的是 2× 的完成速度。');
+    if (pct >= 70) insights.push('<strong>本週的洞察驗證了：效率的天花板不在模型，在 context 品質和 session 架構。</strong>');
+    document.getElementById('insightText').innerHTML = insights.length ? insights.join('<br>') : '選擇至少一個優化選項查看分析。';
+  }
+
+  function toggleOpt(key) {
+    state.opts[key] = !state.opts[key];
+    const el = document.getElementById('opt-' + key);
+    el.classList.toggle('active', state.opts[key]);
+    update();
+  }
+
+  function bindSlider(id, stateKey, displayId, fmt) {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      state[stateKey] = parseInt(el.value);
+      document.getElementById(displayId).textContent = fmt(state[stateKey]);
+      update();
+    });
+  }
+
+  bindSlider('claudeMdLines', 'claudeMdLines', 'claudeMdVal', v => v + ' 行');
+  bindSlider('responseTokens', 'responseTokens', 'responseVal', v => v + ' tok');
+  bindSlider('toolCalls', 'toolCalls', 'toolVal', v => v + ' 次');
+  bindSlider('sessionsPerDay', 'sessionsPerDay', 'sessionsVal', v => v + ' 次');
+
+  update();
+</script>
+</body>
+</html>

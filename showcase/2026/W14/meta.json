@@ -1,0 +1,32 @@
+{
+  "year": 2026,
+  "week": "W14",
+  "week_start": "2026-03-30",
+  "week_end": "2026-04-05",
+  "articles_read": [
+    "2026-03-30.md",
+    "2026-03-31.md",
+    "2026-04-01.md",
+    "2026-04-02.md",
+    "2026-04-03.md",
+    "2026-04-04.md",
+    "2026-04-05.md"
+  ],
+  "articles_read_titles": [
+    "Figma MCP 寫入權限開放 × Cloudflare Turnstile × MCP 2026 里程碑",
+    "Claude Code v2.1.88 PermissionDenied Hook × Long-Horizon Agents × Universal Claude.md",
+    "Claude 原始碼洩漏 × 1-Bit Bonsai × Token 經濟學",
+    "Lemonade v10.0 AMD NPU × Email 防爬蟲實測",
+    "Gemma 4 × Qwen3.6-Plus × Claude Code v2.1.91 × claude-brain",
+    "SSD 自蒸餾提升程式碼生成 × Anthropic 情緒向量 × Coding Agent 六模組",
+    "Caveman 75% token ↓ × Gemma 4 本地 51 t/s × Parlor M3 Pro 即時多模態"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "figma", "monorepo-pnpm", "react"],
+  "skills_used_in_demo": ["ai-workflow"],
+  "cross_week_reference": ["W13"],
+  "synthesis_note": "本週七篇日誌收斂到同一個問題：如何讓 Claude Code 用得更省、更快、更持久。Universal Claude.md 把指令壓縮 63%、Caveman 把回應壓 75%、claude-brain 讓記憶跨 session 累積、Components of Coding Agent 說明架構決定品質。W13 聚焦「何時讓 AI 暫停確認」，W14 在此基礎上追問「怎麼讓 AI 跑得不那麼貴」。兩週合起來的答案是：效率的天花板不在模型，在 context 品質和 session 架構。",
+  "demo_type": "parameter-explorer",
+  "demo_available": true,
+  "demo_title": "Claude Code 效率堆棧計算器",
+  "generated_at": "2026-04-07T08:00:00Z"
+}
