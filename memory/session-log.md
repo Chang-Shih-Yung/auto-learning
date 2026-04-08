@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-08 | Glasswing + Mythos Preview 83.1%（5）、Railway Next.js→Vite 10min→2min（4） | finance | GLM-5.1 754B context rot 100k（rel.3 收錄） |
 | 2026-04-07 | Claude Code Feb regression（17,871 blocks/5）、Anthropic $30B 3.5GW（4） | design_industry | — |
 | 2026-04-06 | CC v2.1.92 Write 60%↑（5）、ctxlint 74%廢話（5）、git worktrees 50%↓（5）、Ghost Pepper STT（3）、Freestyle 700ms VM（4） | healthcare | — |
 | 2026-04-05 | Caveman 75%↓（5）、Gemma 4 51t/s 18GB（4）、Parlor M3 83t/s（3） | climate | — |
