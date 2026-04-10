@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-10 | Claude Code v2.1.98 安全加固 PID sandbox（5）、Research-Driven Agents $29/15%加速（4） | manufacturing | BMW Leipzig 人形機器人、ABB+NVIDIA 99% sim-to-real |
 | 2026-04-09 | Claude Managed Agents +10pp task success（5）、Claude Code v2.1.97 Focus View+MCP 50MB/hr leak fixed（5） | biology | Meta Muse Spark 58% HLE Contemplating mode（rel.3 收錄）|
 | 2026-04-08 | Glasswing + Mythos Preview 83.1%（5）、Railway Next.js→Vite 10min→2min（4） | finance | GLM-5.1 754B context rot 100k（rel.3 收錄） |
 | 2026-04-07 | Claude Code Feb regression（17,871 blocks/5）、Anthropic $30B 3.5GW（4） | design_industry | — |
@@ -23,7 +24,6 @@
 | 2026-03-30 | Figma MCP write（5）、Cloudflare Turnstile 55prop（4）、MCP 97M（5） | climate | — |
 | 2026-03-29 | HumanLayer HITL（5）、Magnitude 7行測試（4）、Chroma Rust 4x（4）、CSS DOOM（3） | finance | push 失敗（osxkeychain）|
 | 2026-03-28 | jai isolation（4）、CC v2.1.86（5）、3-agent Mastra（4）、Next.js Turbopack（3） | healthcare | — |
-| 2026-03-27 | CC hooks 條件觸發（5）、MCP 97M（4）、AI code 安全（4）、Mistral Small 4（3）、Axe Unix（4） | design_industry | — |
 
 ---
 
