@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-11 | Claude Code v2.1.101 context loss+memory leak+command injection fix（5）、n8n 183K stars MCP原生支援（4）、Linux kernel Assisted-by attribution標準（4） | biology | Rice CLASSIC 百萬基因電路100%準確率、NUS D-I-TASSER蛋白質結構+13% |
 | 2026-04-10 | Claude Code v2.1.98 安全加固 PID sandbox（5）、Research-Driven Agents $29/15%加速（4） | manufacturing | BMW Leipzig 人形機器人、ABB+NVIDIA 99% sim-to-real |
 | 2026-04-09 | Claude Managed Agents +10pp task success（5）、Claude Code v2.1.97 Focus View+MCP 50MB/hr leak fixed（5） | biology | Meta Muse Spark 58% HLE Contemplating mode（rel.3 收錄）|
 | 2026-04-08 | Glasswing + Mythos Preview 83.1%（5）、Railway Next.js→Vite 10min→2min（4） | finance | GLM-5.1 754B context rot 100k（rel.3 收錄） |
