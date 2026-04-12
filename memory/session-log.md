@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-12 | Berkeley AI Benchmark exploit 100% SWE-bench 500/500（5）、AISLE 3.6B模型$0.11/M token找相同漏洞（4） | legal | CoCounsel/Protégé agentic workflow；Lexis+ 17%/Westlaw 34%錯誤率；EU AI Act Aug 2026 |
 | 2026-04-11 | Claude Code v2.1.101 context loss+memory leak+command injection fix（5）、n8n 183K stars MCP原生支援（4）、Linux kernel Assisted-by attribution標準（4） | biology | Rice CLASSIC 百萬基因電路100%準確率、NUS D-I-TASSER蛋白質結構+13% |
 | 2026-04-10 | Claude Code v2.1.98 安全加固 PID sandbox（5）、Research-Driven Agents $29/15%加速（4） | manufacturing | BMW Leipzig 人形機器人、ABB+NVIDIA 99% sim-to-real |
 | 2026-04-09 | Claude Managed Agents +10pp task success（5）、Claude Code v2.1.97 Focus View+MCP 50MB/hr leak fixed（5） | biology | Meta Muse Spark 58% HLE Contemplating mode（rel.3 收錄）|
@@ -23,8 +24,6 @@
 | 2026-04-02 | Lemonade NPU 55t/s（3）、Email 防爬蟲 426bot（3） | manufacturing | — |
 | 2026-03-31 | CC v2.1.88 PermissionDenied（5）、Cursor 2.5 35%merge（4）、Long-Horizon supervised（5）、Ollama MLX +93%（4）、axios RAT（4）、Universal CLAUDE.md 63%↓（5） | biology | W13 showcase: PermissionDenied Hook 模擬器 |
 | 2026-03-30 | Figma MCP write（5）、Cloudflare Turnstile 55prop（4）、MCP 97M（5） | climate | — |
-| 2026-03-29 | HumanLayer HITL（5）、Magnitude 7行測試（4）、Chroma Rust 4x（4）、CSS DOOM（3） | finance | push 失敗（osxkeychain）|
-| 2026-03-28 | jai isolation（4）、CC v2.1.86（5）、3-agent Mastra（4）、Next.js Turbopack（3） | healthcare | — |
 
 ---
 
