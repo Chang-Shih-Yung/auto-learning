@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research-First vs Edit-First Agent 模擬器</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fdfcfa;
+      --surface: #f5f3ef;
+      --border: #e5e2db;
+      --text: #1a1a18;
+      --text-muted: #6b6860;
+      --green: #3d6b5e;
+      --green-light: #e8f0ee;
+      --amber: #bf7a26;
+      --amber-light: #fdf3e3;
+      --red: #c0392b;
+      --red-light: #fdecea;
+      --blue: #2c5f8a;
+      --blue-light: #e8f0f8;
+      --step-done: #27ae60;
+      --step-active: #e67e22;
+      --step-wait: #bdc3c7;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 16px;
+      min-height: 100%;
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .task-select-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .task-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .task-btn {
+      padding: 5px 12px;
+      border-radius: 20px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .task-btn:hover { border-color: var(--green); color: var(--green); }
+    .task-btn.active {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+      font-weight: 500;
+    }
+
+    .run-btn {
+      padding: 6px 18px;
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.15s;
+      margin-left: auto;
+    }
+    .run-btn:hover { opacity: 0.88; }
+    .run-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .reset-btn {
+      padding: 6px 12px;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .reset-btn:hover { border-color: var(--text-muted); }
+
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .agent-panel {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .agent-panel.edit-first { border-color: #e8c4a0; }
+    .agent-panel.research-first { border-color: #a8c4bc; }
+
+    .agent-header {
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .edit-first .agent-header { background: var(--amber-light); color: var(--amber); }
+    .research-first .agent-header { background: var(--green-light); color: var(--green); }
+
+    .agent-badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 500;
+      margin-left: auto;
+    }
+
+    .edit-first .agent-badge { background: var(--amber); color: white; }
+    .research-first .agent-badge { background: var(--green); color: white; }
+
+    .step-list {
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 160px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 5px;
+      transition: background 0.2s;
+      font-size: 12px;
+    }
+
+    .step-item.done { background: #f0faf4; }
+    .step-item.active { background: #fff8f0; }
+    .step-item.error { background: var(--red-light); }
+    .step-item.waiting { opacity: 0.4; }
+
+    .step-icon {
+      font-size: 13px;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .step-text {
+      flex: 1;
+    }
+
+    .step-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .step-note.error { color: var(--red); }
+    .step-note.success { color: var(--step-done); }
+
+    .log-area {
+      border-top: 1px solid var(--border);
+      padding: 6px 12px;
+      min-height: 36px;
+      background: var(--surface);
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .metrics-card {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .edit-first-metrics { border-color: #e8c4a0; background: var(--amber-light); }
+    .research-first-metrics { border-color: #a8c4bc; background: var(--green-light); }
+
+    .metrics-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+
+    .edit-first-metrics .metrics-title { color: var(--amber); }
+    .research-first-metrics .metrics-title { color: var(--green); }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-weight: 600;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .metric-val.bad { color: var(--red); }
+    .metric-val.good { color: var(--step-done); }
+    .metric-val.neutral { color: var(--text); }
+    .metric-val.dim { color: var(--text-muted); }
+
+    .verdict-bar {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: none;
+      border: 1.5px solid transparent;
+    }
+    .verdict-bar.show { display: block; }
+    .verdict-bar.research-wins { background: var(--green-light); border-color: #a8c4bc; color: var(--green); }
+
+    .verdict-bar strong { font-weight: 600; }
+    .verdict-bar .stats { margin-top: 4px; font-size: 11px; opacity: 0.8; }
+
+    .source-note {
+      margin-top: 10px;
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Research-First vs Edit-First：AI Agent 決策模式模擬器</h1>
+  <p class="subtitle">W15 核心洞察：GitHub Issue #42796 × Research-Driven Agents × Claude Code v2.1.92–v2.1.101</p>
+
+  <div class="task-select-row">
+    <span class="task-label">選任務類型：</span>
+    <button class="task-btn active" data-task="bug">Bug 修復</button>
+    <button class="task-btn" data-task="feature">新功能</button>
+    <button class="task-btn" data-task="security">安全審查</button>
+    <button class="task-btn" data-task="refactor">架構重構</button>
+    <button class="run-btn" id="runBtn">▶ 執行模擬</button>
+    <button class="reset-btn" id="resetBtn">重置</button>
+  </div>
+
+  <div class="sim-grid">
+    <!-- Edit-First -->
+    <div class="agent-panel edit-first" id="editPanel">
+      <div class="agent-header">
+        ⚡ Edit-First Agent
+        <span class="agent-badge">直接動手</span>
+      </div>
+      <div class="step-list" id="editSteps"></div>
+      <div class="log-area" id="editLog">等待開始...</div>
+    </div>
+
+    <!-- Research-First -->
+    <div class="agent-panel research-first" id="researchPanel">
+      <div class="agent-header">
+        🔍 Research-First Agent
+        <span class="agent-badge">先讀後動</span>
+      </div>
+      <div class="step-list" id="researchSteps"></div>
+      <div class="log-area" id="researchLog">等待開始...</div>
+    </div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="metrics-card edit-first-metrics">
+      <div class="metrics-title">⚡ Edit-First 結果</div>
+      <div class="metric-row"><span>修改次數</span><span class="metric-val dim" id="m-edit-revisions">—</span></div>
+      <div class="metric-row"><span>引入錯誤</span><span class="metric-val dim" id="m-edit-errors">—</span></div>
+      <div class="metric-row"><span>最終狀態</span><span class="metric-val dim" id="m-edit-status">—</span></div>
+      <div class="metric-row"><span>耗時（相對）</span><span class="metric-val dim" id="m-edit-time">—</span></div>
+    </div>
+    <div class="metrics-card research-first-metrics">
+      <div class="metrics-title">🔍 Research-First 結果</div>
+      <div class="metric-row"><span>修改次數</span><span class="metric-val dim" id="m-research-revisions">—</span></div>
+      <div class="metric-row"><span>引入錯誤</span><span class="metric-val dim" id="m-research-errors">—</span></div>
+      <div class="metric-row"><span>最終狀態</span><span class="metric-val dim" id="m-research-status">—</span></div>
+      <div class="metric-row"><span>耗時（相對）</span><span class="metric-val dim" id="m-research-time">—</span></div>
+    </div>
+  </div>
+
+  <div class="verdict-bar" id="verdictBar"></div>
+
+  <p class="source-note">來源：GitHub Issue #42796（17,871 thinking blocks 分析）× SkyPilot Research-Driven Agents 研究（$29 / +15% 速度）</p>
+
+  <script>
+    const TASKS = {
+      bug: {
+        label: 'Bug 修復',
+        editSteps: [
+          { icon: '👀', text: '掃描錯誤訊息', note: '快速看一眼 stack trace' },
+          { icon: '✏️', text: '直接修改懷疑的那行', note: 'edit-first：跳過原因分析', type: 'action' },
+          { icon: '🧪', text: '跑測試', note: null },
+          { icon: '❌', text: '測試失敗：side effect 出現', note: '沒讀 dependency，改錯位置了', type: 'error' },
+          { icon: '✏️', text: '再修一次（修 side effect）', note: '第 2 次修改', type: 'action' },
+          { icon: '🧪', text: '再跑測試', note: null },
+          { icon: '⚠️', text: '另一個測試壞了', note: '整合測試失敗', type: 'error' },
+          { icon: '✏️', text: '第 3 次修改', note: '繞過那個測試', type: 'action' },
+          { icon: '✅', text: '通過', note: '完成，但引入了 3 個 side effect', type: 'done' }
+        ],
+        researchSteps: [
+          { icon: '📖', text: '讀相關模組文件', note: '閱讀 2 個相關檔案' },
+          { icon: '🔍', text: '追蹤 call stack 到根因', note: '找到真正的來源' },
+          { icon: '🗺️', text: '確認 dependency graph', note: '理解影響範圍' },
+          { icon: '✏️', text: '在正確位置修改', note: 'research-first：目標明確', type: 'action' },
+          { icon: '🧪', text: '跑完整測試', note: null },
+          { icon: '✅', text: '全部通過，零 side effect', note: '一次完成', type: 'done' }
+        ],
+        metrics: {
+          edit:     { revisions: 3, errors: 2, status: '⚠️ 部分通過', time: '2.8×' },
+          research: { revisions: 1, errors: 0, status: '✅ 完全通過', time: '1.0×' }
+        },
+        verdict: '加入「研究階段」讓 Bug 修復從 3 次修改壓縮到 1 次，消除了 2 個 side effect——對應 Research-Driven Agents $29 研究：先讀 codebase 再動手，最終總時間反而更短。'
+      },
+      feature: {
+        label: '新功能',
+        editSteps: [
+          { icon: '✏️', text: '直接開始寫新程式碼', note: 'edit-first：沒讀現有架構', type: 'action' },
+          { icon: '🔗', text: '接到 codebase', note: null },
+          { icon: '❌', text: '發現命名衝突', note: '已有同名 function，沒事先讀', type: 'error' },
+          { icon: '✏️', text: '重新命名，改依賴', note: '第 2 次修改', type: 'action' },
+          { icon: '❌', text: '型別不符合（TypeScript strict）', note: '介面定義沒確認', type: 'error' },
+          { icon: '✏️', text: '修型別，補 interface', note: '第 3 次修改', type: 'action' },
+          { icon: '🧪', text: '測試', note: null },
+          { icon: '⚠️', text: '測試 70% 通過', note: '邊界條件沒覆蓋', type: 'error' },
+          { icon: '✅', text: '修邊界條件後完成', note: '共 4 次修改', type: 'done' }
+        ],
+        researchSteps: [
+          { icon: '📖', text: '讀現有 module 架構', note: '掌握命名規範和介面設計' },
+          { icon: '🔍', text: '找類似功能的實作參考', note: '避免重複造輪子' },
+          { icon: '🗺️', text: '確認 TypeScript 介面合約', note: null },
+          { icon: '✏️', text: '按規範寫新功能', note: 'research-first：一次到位', type: 'action' },
+          { icon: '🧪', text: '跑測試', note: null },
+          { icon: '✅', text: '全部通過', note: '架構一致，無衝突', type: 'done' }
+        ],
+        metrics: {
+          edit:     { revisions: 4, errors: 3, status: '⚠️ 70% 通過', time: '3.1×' },
+          research: { revisions: 1, errors: 0, status: '✅ 100% 通過', time: '1.0×' }
+        },
+        verdict: '新功能開發時，edit-first 最常卡在「命名衝突」和「型別不符」——這兩個問題讀過現有架構後都能提前避免。對應 Issue #42796：thinking redaction 後 Claude 跳過了這個「讀架構」的步驟。'
+      },
+      security: {
+        label: '安全審查',
+        editSteps: [
+          { icon: '👀', text: '快速看一遍程式碼', note: 'edit-first：表面掃描' },
+          { icon: '✏️', text: '修掉明顯的 SQL injection 點', note: '處理了 1 個漏洞', type: 'action' },
+          { icon: '📋', text: '回報完成', note: '認為已安全' },
+          { icon: '❌', text: '漏掉深層 command injection', note: '只看了 SQL，沒看 shell 呼叫', type: 'error' },
+          { icon: '❌', text: '漏掉 path traversal', note: '檔案操作沒審查', type: 'error' },
+          { icon: '⚠️', text: '安全掃描工具找到 2 個剩餘漏洞', note: '需要再次修補', type: 'error' },
+          { icon: '✅', text: '補修後完成', note: '遺漏率 67%', type: 'done' }
+        ],
+        researchSteps: [
+          { icon: '📖', text: '讀所有外部輸入進入點', note: 'SQL / shell / file / env' },
+          { icon: '🔍', text: '追蹤每條資料流', note: '確認 trust boundary' },
+          { icon: '📚', text: '對照 OWASP Top 10 清單', note: '系統性審查框架' },
+          { icon: '✏️', text: '修補所有發現的漏洞', note: 'SQL + shell + path traversal', type: 'action' },
+          { icon: '🧪', text: '安全測試', note: null },
+          { icon: '✅', text: '零遺漏', note: '對應 Glasswing Mythos 83.1% 方法論', type: 'done' }
+        ],
+        metrics: {
+          edit:     { revisions: 2, errors: 2, status: '⚠️ 遺漏率 67%', time: '2.2×' },
+          research: { revisions: 1, errors: 0, status: '✅ 零遺漏', time: '1.0×' }
+        },
+        verdict: '安全審查是 research-first 優勢最明顯的任務：edit-first 只找到表面漏洞，遺漏率 67%。對應本週 Glasswing Mythos 83.1% CyberGym——系統性閱讀輸入點是高覆蓋率的關鍵。'
+      },
+      refactor: {
+        label: '架構重構',
+        editSteps: [
+          { icon: '✏️', text: '直接開始移動模組', note: 'edit-first：邊做邊看', type: 'action' },
+          { icon: '❌', text: 'circular dependency 出現', note: '沒先畫 dependency graph', type: 'error' },
+          { icon: '✏️', text: '調整模組順序', note: '第 2 次修改', type: 'action' },
+          { icon: '❌', text: 'TypeScript path alias 壞掉', note: 'tsconfig.json 沒更新', type: 'error' },
+          { icon: '✏️', text: '修 tsconfig + path', note: '第 3 次修改', type: 'action' },
+          { icon: '❌', text: 'monorepo 的其他 package 找不到型別', note: 'pnpm workspace link 斷了', type: 'error' },
+          { icon: '✏️', text: '重建 workspace link', note: '第 4 次修改', type: 'action' },
+          { icon: '✅', text: '完成，但花了 4 倍時間', note: '反覆試誤', type: 'done' }
+        ],
+        researchSteps: [
+          { icon: '📖', text: '讀現有 dependency graph', note: '用 madge 或 ts-morph 分析' },
+          { icon: '🗺️', text: '畫出目標架構', note: '確認新的模組邊界' },
+          { icon: '🔍', text: '找出所有 import 路徑', note: '含 monorepo cross-package' },
+          { icon: '🔧', text: '更新 tsconfig + pnpm workspace', note: '先設定再移動' },
+          { icon: '✏️', text: '按計畫移動模組', note: 'research-first：一次到位', type: 'action' },
+          { icon: '✅', text: '完成，無 circular dependency', note: '對應 git worktrees 並行策略', type: 'done' }
+        ],
+        metrics: {
+          edit:     { revisions: 4, errors: 3, status: '⚠️ 多次返工', time: '4.0×' },
+          research: { revisions: 1, errors: 0, status: '✅ 一次完成', time: '1.0×' }
+        },
+        verdict: '架構重構是 edit-first 代價最高的任務：4 次修改、3 個 side effect、4 倍時間。對應本週 git worktrees 並行策略——把「計畫」和「執行」分開，才能真正並行化，而不是在錯誤中打轉。'
+      }
+    };
+
+    let currentTask = 'bug';
+    let running = false;
+    let editDone = false;
+    let researchDone = false;
+
+    const taskBtns = document.querySelectorAll('.task-btn');
+    const runBtn = document.getElementById('runBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const editStepsEl = document.getElementById('editSteps');
+    const researchStepsEl = document.getElementById('researchSteps');
+    const editLogEl = document.getElementById('editLog');
+    const researchLogEl = document.getElementById('researchLog');
+    const verdictBar = document.getElementById('verdictBar');
+
+    function selectTask(task) {
+      currentTask = task;
+      taskBtns.forEach(b => b.classList.toggle('active', b.dataset.task === task));
+      reset();
+    }
+
+    taskBtns.forEach(btn => btn.addEventListener('click', () => selectTask(btn.dataset.task)));
+
+    function renderStepList(el, steps, allWaiting) {
+      el.innerHTML = steps.map((s, i) => `
+        <div class="step-item ${allWaiting ? 'waiting' : ''}" id="${el.id}-step-${i}">
+          <span class="step-icon">${s.icon}</span>
+          <div class="step-text">
+            ${s.text}
+            ${s.note ? `<div class="step-note">${s.note}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function reset() {
+      running = false; editDone = false; researchDone = false;
+      runBtn.disabled = false;
+      const task = TASKS[currentTask];
+      renderStepList(editStepsEl, task.editSteps, true);
+      renderStepList(researchStepsEl, task.researchSteps, true);
+      editLogEl.textContent = '等待開始...';
+      researchLogEl.textContent = '等待開始...';
+      verdictBar.className = 'verdict-bar';
+      verdictBar.innerHTML = '';
+      ['edit-revisions','edit-errors','edit-status','edit-time',
+       'research-revisions','research-errors','research-status','research-time'].forEach(id => {
+        const el = document.getElementById('m-'+id);
+        el.textContent = '—';
+        el.className = 'metric-val dim';
+      });
+    }
+
+    function setMetric(id, val, cls) {
+      const el = document.getElementById('m-'+id);
+      el.textContent = val;
+      el.className = 'metric-val ' + cls;
+    }
+
+    function markStep(listId, idx, state, noteOverride) {
+      const step = document.getElementById(listId + '-step-' + idx);
+      if (!step) return;
+      step.className = 'step-item ' + state;
+      if (noteOverride !== undefined) {
+        const noteEl = step.querySelector('.step-note');
+        if (noteEl) { noteEl.textContent = noteOverride; noteEl.className = 'step-note ' + state; }
+      }
+      const icons = { done: '✅', active: '⏳', error: '❌', waiting: '' };
+      if (state === 'active') step.querySelector('.step-icon').textContent = '⏳';
+      if (state === 'done') step.querySelector('.step-icon').textContent = step.querySelector('.step-icon').textContent === '⏳' ? '✅' : step.querySelector('.step-icon').textContent;
+    }
+
+    async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    async function runEditFirst(task) {
+      const steps = task.editSteps;
+      editLogEl.textContent = '🚀 Edit-First 啟動...';
+      for (let i = 0; i < steps.length; i++) {
+        // activate
+        const stepEl = document.getElementById('editSteps-step-' + i);
+        if (stepEl) { stepEl.className = 'step-item active'; }
+        const s = steps[i];
+        editLogEl.textContent = '> ' + s.text + (s.note ? ` — ${s.note}` : '');
+        await sleep(s.type === 'error' ? 900 : s.type === 'action' ? 700 : 500);
+        // mark done or error
+        if (stepEl) { stepEl.className = 'step-item ' + (s.type === 'error' ? 'error' : s.type === 'done' ? 'done' : 'done'); }
+      }
+      const m = task.metrics.edit;
+      setMetric('edit-revisions', m.revisions + ' 次', m.revisions >= 3 ? 'bad' : 'neutral');
+      setMetric('edit-errors', m.errors + ' 個', m.errors > 0 ? 'bad' : 'good');
+      setMetric('edit-status', m.status, m.errors > 0 ? 'bad' : 'good');
+      setMetric('edit-time', m.time, 'bad');
+      editLogEl.textContent = '⚠️ 完成（含 ' + m.errors + ' 個 side effect）';
+      editDone = true;
+      checkBothDone(task);
+    }
+
+    async function runResearchFirst(task) {
+      const steps = task.researchSteps;
+      await sleep(300);
+      researchLogEl.textContent = '🔍 Research-First 啟動（先讀後動）...';
+      for (let i = 0; i < steps.length; i++) {
+        const stepEl = document.getElementById('researchSteps-step-' + i);
+        if (stepEl) { stepEl.className = 'step-item active'; }
+        const s = steps[i];
+        researchLogEl.textContent = '> ' + s.text + (s.note ? ` — ${s.note}` : '');
+        await sleep(s.type === 'action' ? 650 : s.type === 'done' ? 500 : 800);
+        if (stepEl) { stepEl.className = 'step-item ' + (s.type === 'done' ? 'done' : 'done'); }
+      }
+      const m = task.metrics.research;
+      setMetric('research-revisions', m.revisions + ' 次', 'good');
+      setMetric('research-errors', m.errors + ' 個', 'good');
+      setMetric('research-status', m.status, 'good');
+      setMetric('research-time', m.time, 'neutral');
+      researchLogEl.textContent = '✅ 完成（零 side effect）';
+      researchDone = true;
+      checkBothDone(task);
+    }
+
+    function checkBothDone(task) {
+      if (!editDone || !researchDone) return;
+      verdictBar.className = 'verdict-bar research-wins show';
+      verdictBar.innerHTML = `<strong>💡 洞察：</strong>${task.verdict}<div class="stats">來源：GitHub Issue #42796（6,852 sessions × 17,871 thinking blocks）× SkyPilot Research-Driven Agents（$29 / +15.1% tokens/s）</div>`;
+      runBtn.disabled = false;
+      running = false;
+    }
+
+    runBtn.addEventListener('click', async () => {
+      if (running) return;
+      running = true;
+      runBtn.disabled = true;
+      const task = TASKS[currentTask];
+      // reset step display
+      renderStepList(editStepsEl, task.editSteps, false);
+      renderStepList(researchStepsEl, task.researchSteps, false);
+      editDone = false; researchDone = false;
+      verdictBar.className = 'verdict-bar';
+      // run both in parallel
+      runEditFirst(task);
+      runResearchFirst(task);
+    });
+
+    resetBtn.addEventListener('click', reset);
+
+    // init
+    reset();
+  </script>
+</body>
+</html>

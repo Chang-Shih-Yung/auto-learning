@@ -1,0 +1,32 @@
+{
+  "year": 2026,
+  "week": "W15",
+  "week_start": "2026-04-06",
+  "week_end": "2026-04-12",
+  "articles_read": [
+    "2026-04-06.md",
+    "2026-04-07.md",
+    "2026-04-08.md",
+    "2026-04-09.md",
+    "2026-04-10.md",
+    "2026-04-11.md",
+    "2026-04-12.md"
+  ],
+  "articles_read_titles": [
+    "Claude Code v2.1.92 Write 60% × ctxlint × git worktrees 並行 × Ghost Pepper × Freestyle",
+    "GitHub Issue #42796 thinking regression × Anthropic $30B 3.5GW",
+    "Project Glasswing Mythos 83.1% × GLM-5.1 context rot × Railway Next.js→Vite",
+    "Claude Managed Agents +10pp × Claude Code v2.1.97 Focus View × Meta Muse Spark",
+    "Claude Code v2.1.98 PID sandbox × Research-Driven Agents $29/15%",
+    "Claude Code v2.1.101 context loss fixed × n8n 183K MCP × Linux Assisted-by",
+    "AI Benchmark 全造假 100% × AISLE 3.6B $0.11/M × Cirrus Labs/Tart 免費"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm", "react", "containers"],
+  "skills_used_in_demo": ["ai-agents", "ai-workflow"],
+  "cross_week_reference": ["W14"],
+  "synthesis_note": "本週讀了七篇日誌，四篇是 Claude Code 版本更新（v2.1.92/97/98/101），全部收斂到同一問題：AI agent 何時出錯、如何可信賴？Issue #42796 發現 thinking redaction 讓 Claude 從「先研究後修改」退化成「直接修改」；Research-Driven Agents 證明加入閱讀階段可用 $29 換來 15% 加速。W14 問「怎麼讓 AI 跑得更省」，W15 問「怎麼確認 AI 在做正確的事」——答案是設計 research-first 流程。",
+  "demo_type": "protocol-simulator",
+  "demo_available": true,
+  "demo_title": "Research-First vs Edit-First：AI Agent 決策模式模擬器",
+  "generated_at": "2026-04-13T08:00:00Z"
+}
