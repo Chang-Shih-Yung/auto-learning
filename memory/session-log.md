@@ -12,6 +12,10 @@
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
 | 2026-04-20 | Claude Opus 4.7 系統提示詞 工具先行動（5）、Prompt-to-Excalidraw Gemma 4 E2B 30+ tok/s 瀏覽器本地（4）、Claudoscope Claude Code session cost 儀表板 147★（5）、gh skill v2.90.0 跨工具 skills（4）、Vercel 資安事件 sensitive env var（4） | — | 主題：AI 工具可控性；工具先行動設計原則；結構化輸出哲學；供應鏈安全 |
+| 2026-04-19 | CC v2.1.114 agent team crash fix（5）、CSS Studio 視覺設計→CSS AI（4） | legal | Colorado AI Act June 2026 高風險AI透明度；CoCounsel autonomous review 40%↓cycle |
+| 2026-04-18 | Anthropic Claude Code Best Practices 614pts（5）、OpenAI Codex computer use+90 plugins+MCP+PR review（4） | biology | YuelDesign diffusion drug-protein binding；合成生物學LLM基因電路設計 |
+| 2026-04-17 | CC v2.1.111 Opus 4.7 xhigh+Auto mode（5）、v2.1.113 native binary+deniedDomains（5）、PocketFlow Tutorial-Codebase 12k stars（4） | manufacturing | AI predictive maintenance 50%↓downtime 24%採用率；人形機器人99% sim-to-real |
+| 2026-04-16 | CC v2.1.110 /tui+push notification+/focus（5）、Gemini 2.5 Flash 1M ctx+thinking budget（3）、OpenAI Codex CLI MIT terminal agent（4） | finance | AI量化交易RL trading bots 18%↓最大回撤；68%金融機構AI風控優先 |
 | 2026-04-15 | Claude Code v2.1.108 /recap+1hr prompt cache+model 主動呼叫 slash commands（5）、Boneyard DOM快照 4.8k stars pixel-perfect skeleton（4）、opencode 100K stars model-agnostic router Claude Max路由（5） | — | 主題：消除開發摩擦；session切換成本歸零；骨架屏零維護 |
 | 2026-04-14 | Claude Code v2.1.105 EnterWorktree path+串流重試（5）、GitHub Stacked PRs 鏈式合併（4）、Agent Memory Binding 61.6% 500實驗（5）、Cloudflare cf CLI 3000 ops <1000 tokens（4） | — | 主題：AI agent 可靠性；binding vs recall 洞察 |
 | 2026-04-13 | Claudraband session persistence HTTP daemon（5）、Berkeley benchmark 8個100% exploit（4）、Next.js v16.2.3 CVE-2026-23869（4） | education | Carnegie Learning MATHia 42%↑ 1M學生；Alpha School 2hr model；W15 showcase: Research-First vs Edit-First 模擬器 |
