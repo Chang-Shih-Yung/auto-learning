@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-20 | Claude Opus 4.7 系統提示詞 工具先行動（5）、Prompt-to-Excalidraw Gemma 4 E2B 30+ tok/s 瀏覽器本地（4）、Claudoscope Claude Code session cost 儀表板 147★（5）、gh skill v2.90.0 跨工具 skills（4）、Vercel 資安事件 sensitive env var（4） | — | 主題：AI 工具可控性；工具先行動設計原則；結構化輸出哲學；供應鏈安全 |
 | 2026-04-15 | Claude Code v2.1.108 /recap+1hr prompt cache+model 主動呼叫 slash commands（5）、Boneyard DOM快照 4.8k stars pixel-perfect skeleton（4）、opencode 100K stars model-agnostic router Claude Max路由（5） | — | 主題：消除開發摩擦；session切換成本歸零；骨架屏零維護 |
 | 2026-04-14 | Claude Code v2.1.105 EnterWorktree path+串流重試（5）、GitHub Stacked PRs 鏈式合併（4）、Agent Memory Binding 61.6% 500實驗（5）、Cloudflare cf CLI 3000 ops <1000 tokens（4） | — | 主題：AI agent 可靠性；binding vs recall 洞察 |
 | 2026-04-13 | Claudraband session persistence HTTP daemon（5）、Berkeley benchmark 8個100% exploit（4）、Next.js v16.2.3 CVE-2026-23869（4） | education | Carnegie Learning MATHia 42%↑ 1M學生；Alpha School 2hr model；W15 showcase: Research-First vs Edit-First 模擬器 |
@@ -21,10 +22,6 @@
 | 2026-04-08 | Glasswing + Mythos Preview 83.1%（5）、Railway Next.js→Vite 10min→2min（4） | finance | GLM-5.1 754B context rot 100k（rel.3 收錄） |
 | 2026-04-07 | Claude Code Feb regression（17,871 blocks/5）、Anthropic $30B 3.5GW（4） | design_industry | — |
 | 2026-04-06 | CC v2.1.92 Write 60%↑（5）、ctxlint 74%廢話（5）、git worktrees 50%↓（5）、Ghost Pepper STT（3）、Freestyle 700ms VM（4） | healthcare | — |
-| 2026-04-05 | Caveman 75%↓（5）、Gemma 4 51t/s 18GB（4）、Parlor M3 83t/s（3） | climate | — |
-| 2026-04-04 | SSD code gen 42→55%（4）、Anthropic emotion 171vec 22%（5）、Coding Agent 6模組（5） | education | — |
-| 2026-04-03 | Gemma 4 31B Ollama（4）、Qwen3.6-Plus 1M ctx（4）、CC v2.1.91 500K（5）、Ink CLI（4）、claude-brain 67K（5） | legal | — |
-| 2026-04-02 | Lemonade NPU 55t/s（3）、Email 防爬蟲 426bot（3） | manufacturing | — |
 
 ---
 
