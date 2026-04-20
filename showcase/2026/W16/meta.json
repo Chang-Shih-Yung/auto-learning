@@ -1,0 +1,32 @@
+{
+  "year": 2026,
+  "week": "W16",
+  "week_start": "2026-04-14",
+  "week_end": "2026-04-20",
+  "articles_read": [
+    "2026-04-14.md",
+    "2026-04-15.md",
+    "2026-04-16.md",
+    "2026-04-17.md",
+    "2026-04-18.md",
+    "2026-04-19.md",
+    "2026-04-20.md"
+  ],
+  "articles_read_titles": [
+    "Claude Code v2.1.105 EnterWorktree × GitHub Stacked PRs × Agent Memory Binding × Cloudflare cf CLI",
+    "Claude Code v2.1.108 /recap × Boneyard DOM skeleton × opencode 100K stars",
+    "Claude Code v2.1.110 /tui × Gemini 2.5 Flash × OpenAI Codex CLI",
+    "Claude Code v2.1.111-113 Opus xhigh × Auto Mode × PocketFlow Tutorial-Codebase",
+    "Anthropic Claude Code Best Practices × OpenAI Codex computer use + MCP",
+    "Claude Code v2.1.114 agent team fix × CSS Studio",
+    "Claude Opus 4.7 工具先行動 × Prompt-to-Excalidraw × Claudoscope × gh skill × Vercel security"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm", "figma", "design-code-bridge"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents"],
+  "cross_week_reference": ["W15", "W14"],
+  "synthesis_note": "本週讀了七篇日誌，Claude Code 從 v2.1.105 演進到 v2.1.114，三條主線同步推進：effort 分層智慧化（xhigh + Auto mode）、multi-agent 穩定可用（v2.1.114 team crash 修復）、MCP 成為跨工具標準（Codex + gh skill 全面接入）。W14 問「怎麼省」、W15 問「怎麼可靠」、W16 的答案是「讓工具自己智慧分配」——Auto mode 自動按複雜度選模型，xhigh 填補 high/max 之間的成本跳躍，multi-agent 讓大任務按 package 並行。做了一個互動計算器，讓人直接感受不同任務類型的最佳 effort 設定。",
+  "demo_type": "parameter-explorer",
+  "demo_available": true,
+  "demo_title": "Claude Code Effort × Task 最佳化計算器",
+  "generated_at": "2026-04-20T12:00:00Z"
+}

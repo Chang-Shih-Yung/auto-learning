@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Effort 最佳化計算器</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fdfcfa;
+    color: #1a1a18;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  h1 { font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.3px; }
+  .subtitle { font-size: 12px; color: #666; margin-bottom: 16px; }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  /* Task grid */
+  .task-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .task-btn {
+    background: #f3f1ee;
+    border: 1.5px solid transparent;
+    border-radius: 8px;
+    padding: 10px 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .task-btn:hover { background: #eae8e4; }
+  .task-btn.active {
+    background: #e8f0ed;
+    border-color: #3d6b5e;
+  }
+  .task-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+  .task-name { font-size: 11px; font-weight: 600; color: #1a1a18; }
+  .task-desc { font-size: 10px; color: #888; margin-top: 2px; line-height: 1.3; }
+
+  /* Result panel */
+  .result-panel {
+    background: #f3f1ee;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e3df;
+  }
+  .result-row:last-child { border-bottom: none; }
+  .result-key { font-size: 11px; color: #666; }
+  .result-val {
+    font-size: 11px;
+    font-weight: 600;
+    color: #1a1a18;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* Effort bar */
+  .effort-bar-wrap {
+    margin: 12px 0 4px;
+  }
+  .effort-track {
+    height: 8px;
+    background: #e5e3df;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .effort-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: #3d6b5e;
+    transition: width 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+  .effort-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: #aaa;
+  }
+
+  /* Cost indicator */
+  .cost-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+  .cost-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #e5e3df;
+    transition: background 0.3s;
+  }
+  .cost-dot.active { background: #3d6b5e; }
+  .cost-label { font-size: 11px; color: #888; margin-left: 2px; }
+
+  /* Tags */
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: #e8f0ed;
+    color: #3d6b5e;
+    font-weight: 500;
+  }
+  .tag.warn { background: #fdf3e3; color: #bf7a26; }
+  .tag.off { background: #f3f1ee; color: #aaa; }
+
+  /* No selection state */
+  .placeholder {
+    text-align: center;
+    color: #bbb;
+    font-size: 12px;
+    padding: 20px 0;
+  }
+
+  .hint {
+    font-size: 10px;
+    color: #aaa;
+    text-align: center;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+<h1>Claude Code Effort 最佳化計算器</h1>
+<p class="subtitle">W16 核心洞察：依任務類型選對 effort，成本和品質都能最佳化</p>
+
+<div class="section-label">選擇你的任務類型</div>
+<div class="task-grid" id="taskGrid">
+  <button class="task-btn" data-task="bugfix">
+    <span class="task-icon">🐛</span>
+    <div class="task-name">Quick Bug Fix</div>
+    <div class="task-desc">單一函式修正或 typo 修正</div>
+  </button>
+  <button class="task-btn" data-task="review">
+    <span class="task-icon">🔍</span>
+    <div class="task-name">Code Review</div>
+    <div class="task-desc">PR 審查，找 edge case</div>
+  </button>
+  <button class="task-btn" data-task="refactor">
+    <span class="task-icon">🔧</span>
+    <div class="task-name">多檔案重構</div>
+    <div class="task-desc">跨模組架構調整</div>
+  </button>
+  <button class="task-btn" data-task="feature">
+    <span class="task-icon">✨</span>
+    <div class="task-name">新功能開發</div>
+    <div class="task-desc">設計到實作完整流程</div>
+  </button>
+  <button class="task-btn" data-task="agent">
+    <span class="task-icon">🤖</span>
+    <div class="task-name">Agentic 任務</div>
+    <div class="task-desc">多步驟自動化，需判斷</div>
+  </button>
+  <button class="task-btn" data-task="scheduled">
+    <span class="task-icon">⏱️</span>
+    <div class="task-name">排程任務</div>
+    <div class="task-desc">Daily digest / CI agent</div>
+  </button>
+</div>
+
+<div id="resultArea">
+  <p class="placeholder">↑ 點選任務類型，查看建議設定</p>
+</div>
+
+<p class="hint">資料來源：Claude Code v2.1.111 Effort 分層設計（W16 學習日誌）</p>
+
+<script>
+const tasks = {
+  bugfix: {
+    effort: 'low',
+    effortPct: 15,
+    cost: 1,
+    autoMode: false,
+    multiAgent: false,
+    ultraReview: false,
+    tokens: '< 5K tokens',
+    time: '~ 30 秒',
+    tips: ['指定明確的函式名稱或行號', '用 Read 工具確認改動範圍'],
+    note: 'low effort 足夠，不需要深度推理'
+  },
+  review: {
+    effort: 'xhigh',
+    effortPct: 75,
+    cost: 3,
+    autoMode: false,
+    multiAgent: false,
+    ultraReview: true,
+    tokens: '20K–50K tokens',
+    time: '~ 2–5 分鐘',
+    tips: ['搭配 /ultrareview 拉高審查深度', '先給 PR diff，再給上下文'],
+    note: 'xhigh 是 code review 最划算的 effort 點'
+  },
+  refactor: {
+    effort: 'high',
+    effortPct: 60,
+    cost: 3,
+    autoMode: true,
+    multiAgent: false,
+    ultraReview: false,
+    tokens: '30K–80K tokens',
+    time: '~ 5–15 分鐘',
+    tips: ['用 CLAUDE.md 定義重構原則', '分批進行，每批有驗收標準'],
+    note: 'Auto mode 可在簡單步驟自動降級省費'
+  },
+  feature: {
+    effort: 'high',
+    effortPct: 60,
+    cost: 3,
+    autoMode: true,
+    multiAgent: false,
+    ultraReview: false,
+    tokens: '50K–150K tokens',
+    time: '~ 10–30 分鐘',
+    tips: ['在 CLAUDE.md 寫清楚設計 token 規範', '用 Verification Step 確認 UI 輸出'],
+    note: '拆成 3–5 個有驗收標準的子任務效果更好'
+  },
+  agent: {
+    effort: 'max',
+    effortPct: 95,
+    cost: 4,
+    autoMode: false,
+    multiAgent: true,
+    ultraReview: false,
+    tokens: '100K+ tokens',
+    time: '10 分鐘–1 小時',
+    tips: ['用 Multi-agent team 按 package 分工', 'v2.1.114 修復 agent team crash，現在穩定可用'],
+    note: '開啟 Push notification，任務完成時自動通知'
+  },
+  scheduled: {
+    effort: 'medium',
+    effortPct: 35,
+    cost: 2,
+    autoMode: true,
+    multiAgent: false,
+    ultraReview: false,
+    tokens: '20K–60K tokens / run',
+    time: '5–20 分鐘 / run',
+    tips: ['Auto mode 讓簡單步驟自動降 Sonnet', '設定 ENABLE_PROMPT_CACHING_1H 降低重複成本'],
+    note: '排程任務最適合 Auto mode，讓系統自動分配模型'
+  }
+};
+
+const effortLabels = { low: 'low', medium: 'medium', high: 'high', xhigh: 'xhigh', max: 'max' };
+const effortColor = { low: '#8ab5a8', medium: '#5d9488', high: '#3d6b5e', xhigh: '#2d5448', max: '#1d3d32' };
+
+function renderResult(task) {
+  const t = tasks[task];
+  const costDots = [1,2,3,4].map(i =>
+    `<div class="cost-dot ${i <= t.cost ? 'active' : ''}"></div>`
+  ).join('');
+
+  const html = `
+    <div class="section-label" style="margin-bottom:8px">建議設定</div>
+    <div class="result-panel">
+      <div class="result-row">
+        <span class="result-key">Effort 等級</span>
+        <span class="result-val" style="color:${effortColor[t.effort]}">${t.effort}</span>
+      </div>
+      <div class="effort-bar-wrap">
+        <div class="effort-track">
+          <div class="effort-fill" id="effortFill" style="width:0%;background:${effortColor[t.effort]}"></div>
+        </div>
+        <div class="effort-labels">
+          <span>low</span><span>medium</span><span>high</span><span>xhigh</span><span>max</span>
+        </div>
+      </div>
+      <div class="result-row">
+        <span class="result-key">預估 Token 範圍</span>
+        <span class="result-val">${t.tokens}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">預計時間</span>
+        <span class="result-val">${t.time}</span>
+      </div>
+      <div class="result-row">
+        <span class="result-key">相對成本</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          ${costDots}
+          <span class="cost-label">${['','低','低中','中高','高'][t.cost]}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tags">
+      <span class="tag ${t.autoMode ? '' : 'off'}">Auto Mode ${t.autoMode ? '✓ 建議開啟' : '— 不需要'}</span>
+      <span class="tag ${t.multiAgent ? '' : 'off'}">Multi-Agent ${t.multiAgent ? '✓ 建議開啟' : '— 不需要'}</span>
+      <span class="tag ${t.ultraReview ? 'warn' : 'off'}">/ultrareview ${t.ultraReview ? '✓ 建議使用' : '— 可跳過'}</span>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="section-label">使用技巧</div>
+      ${t.tips.map(tip => `<div style="font-size:11px;color:#555;padding:3px 0;display:flex;gap:6px"><span style="color:#3d6b5e">›</span><span>${tip}</span></div>`).join('')}
+      <div style="font-size:10px;color:#aaa;margin-top:8px;font-style:italic">${t.note}</div>
+    </div>
+  `;
+  document.getElementById('resultArea').innerHTML = html;
+
+  // animate fill
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const fill = document.getElementById('effortFill');
+      if (fill) fill.style.width = t.effortPct + '%';
+    });
+  });
+}
+
+document.getElementById('taskGrid').addEventListener('click', function(e) {
+  const btn = e.target.closest('.task-btn');
+  if (!btn) return;
+  document.querySelectorAll('.task-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderResult(btn.dataset.task);
+});
+</script>
+</body>
+</html>
