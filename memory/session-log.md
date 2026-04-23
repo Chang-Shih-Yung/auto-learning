@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-23 | CC v2.1.118 hooks直接呼叫MCP工具+/usage+自訂主題+vim visual mode（5）、LLM過度編輯400問題測試GPT-5.4重寫整函式minimal edit prompt修正（5）、Show HN Design Slop 500頁面15個AI模式5個以上=重度（4） | biology | 洞察：over-editing = LLM 太勤勞不是太智慧；slop = 沒有設計系統的錨點；hooks+MCP = 宣告式自動化的最後一塊拼圖 |
 | 2026-04-22 | CC v2.1.117 embedded bfs+ugrep native binary+CLAUDE_CODE_FORK_SUBAGENT=1+model persistence（5）、Vercel 資安全鏈 Roblox→Lumma Stealer→Context.ai OAuth→$2M勒索（4）、manifest YAML宣告式模型路由 5,483★ 70% cost cut（4）、Ternary Bonsai 1.58-bit 8B 1.75GB 82tok/s 9x壓縮（3） | climate | 洞察：成本歸屬框架——CC→binary、manifest→路由層、Ternary→量化層，Vercel是反例：信任成本留在被遺忘的按鈕上 |
 | 2026-04-21 | Claude Code v2.1.116 /resume 67%+MCP deferred loading+plugin auto-install（5）、Qwen3.6-Max-Preview 202模型#2 256k ctx 免費（3）、ggsql SQL視覺化擴充239★alpha（3）、MCP Governance Gap allowlist+audit log+Virtual MCP Server（4） | — | 主題：把複雜度推到正確的層；等待歸零；MCP governance = 下一個必要設計點 |
 | 2026-04-20 | Claude Opus 4.7 系統提示詞 工具先行動（5）、Prompt-to-Excalidraw Gemma 4 E2B 30+ tok/s 瀏覽器本地（4）、Claudoscope Claude Code session cost 儀表板 147★（5）、gh skill v2.90.0 跨工具 skills（4）、Vercel 資安事件 sensitive env var（4） | — | 主題：AI 工具可控性；工具先行動設計原則；結構化輸出哲學；供應鏈安全 |
@@ -25,7 +26,6 @@
 | 2026-04-11 | Claude Code v2.1.101 context loss+memory leak+command injection fix（5）、n8n 183K stars MCP原生支援（4）、Linux kernel Assisted-by attribution標準（4） | biology | Rice CLASSIC 百萬基因電路100%準確率、NUS D-I-TASSER蛋白質結構+13% |
 | 2026-04-10 | Claude Code v2.1.98 安全加固 PID sandbox（5）、Research-Driven Agents $29/15%加速（4） | manufacturing | BMW Leipzig 人形機器人、ABB+NVIDIA 99% sim-to-real |
 | 2026-04-09 | Claude Managed Agents +10pp task success（5）、Claude Code v2.1.97 Focus View+MCP 50MB/hr leak fixed（5） | biology | Meta Muse Spark 58% HLE Contemplating mode（rel.3 收錄）|
-| 2026-04-08 | Glasswing + Mythos Preview 83.1%（5）、Railway Next.js→Vite 10min→2min（4） | finance | GLM-5.1 754B context rot 100k（rel.3 收錄） |
 
 ---
 
