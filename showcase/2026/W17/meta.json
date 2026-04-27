@@ -1,0 +1,28 @@
+{
+  "year": 2026,
+  "week": "W17",
+  "week_start": "2026-04-20",
+  "week_end": "2026-04-26",
+  "articles_read": [
+    "2026-04-20.md",
+    "2026-04-21.md",
+    "2026-04-22.md",
+    "2026-04-23.md",
+    "2026-04-24.md"
+  ],
+  "articles_read_titles": [
+    "Claude Opus 4.7 工具先行動 × Prompt-to-Excalidraw × Claudoscope × gh skill × Vercel breach",
+    "Claude Code v2.1.116 67% × Qwen3.6-Max 免費 256k × ggsql × MCP Governance Gap",
+    "Claude Code v2.1.117 內建 bfs/ugrep × Vercel 攻擊鏈 × manifest 宣告式路由 × Ternary Bonsai 1.75GB",
+    "Claude Code v2.1.118 Hooks×MCP × LLM 過度編輯 × Show HN Slop × Qwen3.6-27B 16.8GB",
+    "Anthropic 47 天降級事後分析 × v2.1.119 GitLab MR × GPT-5.5 × A2A v1.2 × Bitwarden CLI 攻擊 × Honker"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "figma", "design-code-bridge"],
+  "skills_used_in_demo": ["ai-agents", "ai-workflow", "ci-cd"],
+  "cross_week_reference": ["W16", "W15"],
+  "synthesis_note": "本週 18 篇 relevance ≥ 4 文章共一條主線：MCP 解決了「工具怎麼接」，沒解決「誰能用、用多少、改多少」。Vercel $2M 贖金、Bitwarden CLI 被注毒、LLM 把 1 行 bug 重寫整個函式——agent 的問題在邊界，不在能力。W15 問 agent 怎麼決策，W16 問怎麼分配 effort，W17 問 agent 之外要設什麼閘道。我做了治理層模擬器：把 4 個真實場景丟進 allowlist／output cap／audit／minimal-edit 四層，看哪一層擋下哪一種。",
+  "demo_type": "protocol-simulator",
+  "demo_available": true,
+  "demo_title": "MCP Gateway 治理層模擬器",
+  "generated_at": "2026-04-27T14:07:52Z"
+}

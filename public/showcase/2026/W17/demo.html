@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>MCP Gateway 治理層模擬器</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+    background: #fdfcfa;
+    color: #1a1a18;
+    padding: 18px;
+    line-height: 1.5;
+    font-size: 13px;
+  }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #6a6a64;
+    margin-bottom: 14px;
+  }
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .scenario {
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #e5e3dc;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .scenario:hover { border-color: #3d6b5e; }
+  .scenario.active {
+    border-color: #3d6b5e;
+    background: #f0f5f3;
+    box-shadow: inset 0 0 0 1px #3d6b5e;
+  }
+  .scenario-tag {
+    font-size: 9.5px;
+    color: #6a6a64;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .scenario-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    line-height: 1.35;
+  }
+  .scenario-source {
+    font-size: 10px;
+    color: #8a8a82;
+  }
+  .pipeline {
+    background: #fff;
+    border: 1px solid #e5e3dc;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .request-row {
+    display: flex;
+    align-items: stretch;
+    gap: 2px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .node {
+    flex: 1 1 0;
+    min-width: 110px;
+    padding: 9px 6px;
+    background: #f7f5ef;
+    border: 1px solid #e5e3dc;
+    border-radius: 6px;
+    text-align: center;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+    position: relative;
+  }
+  .node.gate {
+    cursor: pointer;
+    user-select: none;
+  }
+  .node.gate:hover {
+    border-color: #3d6b5e;
+  }
+  .node.disabled {
+    background: #faf8f3;
+    color: #b0aea4;
+    border-style: dashed;
+  }
+  .node.pass {
+    background: #e8f0ec;
+    border-color: #3d6b5e;
+    color: #2d5448;
+  }
+  .node.block {
+    background: #f5e2da;
+    border-color: #b85a3d;
+    color: #7a3622;
+  }
+  .node-label {
+    font-weight: 600;
+    font-size: 11.5px;
+    margin-bottom: 4px;
+  }
+  .node-status {
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: 9.5px;
+    margin-top: 3px;
+    opacity: 0.85;
+  }
+  .toggle-hint {
+    font-size: 9px;
+    color: #b0aea4;
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .gate.pass .toggle-hint, .gate.block .toggle-hint, .gate.disabled .toggle-hint {
+    visibility: hidden;
+  }
+  .arrow {
+    align-self: center;
+    color: #c8c4b8;
+    font-family: monospace;
+    font-size: 13px;
+    padding: 0 2px;
+  }
+  .result-panel {
+    margin-top: 12px;
+    padding: 11px 13px;
+    border-radius: 6px;
+    background: #f7f5ef;
+    border-left: 3px solid #3d6b5e;
+  }
+  .result-panel.blocked { border-left-color: #b85a3d; background: #faeee7; }
+  .result-panel.passed { border-left-color: #c89a2e; background: #f9f0d8; }
+  .result-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 12.5px;
+    letter-spacing: 0.01em;
+  }
+  .result-detail {
+    font-size: 12px;
+    color: #4a4842;
+    line-height: 1.55;
+  }
+  .controls {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #6a6a64;
+    align-items: center;
+  }
+  .reset-btn {
+    background: #fff;
+    border: 1px solid #d6d2c4;
+    border-radius: 4px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #4a4842;
+    font-family: inherit;
+  }
+  .reset-btn:hover { border-color: #3d6b5e; color: #3d6b5e; }
+  .legend {
+    margin-top: 8px;
+    font-size: 10px;
+    color: #8a8a82;
+    text-align: center;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>MCP Gateway 治理層模擬器</h1>
+  <p class="subtitle">選一個 W17 真實場景，看四層治理鏈如何攔截 — 點任一閘道可開／關，比較有無治理的後果</p>
+
+  <div class="scenarios" id="scenarios"></div>
+
+  <div class="pipeline">
+    <div class="request-row" id="pipeline">
+      <div class="node" id="origin">
+        <div class="node-label">Request</div>
+        <div class="node-status" id="originStatus">—</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="node gate" data-gate="allowlist">
+        <div class="node-label">&#9312; Allowlist</div>
+        <div class="node-status" data-default="Auth + Tool ACL">Auth + Tool ACL</div>
+        <div class="toggle-hint">click to toggle</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="node gate" data-gate="outputCap">
+        <div class="node-label">&#9313; Output Cap</div>
+        <div class="node-status" data-default="&le; 5KB / call">&le; 5KB / call</div>
+        <div class="toggle-hint">click to toggle</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="node gate" data-gate="audit">
+        <div class="node-label">&#9314; Audit Log</div>
+        <div class="node-status" data-default="who &middot; when &middot; what">who &middot; when &middot; what</div>
+        <div class="toggle-hint">click to toggle</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="node gate" data-gate="minimalEdit">
+        <div class="node-label">&#9315; Minimal Edit</div>
+        <div class="node-status" data-default="prompt 約束">prompt 約束</div>
+        <div class="toggle-hint">click to toggle</div>
+      </div>
+      <div class="arrow">&rarr;</div>
+      <div class="node" id="tool">
+        <div class="node-label">MCP Tool</div>
+        <div class="node-status">執行</div>
+      </div>
+    </div>
+    <div class="result-panel" id="result">
+      <div class="result-title" id="resultTitle">選一個場景開始</div>
+      <div class="result-detail" id="resultDetail">每個場景都來自 W17 的真實事件——點上方按鈕看治理鏈如何反應。</div>
+    </div>
+    <div class="controls">
+      <button class="reset-btn" id="resetBtn">重置全部閘道</button>
+      <span>提示：把閘道一個個關掉，看請求在哪一層才會被攔截</span>
+    </div>
+  </div>
+
+  <div class="legend">基於 W17 文章：MCP Governance Gap (Apr 21) &middot; Vercel breach (Apr 20/22) &middot; Bitwarden CLI 攻擊 (Apr 24) &middot; Over-editing 研究 (Apr 23)</div>
+</div>
+
+<script>
+const scenarios = [
+  {
+    id: 'anon',
+    tag: 'SCENARIO 1',
+    title: '匿名 agent 呼叫 list_repo()',
+    source: 'MCP Governance Gap (Apr 21)',
+    payload: 'no auth · port-only access',
+    blockedBy: 'allowlist',
+    bypassDamage: '任何人知道 port 就能呼叫所有工具',
+    layerNotes: {
+      allowlist: '無 auth header → 拒絕未授權 caller',
+      outputCap: '已在 allowlist 被擋，未走到此層',
+      audit: '已在 allowlist 被擋，未走到此層',
+      minimalEdit: '不適用此情境'
+    }
+  },
+  {
+    id: 'bigOutput',
+    tag: 'SCENARIO 2',
+    title: 'tool 回傳 50MB README',
+    source: 'MCP Governance Gap (Apr 21)',
+    payload: 'auth ok · response = 52MB',
+    blockedBy: 'outputCap',
+    bypassDamage: 'context window 爆量、token 帳單失控',
+    layerNotes: {
+      allowlist: 'auth 通過，但缺輸出限制',
+      outputCap: '52MB > 5KB → 截斷並回傳 summary',
+      audit: '已在 outputCap 被截斷，記錄事件',
+      minimalEdit: '不適用此情境'
+    }
+  },
+  {
+    id: 'oauth',
+    tag: 'SCENARIO 3',
+    title: '第三方工具 Allow-All OAuth',
+    source: 'Vercel / Bitwarden 供應鏈攻擊 (Apr 20/22/24)',
+    payload: 'token leak · scope=admin',
+    blockedBy: 'allowlist',
+    bypassDamage: '$2M Vercel 贖金 + Bitwarden CLI 被注毒',
+    layerNotes: {
+      allowlist: 'OAuth scope=admin → 拒絕（最小權限原則）',
+      outputCap: '已在 allowlist 被擋',
+      audit: '記錄誰在何時授予了 admin scope（重要 forensics）',
+      minimalEdit: '不適用此情境'
+    }
+  },
+  {
+    id: 'overedit',
+    tag: 'SCENARIO 4',
+    title: 'AI 把 1 行 bug 改成整個函式重寫',
+    source: 'Over-editing 研究 (Apr 23)',
+    payload: 'fix range(len(x)-1) → 全函式重構',
+    blockedBy: 'minimalEdit',
+    bypassDamage: 'RxJS 鏈被打亂、CSS 命名被改、難以 review',
+    layerNotes: {
+      allowlist: 'Claude 是已授權 agent，可通過',
+      outputCap: 'diff 仍在 5KB 內，不觸及上限',
+      audit: '記錄完整 diff 供事後 review',
+      minimalEdit: 'prompt 含「只改最少必要」→ 收斂為 1 行 patch'
+    }
+  }
+];
+
+const state = {
+  active: null,
+  gates: { allowlist: true, outputCap: true, audit: true, minimalEdit: true }
+};
+
+const gateOrder = ['allowlist', 'outputCap', 'audit', 'minimalEdit'];
+const stageNames = {
+  allowlist: 'Allowlist',
+  outputCap: 'Output Cap',
+  audit: 'Audit',
+  minimalEdit: 'Minimal Edit'
+};
+
+function renderScenarios() {
+  const root = document.getElementById('scenarios');
+  root.innerHTML = '';
+  scenarios.forEach(function (s) {
+    const el = document.createElement('div');
+    el.className = 'scenario' + (state.active === s.id ? ' active' : '');
+    const tag = document.createElement('div');
+    tag.className = 'scenario-tag';
+    tag.textContent = s.tag;
+    const title = document.createElement('div');
+    title.className = 'scenario-title';
+    title.textContent = s.title;
+    const src = document.createElement('div');
+    src.className = 'scenario-source';
+    src.textContent = s.source;
+    el.appendChild(tag);
+    el.appendChild(title);
+    el.appendChild(src);
+    el.addEventListener('click', function () {
+      state.active = s.id;
+      render();
+    });
+    root.appendChild(el);
+  });
+}
+
+function render() {
+  renderScenarios();
+
+  const sc = scenarios.find(function (s) { return s.id === state.active; });
+  document.getElementById('originStatus').textContent = sc ? sc.payload : '—';
+
+  document.querySelectorAll('.node.gate').forEach(function (node) {
+    const g = node.dataset.gate;
+    node.classList.remove('pass', 'block', 'disabled');
+    const enabled = state.gates[g];
+    if (!enabled) node.classList.add('disabled');
+    const status = node.querySelector('.node-status');
+    status.innerHTML = enabled ? status.dataset.default : '— OFF —';
+  });
+
+  const tool = document.getElementById('tool');
+  const toolStatus = tool.querySelector('.node-status');
+
+  if (!sc) {
+    tool.className = 'node';
+    toolStatus.textContent = '執行';
+    return;
+  }
+
+  let blockedAt = null;
+  for (let i = 0; i < gateOrder.length; i++) {
+    const g = gateOrder[i];
+    const node = document.querySelector('.node.gate[data-gate="' + g + '"]');
+    const enabled = state.gates[g];
+    if (blockedAt) continue;
+    if (sc.blockedBy === g && enabled) {
+      node.classList.add('block');
+      blockedAt = g;
+    } else if (enabled) {
+      node.classList.add('pass');
+    }
+  }
+
+  const resultEl = document.getElementById('result');
+  const resultTitle = document.getElementById('resultTitle');
+  const resultDetail = document.getElementById('resultDetail');
+  if (blockedAt) {
+    tool.className = 'node disabled';
+    toolStatus.textContent = '未到達';
+    resultEl.className = 'result-panel blocked';
+    const stageNumber = gateOrder.indexOf(blockedAt) + 1;
+    resultTitle.textContent = 'BLOCKED · 第 ' + stageNumber + ' 層 (' + stageNames[blockedAt] + ')';
+    resultDetail.textContent = sc.layerNotes[blockedAt] + '。若關閉此層 → ' + sc.bypassDamage + '。';
+  } else {
+    tool.className = 'node block';
+    toolStatus.textContent = '受影響';
+    resultEl.className = 'result-panel passed';
+    resultTitle.textContent = '⚠ 通過所有閘道 → 系統受影響';
+    resultDetail.textContent = sc.bypassDamage + '。打開上方對應的閘道，看治理層如何擋下它。';
+  }
+}
+
+document.querySelectorAll('.node.gate').forEach(function (node) {
+  node.addEventListener('click', function () {
+    const g = node.dataset.gate;
+    state.gates[g] = !state.gates[g];
+    render();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', function () {
+  state.gates = { allowlist: true, outputCap: true, audit: true, minimalEdit: true };
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
