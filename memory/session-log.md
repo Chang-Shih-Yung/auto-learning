@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-27 | Cloudflare Code Mode MCP 1.17M→1K token 99.9%↓2500端點雙工具架構（5）、Google Cloud Next 2026 Vertex AI→Gemini Enterprise ADK v1.0 TS穩定+Memory Bank+200模型（4）、GenericAgent 6.1K stars skill tree 6x token效率30K vs 200K五層記憶（4） | — | 洞察：context window 不是用來存歷史的，是用來做決策的——三個工具三種路徑：介面壓縮（CF Code Mode）、框架宣告式（ADK）、記憶晶化（GenericAgent）|
 | 2026-04-24 | CC品質退化事後分析3原因47天降級全修復+重置usage（5）、CC v2.1.119 /config持久化+GitLab MR+MCP OAuth修復（5）、GPT-5.5 82.7%TerminalBench+58.6%SWEBench Pro+90.1%BrowseComp agentic全面上線（4）、A2A v1.2 150組織正式環境+crypto agent card（4）、Bitwarden CLI供應鏈攻擊90分鐘npm污染GHA注毒（4）、Honker SQLite pub/sub 325stars 1-2ms delay（3） | — | 洞察：工具可信度需要主動建立——Anthropic透明度=信任、Bitwarden=每個發布步驟要驗證；A2A+GPT-5.5=agentic AI工業化水位；MCP+A2A雙協定才是完整multi-agent骨幹 |
 | 2026-04-23 | CC v2.1.118 hooks直接呼叫MCP工具+/usage+自訂主題+vim visual mode（5）、LLM過度編輯400問題測試GPT-5.4重寫整函式minimal edit prompt修正（5）、Show HN Design Slop 500頁面15個AI模式5個以上=重度（4） | biology | 洞察：over-editing = LLM 太勤勞不是太智慧；slop = 沒有設計系統的錨點；hooks+MCP = 宣告式自動化的最後一塊拼圖 |
 | 2026-04-22 | CC v2.1.117 embedded bfs+ugrep native binary+CLAUDE_CODE_FORK_SUBAGENT=1+model persistence（5）、Vercel 資安全鏈 Roblox→Lumma Stealer→Context.ai OAuth→$2M勒索（4）、manifest YAML宣告式模型路由 5,483★ 70% cost cut（4）、Ternary Bonsai 1.58-bit 8B 1.75GB 82tok/s 9x壓縮（3） | climate | 洞察：成本歸屬框架——CC→binary、manifest→路由層、Ternary→量化層，Vercel是反例：信任成本留在被遺忘的按鈕上 |
@@ -23,9 +24,6 @@
 | 2026-04-15 | Claude Code v2.1.108 /recap+1hr prompt cache+model 主動呼叫 slash commands（5）、Boneyard DOM快照 4.8k stars pixel-perfect skeleton（4）、opencode 100K stars model-agnostic router Claude Max路由（5） | — | 主題：消除開發摩擦；session切換成本歸零；骨架屏零維護 |
 | 2026-04-14 | Claude Code v2.1.105 EnterWorktree path+串流重試（5）、GitHub Stacked PRs 鏈式合併（4）、Agent Memory Binding 61.6% 500實驗（5）、Cloudflare cf CLI 3000 ops <1000 tokens（4） | — | 主題：AI agent 可靠性；binding vs recall 洞察 |
 | 2026-04-13 | Claudraband session persistence HTTP daemon（5）、Berkeley benchmark 8個100% exploit（4）、Next.js v16.2.3 CVE-2026-23869（4） | education | Carnegie Learning MATHia 42%↑ 1M學生；Alpha School 2hr model；W15 showcase: Research-First vs Edit-First 模擬器 |
-| 2026-04-12 | Berkeley AI Benchmark exploit 100% SWE-bench 500/500（5）、AISLE 3.6B模型$0.11/M token找相同漏洞（4） | legal | CoCounsel/Protégé agentic workflow；Lexis+ 17%/Westlaw 34%錯誤率；EU AI Act Aug 2026 |
-| 2026-04-11 | Claude Code v2.1.101 context loss+memory leak+command injection fix（5）、n8n 183K stars MCP原生支援（4）、Linux kernel Assisted-by attribution標準（4） | biology | Rice CLASSIC 百萬基因電路100%準確率、NUS D-I-TASSER蛋白質結構+13% |
-| 2026-04-10 | Claude Code v2.1.98 安全加固 PID sandbox（5）、Research-Driven Agents $29/15%加速（4） | manufacturing | BMW Leipzig 人形機器人、ABB+NVIDIA 99% sim-to-real |
 
 ---
 
@@ -41,3 +39,4 @@
 - **Recall vs Binding**：AI agent 記憶系統的失敗不是找不到記憶，是找到的記憶沒有跟情節/因果打包在一起。解法是 Memory Bundle——程序 + 情節 + 因果同時載入，而不是四個獨立 recall 系統
 - **好工具不是加功能，是把摩擦歸零**：/recap 歸零 session 切換成本、Boneyard 歸零 skeleton 維護成本、opencode 歸零工具鎖定成本——找到一個用戶反覆承受的痛點，然後讓它消失，這才是工具設計的護城河
 - **把複雜度推到正確的層**：deferred loading（CC v2.1.116）、計算推資料庫端（ggsql）、governance 集中在 gateway（MCP）——三種技術，同一個設計原則：複雜度不消失，只是移到最合適的位置，讓上游使用者感受不到它
+- **context window 不是用來存歷史的，是用來做決策的**：Cloudflare Code Mode 把 API schema 搬到 execution time、Google ADK 把持久化搬到 Memory Bank、GenericAgent 把歷史軌跡晶化成 skill——token 稀缺催生的三種設計哲學，核心是：把本來塞在 context 的東西，搬到它應該在的地方
