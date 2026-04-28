@@ -11,6 +11,7 @@
 
 | 日期 | 文章（relevance≥4） | News domain | 備注 |
 |------|---------------------|-------------|------|
+| 2026-04-28 | CC v2.1.121 MCP alwaysLoad熱工具不defer+plugin prune+/skills邊打邊濾+PostToolUse output replace+image/usage memleak修復（5）、Dirac OSS coding agent TerminalBench 2.0 65.2% gemini-3-flash vs Google 47.6% $0.18/task -64.8%成本 AST+Hash Anchored edits 635★ 不走MCP（4）、Browser Harness 7.6K★ 592行Python直連CDP self-healing讓LLM runtime改helpers.py（4） | — | 洞察：把決策權搬到正確的位置——alwaysLoad讓server決定哪些工具是熱工具、Hash anchored edit讓決策在AST層而非行號、self-healing讓LLM runtime決定如何補helper；延伸 4-21 推到正確的層 + 4-27 context用來做決策 |
 | 2026-04-27 | Cloudflare Code Mode MCP 1.17M→1K token 99.9%↓2500端點雙工具架構（5）、Google Cloud Next 2026 Vertex AI→Gemini Enterprise ADK v1.0 TS穩定+Memory Bank+200模型（4）、GenericAgent 6.1K stars skill tree 6x token效率30K vs 200K五層記憶（4） | — | 洞察：context window 不是用來存歷史的，是用來做決策的——三個工具三種路徑：介面壓縮（CF Code Mode）、框架宣告式（ADK）、記憶晶化（GenericAgent）|
 | 2026-04-24 | CC品質退化事後分析3原因47天降級全修復+重置usage（5）、CC v2.1.119 /config持久化+GitLab MR+MCP OAuth修復（5）、GPT-5.5 82.7%TerminalBench+58.6%SWEBench Pro+90.1%BrowseComp agentic全面上線（4）、A2A v1.2 150組織正式環境+crypto agent card（4）、Bitwarden CLI供應鏈攻擊90分鐘npm污染GHA注毒（4）、Honker SQLite pub/sub 325stars 1-2ms delay（3） | — | 洞察：工具可信度需要主動建立——Anthropic透明度=信任、Bitwarden=每個發布步驟要驗證；A2A+GPT-5.5=agentic AI工業化水位；MCP+A2A雙協定才是完整multi-agent骨幹 |
 | 2026-04-23 | CC v2.1.118 hooks直接呼叫MCP工具+/usage+自訂主題+vim visual mode（5）、LLM過度編輯400問題測試GPT-5.4重寫整函式minimal edit prompt修正（5）、Show HN Design Slop 500頁面15個AI模式5個以上=重度（4） | biology | 洞察：over-editing = LLM 太勤勞不是太智慧；slop = 沒有設計系統的錨點；hooks+MCP = 宣告式自動化的最後一塊拼圖 |
@@ -23,8 +24,6 @@
 | 2026-04-16 | CC v2.1.110 /tui+push notification+/focus（5）、Gemini 2.5 Flash 1M ctx+thinking budget（3）、OpenAI Codex CLI MIT terminal agent（4） | finance | AI量化交易RL trading bots 18%↓最大回撤；68%金融機構AI風控優先 |
 | 2026-04-15 | Claude Code v2.1.108 /recap+1hr prompt cache+model 主動呼叫 slash commands（5）、Boneyard DOM快照 4.8k stars pixel-perfect skeleton（4）、opencode 100K stars model-agnostic router Claude Max路由（5） | — | 主題：消除開發摩擦；session切換成本歸零；骨架屏零維護 |
 | 2026-04-14 | Claude Code v2.1.105 EnterWorktree path+串流重試（5）、GitHub Stacked PRs 鏈式合併（4）、Agent Memory Binding 61.6% 500實驗（5）、Cloudflare cf CLI 3000 ops <1000 tokens（4） | — | 主題：AI agent 可靠性；binding vs recall 洞察 |
-| 2026-04-13 | Claudraband session persistence HTTP daemon（5）、Berkeley benchmark 8個100% exploit（4）、Next.js v16.2.3 CVE-2026-23869（4） | education | Carnegie Learning MATHia 42%↑ 1M學生；Alpha School 2hr model；W15 showcase: Research-First vs Edit-First 模擬器 |
-
 ---
 
 ## 重要洞察記錄
@@ -40,3 +39,4 @@
 - **好工具不是加功能，是把摩擦歸零**：/recap 歸零 session 切換成本、Boneyard 歸零 skeleton 維護成本、opencode 歸零工具鎖定成本——找到一個用戶反覆承受的痛點，然後讓它消失，這才是工具設計的護城河
 - **把複雜度推到正確的層**：deferred loading（CC v2.1.116）、計算推資料庫端（ggsql）、governance 集中在 gateway（MCP）——三種技術，同一個設計原則：複雜度不消失，只是移到最合適的位置，讓上游使用者感受不到它
 - **context window 不是用來存歷史的，是用來做決策的**：Cloudflare Code Mode 把 API schema 搬到 execution time、Google ADK 把持久化搬到 Memory Bank、GenericAgent 把歷史軌跡晶化成 skill——token 稀缺催生的三種設計哲學，核心是：把本來塞在 context 的東西，搬到它應該在的地方
+- **決策權的歸屬同樣需要設計**：CC alwaysLoad 把工具載入決策還給 server、Dirac Hash anchored edit 把編輯精準度從行號搬到 AST node、Browser Harness 把錯誤處理從框架還給 LLM runtime——「把複雜度推到正確的層」的延伸是「把決定權交給最知道這件事的人」，框架不是抽象越多越好，而是要識別誰最有資格做這個判斷
