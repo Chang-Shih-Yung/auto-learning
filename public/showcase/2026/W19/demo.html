@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>W19 控制權漂移地圖</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #fdfcfa;
+    color: #1a1a18;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+    overflow: hidden;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-height: 500px;
+    max-width: 740px;
+    margin: 0 auto;
+  }
+  .header {
+    padding: 8px 14px 6px 14px;
+    border-bottom: 1px solid #ebe5d8;
+  }
+  h1 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a18;
+    letter-spacing: 0.01em;
+  }
+  .subtitle {
+    font-size: 11px;
+    color: #7a7368;
+    margin-top: 3px;
+  }
+  .body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+  }
+  .canvas-wrap {
+    flex: 1;
+    position: relative;
+    background: #fdfcfa;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  canvas {
+    display: block;
+    cursor: pointer;
+    max-width: 100%;
+    height: auto;
+  }
+  .panel {
+    width: 230px;
+    border-left: 1px solid #ebe5d8;
+    padding: 12px 14px;
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-y: auto;
+    background: #faf7f1;
+  }
+  .panel-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: #3d6b5e;
+    margin-bottom: 5px;
+  }
+  .panel-meta {
+    color: #8c8475;
+    font-size: 10px;
+    margin-bottom: 8px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .panel-desc {
+    margin-bottom: 9px;
+    color: #2a2a26;
+  }
+  .panel-insight {
+    font-size: 11px;
+    color: #1a1a18;
+    background: #fff;
+    padding: 7px 9px;
+    border-left: 2px solid #3d6b5e;
+    border-radius: 0 4px 4px 0;
+    line-height: 1.5;
+  }
+  .panel-shared {
+    margin-top: 11px;
+    font-size: 10px;
+    color: #7a7368;
+    border-top: 1px dashed #d8d0c0;
+    padding-top: 8px;
+  }
+  .panel-shared b {
+    color: #3d6b5e;
+    font-weight: 600;
+  }
+  .legend {
+    font-size: 10px;
+    color: #8c8475;
+    padding: 5px 14px;
+    border-top: 1px solid #ebe5d8;
+    background: #faf7f1;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3d6b5e;
+  }
+  .legend-line {
+    width: 14px;
+    height: 1.5px;
+    background: #3d6b5e;
+  }
+  .legend-line.dim {
+    background: #d8d0c0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>W19 控制權漂移地圖：9 條獨立路徑、同一個直覺</h1>
+      <div class="subtitle">2026/05/02 - 05/10｜點擊外圍節點看該工程動態的具體內容與共享 tag</div>
+    </div>
+    <div class="body">
+      <div class="canvas-wrap">
+        <canvas id="map" width="480" height="380"></canvas>
+      </div>
+      <div class="panel" id="panel">
+        <div class="panel-title">9 條動態、1 個直覺</div>
+        <div class="panel-desc">從 5/2 到 5/10，九條來自不同團隊、不同層級、不同語言的工程動態同時指向「控制權從中心化平台往使用者方向漂移」這條共同方向——好工具的標準從「平台幫你決定」變成「協議公開、後端可換、邊界清晰」。</div>
+        <div class="panel-insight">點任一外圍節點觀察該動態的「同一直覺鏈」——共享 tag 的節點在 canvas 上會用綠線凸顯。</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot"></span>中心 = 共同直覺</span>
+      <span class="legend-item"><span class="legend-line dim"></span>淺線 = 共享 tag</span>
+      <span class="legend-item"><span class="legend-line"></span>綠線 = 當前節點關聯</span>
+    </div>
+  </div>
+  <script>
+    const nodes = [
+      {id: 'skill', date: '5/2', title: 'Anthropic Skill 三軸量化', desc: 'capability / trigger / cost 三軸把 skill 評測量化成 +16pp 通過率與 $0.04/call 成本。', insight: '把人類靠手感的判斷工程化成可量測指標——量化邊界誰也跑不掉。', tags: ['量化', '介面']},
+      {id: 'codemode', date: '5/3', title: 'Cloudflare Code Mode', desc: 'MCP token 從 1.17M 壓到 1K，把 API schema 搬到 execution time。', insight: '介面壓縮——讓 context window 用來決策、而非存歷史。', tags: ['介面', 'context']},
+      {id: 'copilot', date: '5/4', title: 'Copilot 訊號污染', desc: 'Co-Authored-By 自動注入 commit，即使 disableAIFeatures=true 也注入。', insight: '中心化平台的反面教材——稽核訊號必須由獨立稽核層產生。', tags: ['治理', '中心化反面']},
+      {id: 'finsvc', date: '5/5', title: 'financial-services', desc: '19K★ Apache-2.0、10 個 vertical agent + plugin 雙軸（horizontal+vertical）。', insight: 'Plugin 從 horizontal 切到 vertical，deploy 粒度從 stack 降到 workflow。', tags: ['vertical', '介面']},
+      {id: 'coder', date: '5/6', title: 'Coder Agents Beta', desc: 'self-hosted、model-agnostic（Anthropic/OpenAI/Google/Bedrock/self-hosted）。', insight: '部署邊界往企業 firewall 內收縮——regulated industry 留逃生門。', tags: ['self-host', 'model-agnostic']},
+      {id: 'val', date: '5/7', title: 'val.town Better Auth', desc: '從 Clerk SaaS 搬到 Better Auth library（28K★ TypeScript）。', insight: 'library-first 取代 SaaS——避免 SPOF、保留逃生門。', tags: ['library-first', 'self-host']},
+      {id: 'sdk', date: '5/8', title: 'Anthropic SDK v0.100.0', desc: 'Managed Agents + multiagent + webhooks + outcomes 介面正式化。', insight: '官方 SDK 把 agent 編排從手刻變宣告式介面——量化 + 介面。', tags: ['介面', '量化']},
+      {id: 'gateway', date: '5/9', title: 'MCP Gateways 7 種', desc: 'TrueFoundry 3-4ms / IBM 100-300ms / Composio 850+ connectors。', insight: '治理從個人工具升格到企業治理層——可量化的 overhead 開出選型題。', tags: ['治理', '量化']},
+      {id: 'hermes', date: '5/10', title: 'Hermes Agent', desc: '~110K★ persistent agent + 跨 LLM provider self-hosted harness。', insight: 'Agent runtime 從 SaaS 變 library，跨 provider portable。', tags: ['library-first', 'self-host', 'model-agnostic']},
+    ];
+
+    const canvas = document.getElementById('map');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
+    const cx = W / 2;
+    const cy = H / 2 + 6;
+    const R = 138;
+
+    nodes.forEach((n, i) => {
+      const angle = (i / nodes.length) * Math.PI * 2 - Math.PI / 2;
+      n.x = cx + R * Math.cos(angle);
+      n.y = cy + R * Math.sin(angle);
+      n.r = 24;
+    });
+
+    let activeIdx = -1;
+
+    function tagShared(a, b) {
+      return a.tags.some(t => b.tags.includes(t));
+    }
+
+    function sharedTags(a, b) {
+      return a.tags.filter(t => b.tags.includes(t));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // 中心節點
+      ctx.fillStyle = '#3d6b5e';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 36, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '600 11px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('控制權', cx, cy - 7);
+      ctx.fillText('漂移', cx, cy + 8);
+
+      // 中心輻射線
+      ctx.strokeStyle = '#e8dfca';
+      ctx.lineWidth = 1;
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.moveTo(cx + (n.x - cx) * 0.27, cy + (n.y - cy) * 0.27);
+        ctx.lineTo(n.x + (cx - n.x) * 0.18, n.y + (cy - n.y) * 0.18);
+        ctx.stroke();
+      });
+
+      // 共享 tag 連線——灰
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          if (tagShared(nodes[i], nodes[j])) {
+            const isActive = activeIdx === i || activeIdx === j;
+            ctx.strokeStyle = isActive ? '#3d6b5e' : '#ede4cf';
+            ctx.lineWidth = isActive ? 1.8 : 0.7;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // 節點圓
+      nodes.forEach((n, i) => {
+        const isActive = activeIdx === i;
+        ctx.fillStyle = isActive ? '#3d6b5e' : '#fdfcfa';
+        ctx.strokeStyle = '#3d6b5e';
+        ctx.lineWidth = isActive ? 2.2 : 1.3;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = isActive ? '#fff' : '#3d6b5e';
+        ctx.font = '600 10px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(n.date, n.x, n.y);
+      });
+    }
+
+    function hit(mx, my) {
+      for (let i = 0; i < nodes.length; i++) {
+        const dx = mx - nodes[i].x;
+        const dy = my - nodes[i].y;
+        if (dx * dx + dy * dy < nodes[i].r * nodes[i].r) {
+          return i;
+        }
+      }
+      return -1;
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function updatePanel(idx) {
+      const n = nodes[idx];
+      const panel = document.getElementById('panel');
+      const sharedNodes = nodes
+        .map((other, i) => ({other, i, common: sharedTags(other, n)}))
+        .filter(x => x.i !== idx && x.common.length > 0);
+      const sharedHtml = sharedNodes.length
+        ? `<div class="panel-shared">同一直覺鏈：<br>${sharedNodes.map(x => `<b>${escapeHtml(x.other.date)}</b> ${escapeHtml(x.other.title)}（共享 ${escapeHtml(x.common.join(' · '))}）`).join('<br>')}</div>`
+        : '';
+      panel.innerHTML = `
+        <div class="panel-title">${escapeHtml(n.title)}</div>
+        <div class="panel-meta">${escapeHtml(n.date)}｜tags: ${escapeHtml(n.tags.join(' · '))}</div>
+        <div class="panel-desc">${escapeHtml(n.desc)}</div>
+        <div class="panel-insight">${escapeHtml(n.insight)}</div>
+        ${sharedHtml}
+      `;
+    }
+
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (W / rect.width);
+      const my = (e.clientY - rect.top) * (H / rect.height);
+      const idx = hit(mx, my);
+      if (idx >= 0) {
+        activeIdx = idx;
+        updatePanel(idx);
+        draw();
+      }
+    });
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = (e.clientX - rect.left) * (W / rect.width);
+      const my = (e.clientY - rect.top) * (H / rect.height);
+      canvas.style.cursor = hit(mx, my) >= 0 ? 'pointer' : 'default';
+    });
+
+    draw();
+  </script>
+</body>
+</html>

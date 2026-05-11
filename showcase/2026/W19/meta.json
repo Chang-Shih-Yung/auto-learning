@@ -1,0 +1,32 @@
+{
+  "year": 2026,
+  "week": "W19",
+  "week_start": "2026-05-04",
+  "week_end": "2026-05-10",
+  "articles_read": [
+    "2026-05-04.md",
+    "2026-05-05.md",
+    "2026-05-06.md",
+    "2026-05-07.md",
+    "2026-05-08.md",
+    "2026-05-09.md",
+    "2026-05-10.md"
+  ],
+  "articles_read_titles": [
+    "Axe Go binary AI agent × agent-desktop a11y tree × Agentic Coding Is a Trap × typia port Go 失敗",
+    "Anthropic financial-services × Microsoft 365 add-ins GA × Opsera + Cursor IDE 治理",
+    "Cursor 3.3 Context Usage Breakdown × Coder Agents Beta × Snyk + Claude Opus 4.7",
+    "Anthropic Pro/Max 雙倍 × Claude Code v2.1.132 × Simon Willison vibe vs agentic × Tilde.run × val.town Better Auth × mise",
+    "Agents need control flow × AlphaEvolve × AI Router TS × SDK v0.100.0 × CC v2.1.133 × Next.js v16.2.6 × NLA",
+    "Teaching Claude Why principled training × MCP Gateways 7 種比較",
+    "GitHub Spec-Kit v0.8.7 × Hermes Agent × 9 條獨立路徑回顧"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm", "design-systems", "typescript"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents", "ci-cd"],
+  "cross_week_reference": ["W17"],
+  "synthesis_note": "本週讀了 26 篇 relevance≥4 的文章，從 9 個獨立團隊、9 種語言、9 個架構層發出的訊號全部指向同一條工程直覺：控制權正從中心化平台往使用者方向漂移。W17 我做了「治理層擋下哪種失敗」的模擬器，本週發現治理只是這條漂移的一個切面——量化、介面、self-host、library-first、vertical、model-agnostic 全部是同一條方向。我做了概念地圖把 9 條動態的共享 tag 連起來，點任一節點即看「同一直覺鏈」。",
+  "demo_type": "concept-map",
+  "demo_available": true,
+  "demo_title": "W19 控制權漂移地圖：9 條獨立路徑、同一個直覺",
+  "generated_at": "2026-05-11T03:04:01Z"
+}
