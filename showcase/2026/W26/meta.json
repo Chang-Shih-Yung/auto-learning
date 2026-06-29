@@ -1,0 +1,28 @@
+{
+  "year": 2026,
+  "week": "W26",
+  "week_start": "2026-06-22",
+  "week_end": "2026-06-28",
+  "articles_read": [
+    "2026-06-22.md",
+    "2026-06-23.md",
+    "2026-06-24.md",
+    "2026-06-25.md",
+    "2026-06-26.md"
+  ],
+  "articles_read_titles": [
+    "Recall × Apertus × Claude Code agent loop 1,400 行 × Activepieces 22.9k★ × Sandi Metz wrong abstraction LLM 時代重讀",
+    "LLM-as-judge 0.85 vs trace-based 0.000 × GLM-5.2 unsloth 量化表 × Claude Code v2.1.186 × Typed provenance 4 軸",
+    "Claude Tag × Claude Code v2.1.187 × Armin Ronacher Coming Loop × Martin Fowler 拆 Bayer PRINCE",
+    "Gemini 3.5 Flash Computer Use × Claude Code v2.1.191 /rewind × Greptile OpenClaw 數字 × GLM-5.2 agent step change",
+    "Claude Code v2.1.193 classifyAllShell × OpenKnowledge v0.18.0 codebase-wiki × agmsg × Scorer vs Decider"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "typescript", "monorepo-pnpm", "design-systems", "design-code-bridge"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents", "ci-cd"],
+  "cross_week_reference": ["W19", "W17"],
+  "synthesis_note": "本週 22 篇 relevance≥4 文章共一條主線：過去靠人小心維持的隱性合約（session memory、trust scalar、PR reputation、channel context、LLM 直接決策）一條條被翻成引擎層 first-class explicit primitive。W17 我做 MCP 治理層、W19 做控制權漂移地圖；今週做「Implicit→Explicit 翻轉測驗」——丟給你 5 個 W26 的真實場景，挑出哪個 explicit primitive 該被導入。",
+  "demo_type": "interactive-quiz",
+  "demo_available": true,
+  "demo_title": "W26 Implicit→Explicit 翻轉測驗：本週 5 條黑盒被改寫成 first-class primitive",
+  "generated_at": "2026-06-29T02:35:28Z"
+}

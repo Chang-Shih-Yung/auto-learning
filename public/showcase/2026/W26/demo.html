@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W26 Implicit→Explicit 翻轉測驗</title>
+<style>
+  :root {
+    --bg: #fdfcfa;
+    --ink: #1a1a18;
+    --muted: #6a6760;
+    --green: #3d6b5e;
+    --green-soft: #e6efeb;
+    --red: #a8463a;
+    --red-soft: #f3e3e0;
+    --line: #d8d4cb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Hiragino Sans", "Microsoft JhengHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 18px 20px;
+  }
+  .frame { max-width: 720px; margin: 0 auto; }
+  .top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px; margin-bottom: 14px;
+  }
+  .top h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.5px; }
+  .top .meta { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--muted); }
+  .progress-bar {
+    height: 4px; background: var(--line); border-radius: 2px;
+    overflow: hidden; margin-bottom: 14px;
+  }
+  .progress-fill {
+    height: 100%; background: var(--green); transition: width 0.35s ease;
+  }
+  .scenario {
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 14px 16px; background: #fff;
+  }
+  .day-tag {
+    display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px; color: var(--green); background: var(--green-soft);
+    padding: 2px 8px; border-radius: 3px; margin-bottom: 8px;
+  }
+  .before {
+    font-size: 13.5px; color: var(--ink); margin-bottom: 8px; line-height: 1.65;
+  }
+  .before strong { color: var(--red); font-weight: 600; }
+  .ask {
+    font-size: 12px; color: var(--muted);
+    border-top: 1px dashed var(--line);
+    padding-top: 8px; margin-top: 8px; margin-bottom: 8px;
+  }
+  .options { display: flex; flex-direction: column; gap: 6px; }
+  .opt {
+    border: 1px solid var(--line); border-radius: 4px;
+    padding: 9px 12px; background: var(--bg);
+    cursor: pointer; font-size: 13px; line-height: 1.5;
+    text-align: left; color: var(--ink);
+    transition: border-color 0.15s, background 0.15s;
+    font-family: inherit;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--green); background: #fff; }
+  .opt:disabled { cursor: default; opacity: 0.9; }
+  .opt.correct { border-color: var(--green); background: var(--green-soft); }
+  .opt.wrong { border-color: var(--red); background: var(--red-soft); }
+  .feedback {
+    margin-top: 10px; padding: 9px 12px; border-radius: 4px;
+    font-size: 12.5px; line-height: 1.55;
+    border-left: 3px solid var(--green); background: var(--green-soft); color: var(--ink);
+  }
+  .feedback.miss { border-left-color: var(--red); background: var(--red-soft); }
+  .nav { display: flex; justify-content: space-between; margin-top: 14px; }
+  .btn {
+    background: var(--green); color: #fff; border: none;
+    padding: 8px 18px; border-radius: 4px; font-size: 13px;
+    cursor: pointer; font-family: inherit;
+  }
+  .btn:disabled { background: var(--line); color: var(--muted); cursor: not-allowed; }
+  .btn.ghost {
+    background: transparent; color: var(--green); border: 1px solid var(--green);
+  }
+  .summary {
+    border: 1px solid var(--line); border-radius: 6px;
+    padding: 18px; background: #fff; text-align: center;
+  }
+  .summary .score {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 24px; color: var(--green); margin: 8px 0 12px;
+  }
+  .summary p { font-size: 13px; color: var(--ink); margin-bottom: 10px; line-height: 1.6; }
+  .summary .insight {
+    font-size: 12px; color: var(--muted); line-height: 1.6;
+    text-align: left; border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px; background: var(--green-soft); color: var(--ink);
+    padding: 1px 4px; border-radius: 2px;
+  }
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="top">
+    <h1>W26 Implicit → Explicit 翻轉測驗</h1>
+    <span class="meta" id="counter">1 / 5</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:20%"></div></div>
+  <div id="stage"></div>
+</div>
+<script>
+  const scenarios = [
+    {
+      day: "Day 1 · 6/22 · Recall 99★",
+      before: "你跑 Claude Code 探索性 session 兩小時後，agent 開始重複問已答的問題、忘記限制、輸出品質下降——<strong>session memory 一直是 prompt 散文裡的隱性合約</strong>。每次 /clear 之前要不要先寫摘要全靠你記得。",
+      ask: "哪個 first-class primitive 把這條黑盒翻成可審計、可重現的工程動作？",
+      options: [
+        { text: "把整個 conversation transcript 丟給更大 context 的下一代模型",
+          ok: false, why: "context 加大只是把問題往後推——~20% conversation history 占比的稅還在。" },
+        { text: "Recall 的 history append-only log + context 1-2K 摘要（TF-IDF + TextRank extractive、零 API 等待）",
+          ok: true,  why: "把『要不要寫摘要』從手動 prompt 翻成 session-end 自動跑、本地零等待、結構化兩檔輸出——session memory 升 first-class。" },
+        { text: "改用更貴的 frontier model 讓它『自己記得更多』",
+          ok: false, why: "model 變強不改 substrate；隱性合約還是隱性合約。" }
+      ]
+    },
+    {
+      day: "Day 2 · 6/23 · Typed provenance",
+      before: "MES 戰情室 RxJS forkJoin 並行抓 3 個 API——其中一個慢 30 秒回，下游 ECharts 還是把過期資料當『正常』畫進圖表。<strong>trust 一直是 scalar：能拿到值就當可信</strong>。",
+      ask: "哪個 explicit primitive 讓 consumer 自己判斷要不要採用？",
+      options: [
+        { text: "Typed Provenance vector 4 軸（Freshness / Capability / Tool / Verification）+ 上游 min merge + tainted_by 追溯",
+          ok: true,  why: "trust 從 0-1 scalar 升 4 軸 vector，consumer 用自己 Policy floor 決定 grey-out 或套用——同份退化輸出兩 consumer 可有不同決定。" },
+        { text: "用 try/catch 包住所有 API 呼叫，失敗就 retry",
+          ok: false, why: "retry 解的是 transient error，不解『資料新鮮但能力低』『能力高但未驗證』這些跨軸退化。" },
+        { text: "在 README 寫『使用者請自行判斷資料新鮮度』",
+          ok: false, why: "把責任甩給 README 就是隱性合約的定義——這條翻轉的核心就是把它從文件搬進 type 跟 code。" }
+      ]
+    },
+    {
+      day: "Day 3 · 6/24 · Claude Tag",
+      before: "Slack 一個 workspace 30 個 channel，把 Claude 拉進去之後它在 #eng-frontend 跟 #marketing-launch 看到的是同一個 memory——<strong>『channel 即 context 邊界』一直是組織習慣，不是工程結構</strong>。",
+      ask: "哪個 first-class 化的設計讓 Slack channel 成為真正的 context 邊界？",
+      options: [
+        { text: "管理員寫 SOP 提醒同事『不要在錯誤頻道叫 Claude』",
+          ok: false, why: "SOP 是隱性合約的同義詞——一年內 100% 會被打破。" },
+        { text: "Claude Tag：一個 channel 一個 Claude，memory 跟 permission 都 scoped 到 channel，跨 channel 互不可見",
+          ok: true,  why: "把『channel = context』從組織習慣翻成引擎層 enforced 物件——記憶不會洩漏、權限不會擴張。" },
+        { text: "讓所有 channel 共用記憶但讓 Claude 自己判斷『這個問題該不該答』",
+          ok: false, why: "依賴模型自律——這條翻轉的整個重點就是不再靠『模型聽話』。" }
+      ]
+    },
+    {
+      day: "Day 4 · 6/25 · Greptile OpenClaw / Vouch",
+      before: "OpenClaw 去年 12 月到今年 2 月 PR 量從 2/週跳到 3,400/週、merge rate 從 48% 崩到 9.3%——<strong>contributor reputation 一直是 maintainer 大腦裡的印象</strong>，事後才用 merge rate 算出來。",
+      ask: "哪個 explicit primitive 把 reputation 從事後 score 升到事前 gate？",
+      options: [
+        { text: "把所有 PR 都關了，重啟 issue tracker",
+          ok: false, why: "destructive 過度反應——同時擋掉惡意 PR 跟新貢獻者真實價值。" },
+        { text: "把 review 工時增加 3 倍，每個 PR 三人 sign-off",
+          ok: false, why: "把 reputation 當隱性 maintainer 工作量問題——3,400 PR/週用人力擋不住。" },
+        { text: "Vouch trust management：未 vouched 預設進 pending verification queue、vouched 才進 main review；reputation 從事後 score 翻 first-class operational primitive",
+          ok: true,  why: "trust 從『默契』翻 explicit gate——CI invariant guard（test LOC、fixture 數突降）配合形成獨立於 PR 作者的 hard signal。" }
+      ]
+    },
+    {
+      day: "Day 5 · 6/26 · Scorer vs Decider",
+      before: "Nexus packages/ui design token review 想用 Claude API：怕『Claude 偶發說 OK 但其實 token JSON 不一致』。<strong>LLM 直接決策一直是黑盒——升 model 行為飄、API 中斷整流程崩</strong>。",
+      ask: "哪個 explicit primitive 讓 model swap 不破壞 production correctness？",
+      options: [
+        { text: "LLM 只打 4 軸分數（confidence / sender trust / reversibility / urgency），decision 邏輯寫在 60 行 TypeScript tier-policy.ts，LLM 失敗 fallback 關鍵字打分產同 4 軸",
+          ok: true,  why: "decision 邏輯永遠在 code 不在 model——model swap（Fable 5 → Opus 4.8 → GLM-5.2 自架）只要 variance 還在門檻內就不用改 policy；LLM 是『精度提升器』而非『correctness 來源』。" },
+        { text: "用 frontier model 一律相信它的結論",
+          ok: false, why: "model 行為仍會飄、API 仍會斷——correctness 變成你不能 audit 的東西。" },
+        { text: "讓 LLM 多 retry 幾次、取多數結論",
+          ok: false, why: "majority voting 不解『LLM 偶發說 OK』的本質——它可能 3 次都說 OK。" }
+      ]
+    }
+  ];
+
+  const state = { idx: 0, score: 0, picks: [], answered: false };
+  const stage = document.getElementById('stage');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+
+  function render() {
+    counter.textContent = (state.idx + 1) + " / " + scenarios.length;
+    progress.style.width = ((state.idx + 1) / scenarios.length * 100) + "%";
+    state.answered = false;
+    const s = scenarios[state.idx];
+    stage.innerHTML = '<div class="scenario">' +
+      '<div class="day-tag">' + s.day + '</div>' +
+      '<div class="before">' + s.before + '</div>' +
+      '<div class="ask">' + s.ask + '</div>' +
+      '<div class="options" id="opts"></div>' +
+      '<div id="feedback"></div>' +
+      '<div class="nav">' +
+        '<button class="btn ghost" id="reset">重來</button>' +
+        '<button class="btn" id="next" disabled>下一題 →</button>' +
+      '</div>' +
+    '</div>';
+    const opts = document.getElementById('opts');
+    s.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.type = 'button';
+      btn.textContent = opt.text;
+      btn.addEventListener('click', () => pick(i, btn));
+      opts.appendChild(btn);
+    });
+    document.getElementById('next').addEventListener('click', next);
+    document.getElementById('reset').addEventListener('click', reset);
+  }
+
+  function pick(i, btn) {
+    if (state.answered) return;
+    state.answered = true;
+    const s = scenarios[state.idx];
+    const allBtns = document.querySelectorAll('.opt');
+    allBtns.forEach((b, j) => {
+      b.disabled = true;
+      if (s.options[j].ok) b.classList.add('correct');
+      else if (j === i) b.classList.add('wrong');
+    });
+    const correct = s.options[i].ok;
+    if (correct) state.score++;
+    state.picks.push({ idx: state.idx, chose: i, correct });
+    const fb = document.getElementById('feedback');
+    fb.className = 'feedback' + (correct ? '' : ' miss');
+    fb.innerHTML = (correct ? '✓ 對。' : '× 不對。') + s.options[i].why;
+    document.getElementById('next').disabled = false;
+  }
+
+  function next() {
+    if (state.idx < scenarios.length - 1) {
+      state.idx++;
+      render();
+    } else {
+      summary();
+    }
+  }
+
+  function reset() {
+    state.idx = 0; state.score = 0; state.picks = []; state.answered = false;
+    render();
+  }
+
+  function summary() {
+    counter.textContent = "完成";
+    progress.style.width = "100%";
+    const pct = Math.round(state.score / scenarios.length * 100);
+    stage.innerHTML = '<div class="summary">' +
+      '<div style="font-size:13px;color:var(--muted);">本週主線</div>' +
+      '<div class="score">' + state.score + ' / ' + scenarios.length + ' · ' + pct + '%</div>' +
+      '<p>W26 五條獨立路徑指向同一個 2026-Q3 工程動作——<strong>過去靠人小心維持的隱性合約一條條被翻成引擎層 first-class explicit primitive</strong>。</p>' +
+      '<div class="insight">' +
+        '• <code>session memory</code> 從 prompt 散文翻 <code>history + 1-2K context</code>（Recall）<br>' +
+        '• <code>trust</code> 從 scalar 翻 <code>4 軸 vector + min merge</code>（Typed provenance）<br>' +
+        '• <code>channel = context</code> 從組織習慣翻 engine-scoped object（Claude Tag）<br>' +
+        '• <code>reputation</code> 從事後 score 翻事前 gate（Vouch）<br>' +
+        '• <code>decision</code> 從 LLM 黑盒翻 <code>60 行 TypeScript policy + LLM 打分</code>（Scorer vs Decider）<br>' +
+        '<br>每一條都把過去「跑得起來夠用」的隱性合約翻成「可被驗證、可被審計、可被替換」三維工程目標。' +
+      '</div>' +
+      '<div class="nav" style="justify-content:center;">' +
+        '<button class="btn ghost" id="again">再來一次</button>' +
+      '</div>' +
+    '</div>';
+    document.getElementById('again').addEventListener('click', reset);
+  }
+
+  render();
+</script>
+</body>
+</html>
