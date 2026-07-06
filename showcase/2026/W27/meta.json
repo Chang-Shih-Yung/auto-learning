@@ -1,0 +1,28 @@
+{
+  "year": 2026,
+  "week": "W27",
+  "week_start": "2026-06-29",
+  "week_end": "2026-07-05",
+  "articles_read": [
+    "2026-06-29.md",
+    "2026-06-30.md",
+    "2026-07-01.md",
+    "2026-07-02.md",
+    "2026-07-05.md"
+  ],
+  "articles_read_titles": [
+    "GLM-5.2 Semgrep IDOR × Claude Code v2.1.195 hook exact-match × Adrafinil × antoine MRI multi-subagent arbitration",
+    "Qwen 3.6 27B M5 128GB × Ornith-1.0 scaffold-as-RL × Claude Code v2.1.196 runtime enforce × vLLM Micro-Agent Fusion looper",
+    "Claude Sonnet 5 + v2.1.197 1M context × Claude Code v2.1.196 in-band marker × Nano Banana 2 Lite 2.7×",
+    "Claude Code v2.1.198 /dataviz + bg agent auto-PR × ZCode GLM-5.2 official harness × Cloudflare x402",
+    "shadcn 4.13.0 Base UI default × Ronacher Better Models Worse Tools × Claude Code v2.1.199/200/201 permission Manual × Figma-to-code missing middle × eslint credential 842→0"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm", "typescript", "design-systems", "figma", "design-code-bridge", "oklch", "containers"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm"],
+  "cross_week_reference": ["W26", "W19"],
+  "synthesis_note": "本週 17 篇 relevance≥4 一條主線：AI stack 5 層（collaboration / capability / context / closure / oversight）同一週各自出一個新 primitive。W26 我做「隱性→顯式」翻轉測驗，本週發現這場翻轉不是單點是全 stack 同步。我做了「Agent 五權調控器」——翻動 5 個開關，每翻一個等於在你 Nexus workflow 導入該層新 primitive，看假設風險分數怎麼從 100 消化到 0。",
+  "demo_type": "parameter-explorer",
+  "demo_available": true,
+  "demo_title": "W27 Agent 五權調控器：一週內 5 層 stack 同時翻新的 primitive 開關",
+  "generated_at": "2026-07-06T02:00:00Z"
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>W27 Agent 五權調控器</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: #fdfcfa;
+    color: #1a1a18;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 18px 40px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #6b6b66;
+    margin-bottom: 20px;
+  }
+  .score-panel {
+    background: #f4f2ed;
+    border: 1px solid #e2ded4;
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .score-label {
+    font-size: 12px;
+    color: #6b6b66;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .score-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 36px;
+    font-weight: 600;
+    color: #1a1a18;
+    line-height: 1;
+    transition: color 0.3s ease;
+  }
+  .score-value.low { color: #3d6b5e; }
+  .score-value.mid { color: #bf7a26; }
+  .score-value.high { color: #9c4a3a; }
+  .score-bar {
+    flex: 1;
+    height: 8px;
+    background: #e2ded4;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3d6b5e 0%, #bf7a26 60%, #9c4a3a 100%);
+    width: 100%;
+    transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform-origin: left center;
+  }
+  .toggle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .toggle-card {
+    background: #ffffff;
+    border: 1px solid #e2ded4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    user-select: none;
+  }
+  .toggle-card:hover {
+    border-color: #c7c1b3;
+  }
+  .toggle-card.on {
+    background: #eef4f1;
+    border-color: #3d6b5e;
+  }
+  .toggle-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .toggle-title {
+    flex: 1;
+  }
+  .toggle-layer {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    color: #6b6b66;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+  }
+  .toggle-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 4px;
+  }
+  .toggle-source {
+    font-size: 12px;
+    color: #6b6b66;
+  }
+  .switch {
+    width: 42px;
+    height: 24px;
+    background: #e2ded4;
+    border-radius: 12px;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+    margin-top: 2px;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  .toggle-card.on .switch {
+    background: #3d6b5e;
+  }
+  .toggle-card.on .switch::after {
+    transform: translateX(18px);
+  }
+  .toggle-detail {
+    font-size: 13px;
+    color: #3a3a36;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #e2ded4;
+    line-height: 1.55;
+  }
+  .toggle-delta {
+    display: inline-block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11px;
+    background: #f4f2ed;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #3d6b5e;
+    margin-left: 6px;
+  }
+  .footer-note {
+    font-size: 12px;
+    color: #6b6b66;
+    margin-top: 20px;
+    padding: 12px 14px;
+    background: #f4f2ed;
+    border-radius: 6px;
+    line-height: 1.6;
+  }
+  .reset {
+    background: transparent;
+    border: 1px solid #c7c1b3;
+    color: #3a3a36;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+  }
+  .reset:hover {
+    background: #f4f2ed;
+    border-color: #6b6b66;
+  }
+  .top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top-row">
+    <div>
+      <h1>W27 Agent 五權調控器</h1>
+      <div class="subtitle">2026-06-29 → 07-05：AI stack 5 層各出 1 個新 primitive</div>
+    </div>
+    <button class="reset" id="reset">全部歸零</button>
+  </div>
+
+  <div class="score-panel">
+    <div>
+      <div class="score-label">Nexus workflow 假設風險</div>
+      <div class="score-value high" id="score">100</div>
+    </div>
+    <div class="score-bar">
+      <div class="score-bar-fill" id="scorebar"></div>
+    </div>
+  </div>
+
+  <div class="toggle-list" id="list"></div>
+
+  <div class="footer-note">
+    「風險分數」是這個 demo 用來讓你直觀看到「一週 5 個新 primitive 疊起來影響有多大」的假設值——不是 Nexus 真實 SLA。所有翻牌都對應到本週 journal 的具體文章與可執行動作。
+  </div>
+</div>
+
+<script>
+  const primitives = [
+    {
+      layer: "Collaboration",
+      name: "Multi-subagent bias-free arbitration",
+      source: "6/29 antoine.fi MRI 第二意見（HN 356 點）",
+      delta: 25,
+      detail: "把 Nexus PR review 拆 reviewer + arbitrator：reviewer 看 PR 產 finding list，arbitrator subagent 只拿 finding + repo 規則獨立打 severity，不看 PR 描述避開 single-context bias。原案例 Opus 4.8 xhigh 第一輪誤判 tendon 完整、arbitration 翻回臨床更接近的 mild tendinosis。"
+    },
+    {
+      layer: "Capability",
+      name: "Qwen 3.6 27B 本地 65k context M5 128GB",
+      source: "6/30 Quesma / Piotr Migdał（HN 617 點）",
+      delta: 20,
+      detail: "packages/ui token review 從 Claude API 改本地 llama.cpp Metal + MTP：42GB RAM 塞 65,536 context 一次餵完 tokens/*.json + Storybook + Angular template 三 package 源碼，32 tok/s 約 3-5 分鐘一份 review，token JSON 不離開本機直接對應歐洲客戶合規預設。"
+    },
+    {
+      layer: "Context",
+      name: "Sonnet 5 + 1M native attention window",
+      source: "7/1 Anthropic Sonnet 5 + Claude Code v2.1.197（HN 889 點）",
+      delta: 20,
+      detail: "PR review pipeline 從『兩階段 reviewer + arbitrator subagent』翻『單一 Sonnet 5 request 塞完所有源碼跑 in-context 兩輪 pass』。促銷 $2/$10 跑到 8/31，40k + 25k + 50k monorepo 源碼一次餵完還剩一半 context 給推理，測 F1 對標 subagent arbitration 順便省一半 latency。"
+    },
+    {
+      layer: "Closure",
+      name: "Background agent auto-commit / push / draft-PR",
+      source: "7/2 Claude Code v2.1.198（GitHub release）",
+      delta: 15,
+      detail: "排程任務結構從『main session 跑七步 → 手動 push』翻『main session 只做 landing gate + 背景 agent 各自 close PR』。跑完不再停下來問，自動 commit + push + 開 draft PR，收尾動作從人工銜接翻協議層自動閉環。"
+    },
+    {
+      layer: "Oversight",
+      name: "Permission mode Manual + hook matcher exact-match",
+      source: "7/5 Claude Code v2.1.199/200/201 + 6/29 v2.1.195（HN 170 點）",
+      delta: 20,
+      detail: "session 預設信任 posture 從 opt-out 翻 opt-in，同時 hook matcher 從 substring 升 exact match 擋掉 `code-reviewer-bypass` 這類衍生命名繞過。SKILL.md frontmatter 顯式加 `--permission-mode default` 保留舊自動化，同時準備 Manual 分支給稽核方要求時用。"
+    }
+  ];
+
+  const state = { active: new Set() };
+
+  const listEl = document.getElementById("list");
+  const scoreEl = document.getElementById("score");
+  const scoreBarEl = document.getElementById("scorebar");
+  const resetEl = document.getElementById("reset");
+
+  function render() {
+    listEl.innerHTML = "";
+    primitives.forEach((p, i) => {
+      const on = state.active.has(i);
+      const card = document.createElement("div");
+      card.className = "toggle-card" + (on ? " on" : "");
+      card.innerHTML = `
+        <div class="toggle-head">
+          <div class="toggle-title">
+            <div class="toggle-layer">${p.layer} <span class="toggle-delta">−${p.delta}</span></div>
+            <div class="toggle-name">${p.name}</div>
+            <div class="toggle-source">${p.source}</div>
+          </div>
+          <div class="switch"></div>
+        </div>
+        ${on ? `<div class="toggle-detail">${p.detail}</div>` : ""}
+      `;
+      card.addEventListener("click", () => {
+        if (state.active.has(i)) state.active.delete(i);
+        else state.active.add(i);
+        render();
+        updateScore();
+      });
+      listEl.appendChild(card);
+    });
+  }
+
+  function updateScore() {
+    let reduction = 0;
+    state.active.forEach(i => { reduction += primitives[i].delta; });
+    const score = Math.max(0, 100 - reduction);
+    scoreEl.textContent = score;
+    scoreBarEl.style.width = score + "%";
+    scoreEl.classList.remove("low", "mid", "high");
+    if (score <= 30) scoreEl.classList.add("low");
+    else if (score <= 65) scoreEl.classList.add("mid");
+    else scoreEl.classList.add("high");
+  }
+
+  resetEl.addEventListener("click", () => {
+    state.active.clear();
+    render();
+    updateScore();
+  });
+
+  render();
+  updateScore();
+</script>
+</body>
+</html>
