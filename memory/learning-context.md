@@ -89,9 +89,10 @@
      - 禁止使用「AI 技術摘要」、「AI Tech Digest」、「每日 AI 技術摘要」等變體
    - 每篇文章後插入 AnnotationCard（格式見下方）
    - 最後必須有「今日總結」區塊，整合當天的洞察與應用點
-   - **寫完後立即用 Read 工具重新讀取剛寫入的檔案，逐一確認每個 `<AnnotationCard />` 的 `{` `}` 對稱、字串閉合，確認無誤才繼續**（MDX 解析錯誤會中斷 Vercel build）
+   - **寫完後立即執行 `npm run lint:mdx`**——它用與 Vercel build 相同的 next-mdx-remote 編譯器實際編譯所有內容檔，判定與 build 100% 一致、零誤報。只要有紅燈就代表會中斷 Vercel prerender，必須修好、重跑到全綠才能 commit。⚠️ 花括號 `{...}` 與 `<xxx>`（含 unicode 減號 `−` 這類）hazard 常出現在 **prose 內文而非 AnnotationCard**，用眼睛數 `{}` 對稱不可靠——一律以 `npm run lint:mdx` 為準（2026-07-15 就是 prose 內的 `{−1, 0, +1}` 眼睛沒抓到、Vercel 壞了四天）。
    - 然後執行：
      ```bash
+     npm run lint:mdx        # 全綠才能往下 commit（deterministic build 守門員，不可略過）
      git add journal/
      git commit -m "daily: YYYY-MM-DD AI tech digest"
      git push origin main
