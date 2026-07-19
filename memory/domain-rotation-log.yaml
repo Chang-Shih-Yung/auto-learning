@@ -9,7 +9,7 @@
 #   - 更新 current_domain 為該領域，寫回此檔案
 #   - history 視窗 = 7 = N-1（共 8 個領域，確保永遠有 1 個可用）
 
-current_domain: healthcare  # 2026-07-18 更新（下一次 run 用）
+current_domain: finance  # 2026-07-19 更新（下一次 run 用）
 
 domains:
   - id: healthcare
@@ -30,10 +30,10 @@ domains:
     label: "預測維護 / 視覺檢測 / 機器人協作"
 
 history:
+  - healthcare       # 2026-07-19
   - biology          # 2026-07-18
   - design_industry  # 2026-07-17
   - education        # 2026-07-15
   - climate          # 2026-07-14
   - legal            # 2026-07-13
   - manufacturing    # 2026-07-06
-  - finance          # 2026-07-05
