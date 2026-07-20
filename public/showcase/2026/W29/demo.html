@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<title>W29 AI Agent 隔離 Primitive 選擇器</title>
+<style>
+  :root {
+    --bg: #fdfcfa;
+    --text: #1a1a18;
+    --muted: #6b6b66;
+    --brand: #3d6b5e;
+    --brand-soft: #eaf1ee;
+    --line: #e6e2da;
+    --warn: #bf7a26;
+    --good: #3d6b5e;
+    --bad: #a3543a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Noto Sans TC", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 {
+    font-size: 18px;
+    margin: 0 0 4px;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+  .sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 18px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .dot {
+    flex: 1;
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .dot.done { background: var(--brand); }
+  .dot.current { background: var(--warn); }
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: #fff;
+  }
+  .scenario-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    color: var(--brand);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .scenario-text {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .opt {
+    display: block;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.15s;
+    font-size: 13px;
+  }
+  .opt:hover { border-color: var(--brand); background: var(--brand-soft); }
+  .opt.selected { border-color: var(--brand); background: var(--brand-soft); }
+  .opt.correct { border-color: var(--good); background: #e8f2ee; }
+  .opt.wrong { border-color: var(--bad); background: #f5e6df; }
+  .opt.other-correct { border-color: var(--good); border-style: dashed; }
+  .opt-primitive {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    color: var(--brand);
+    display: block;
+    margin-bottom: 3px;
+  }
+  .feedback {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--brand-soft);
+    border-radius: 4px;
+    font-size: 13px;
+  }
+  .feedback-title {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--brand);
+  }
+  .feedback-source {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--brand);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 10px;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn.secondary { background: transparent; color: var(--brand); border: 1px solid var(--brand); }
+  .summary { padding: 20px; text-align: center; }
+  .score {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--brand);
+    margin: 12px 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .verdict { font-size: 14px; color: var(--muted); margin-bottom: 18px; }
+  .primitive-list {
+    text-align: left;
+    margin: 20px 0;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .primitive-item {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .primitive-item:last-child { border-bottom: none; }
+  .primitive-num {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    background: var(--brand);
+    color: #fff;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .primitive-body { flex: 1; font-size: 12px; }
+  .primitive-name {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-weight: 600;
+    color: var(--brand);
+    font-size: 12px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .primitive-desc { color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AI Agent 隔離 Primitive 選擇器</h1>
+  <div class="sub">W29 · 2026-07-13 → 2026-07-19 · 5 個真實場景 × 7 條隔離路徑</div>
+  <div class="progress" id="progress"></div>
+  <div id="app"></div>
+</div>
+
+<script>
+'use strict';
+
+const PRIMITIVES = {
+  physical: {
+    name: "PHYSICAL_MACHINE + FRESH_USER",
+    desc: "把 AI agent 隔離到另一台實體機器的乾淨 macOS 帳號，用 SSH + tmux LaunchAgent 遙控，權限樹跟主機完全分離。學習成本最低、需要有備用硬體。",
+    source: "2026-07-19 · ykdojo Claude Controls Mac"
+  },
+  vm: {
+    name: "VM_SANDBOX (hypervisor)",
+    desc: "用 Apple Virtualization.framework 或 Docker Desktop 起 VM，agent 跑在 VM 內，配 userspace DNS-aware allow-list（npm/PyPI/GitHub 預先放行）。跨平台、需要 hypervisor 知識。",
+    source: "2026-07-14 · Clawk 285★ Apache-2.0"
+  },
+  desktop_app: {
+    name: "DESKTOP_APP + BUNDLED_MODEL",
+    desc: "獨立 desktop app 專職 agent harness（跟 model runtime 分離），本地跑 open weights，ZDR 承諾雲端請求 transient。跟主機共享權限但跟其他 app 隔離。",
+    source: "2026-07-17 · LM Studio Bionic"
+  },
+  workspace_cache: {
+    name: "WORKSPACE_CACHE_KEY (vendor)",
+    desc: "vendor 內建的 workspace 隔離——client cache key 綁 launch dir + workspace ID + auth realm 三軸，防跨 workspace 資料橫向漏水。需要信任 vendor 實作正確。",
+    source: "2026-07-15 · agent-memory beta + Managed Agents"
+  },
+  mcp_tunnel: {
+    name: "MCP_TUNNEL (outbound-only)",
+    desc: "MCP server 跑在客戶私網，cloudflared outbound-only 建立長連線到 Anthropic proxy，inner TLS 客戶 hold key、Cloudflare 看不到 payload、OAuth 每 server 獨立驗證。適合企業 SecOps。",
+    source: "2026-07-18 · MCP Tunnels anthropic-sdk-python v0.117.0"
+  },
+  local_model: {
+    name: "LOCAL_MODEL_RUNTIME",
+    desc: "模型權重直接跑在你的裝置上（iPhone 17 Pro 塞 27B 1-bit / Mac 塞 Kimi K3 self-host），data 從來不出裝置。適合對「AI 呼叫完全不出裝置」有硬性合規需求的場景。",
+    source: "2026-07-15 · Bonsai 27B + 2026-07-17 Kimi K3 全權重 7/27 開源"
+  },
+  permission_rule: {
+    name: "PERMISSION_RULE (顯式細粒度)",
+    desc: "vendor 側 CLI 對 filesystem 訪問邊界從隱式遞迴翻顯式當層——`Edit(dir/**)` 只放行當層、`Edit(dir/**/**)` 才是遞迴，配 EndConversation tool 讓 agent 遇 injection 主動終止。",
+    source: "2026-07-18 · Claude Code v2.1.214"
+  }
+};
+
+const QUESTIONS = [
+  {
+    scenario: "你有一台 M1 MacBook Air 退役但還能開機。想把 Claude_auto 這種 24 小時排程從主機搬走，主機零風險——但你不熟 Docker、也不想每月付雲端 VM 錢。哪條 primitive 學習成本最低？",
+    options: [
+      { key: "physical", label: "physical + fresh user：SSH + tmux LaunchAgent + pmset 全套 no-sleep，備用 Mac 建 fresh user 專門跑" },
+      { key: "vm", label: "VM sandbox：在主機起一台 Clawk VM 專跑排程，用 DNS-aware allow-list 綁 npm/PyPI/GitHub" },
+      { key: "workspace_cache", label: "workspace cache key：靠 Claude Code 內建 workspace 隔離、不用另外設備" }
+    ],
+    correct: "physical",
+    feedback: "備用 Mac + fresh user 是三條裡零學習成本的一條——不用 hypervisor、不用 systemd、90 分鐘腳本設完。VM 需要 hypervisor 知識、workspace cache key 是 vendor 側隔離不解決「跟主機共享權限」的核心問題。這條路徑跟你在 MES 為工廠現場設計專用 PDA 的隔離哲學同構——不同 use case 就該用不同硬體。"
+  },
+  {
+    scenario: "歐盟客戶採購 Nexus 時明確要求：「AI 呼叫必須完全不出裝置」——不是「有 ZDR 承諾」、是「連 request 都不能到 vendor」。四條選項哪一條唯一符合？",
+    options: [
+      { key: "desktop_app", label: "desktop app + bundled model：LM Studio Bionic 這種本地 harness、ZDR 承諾 transient" },
+      { key: "mcp_tunnel", label: "MCP tunnel outbound-only：cloudflared inner TLS 客戶 hold key、Cloudflare 看不到 payload" },
+      { key: "local_model", label: "local model runtime：Bonsai 27B / Kimi K3 self-host 完全跑客戶硬體、data 從不出裝置" }
+    ],
+    correct: "local_model",
+    feedback: "唯一路徑是 local model runtime。Bionic 雖然是本地 harness 但選雲端推理時 request 仍出裝置；MCP tunnel 是「出裝置但走可信通道」不是「不出裝置」。7/15 Bonsai 27B（3.9 GB 塞 iPhone 17 Pro）+ 7/17 Kimi K3（7/27 全權重 Apache 2.0 開源）兩條路徑今年才第一次讓「27B 級模型跑客戶硬體」變成合規上可行。"
+  },
+  {
+    scenario: "你要對 Fortune 500 銀行客戶部署 Nexus MCP Server——SecOps 團隊擺明「不會為你開新的 inbound port、不會給你 VPN peering」。什麼架構能滿足他們？",
+    options: [
+      { key: "mcp_tunnel", label: "MCP tunnel outbound-only：cloudflared 從私網主動發起長連線到 Anthropic proxy，只需證明沒開新的 inbound port" },
+      { key: "vm", label: "VM sandbox：在客戶私網起一台 Clawk VM 跑 Nexus MCP、DNS allow-list 綁定 Anthropic endpoint" },
+      { key: "permission_rule", label: "permission rule 顯式細粒度：Claude Code v2.1.214 那條 dir/** 從遞迴翻當層放行的動作" }
+    ],
+    correct: "mcp_tunnel",
+    feedback: "SecOps 對「outbound 建立長連線」比對「開 inbound port」寬鬆好幾倍——這條就是你在 MES 做過的 SignalR 架構：client 主動發起、server 只被動接收。7/18 MCP Tunnels 進 anthropic-sdk-python v0.117.0 一等公民支援，Helm chart + docker-compose 部署，配 HIPAA BAA 資格對醫療金融政府客戶直接對應。permission rule 是主機檔案系統邊界不解決網路架構問題。"
+  },
+  {
+    scenario: "你在 Nexus packages/ui 的 monorepo 裡開發、要每天讓 Claude Code 幫你 review PR + 跑 typecheck + 修 lint。工作場景是「日常 dev」不是「production 部署」，追求「快速迭代 + 主機權限跨檔案系統可讀寫」。哪條 primitive 對這場景最省事？",
+    options: [
+      { key: "workspace_cache", label: "workspace cache key：靠 Claude Code 內建 workspace 隔離、直接在主機上跑" },
+      { key: "physical", label: "physical machine：拉一台備用 Mac 專門跑 dev workflow" },
+      { key: "vm", label: "VM sandbox：Clawk VM 跑 dev 排程" }
+    ],
+    correct: "workspace_cache",
+    feedback: "日常 dev 追求迭代速度、且你信任自己的 Claude Code 使用習慣（不會 --dangerously-skip-permissions），這條場景用 vendor 內建 workspace cache 就夠。physical machine 適合「無人值守 24 小時排程」不適合「隨手 vibe code」；VM 對 dev latency 有影響。但要注意 7/6 Claude Code Enterprise #74066 workspace 漏水 issue 的教訓——workspace cache key 是 vendor 內建、要相信 vendor 綁對三軸（launch dir + workspace ID + auth realm）。"
+  },
+  {
+    scenario: "團隊有 3 個 Claude Code 使用者、想試 computer use（讓 Claude 動滑鼠鍵盤、截你螢幕）但沒人敢在自己的 desktop 開這條 flag。怎麼快速搭一個「大家都能試 computer use、但不用擔心動到自己資料」的環境？",
+    options: [
+      { key: "physical", label: "physical + fresh user：一台備用 Mac 建 fresh user、SSH + tmux LaunchAgent 讓 computer use 走 GUI display privileges" },
+      { key: "desktop_app", label: "desktop app + bundled model：Bionic 本地 harness 直接在 desktop 開，跟系統 app 隔離" },
+      { key: "vm", label: "VM sandbox：Clawk VM 起 macOS 授權 computer use 對 VM 內螢幕" }
+    ],
+    correct: "physical",
+    feedback: "只有 physical machine 這條路能繞開 macOS 「Screen Recording + Accessibility 只能 GUI 授權」這條限制——tmux LaunchAgent 讓 tmux server 掛 GUI session、SSH attach 進來的 process 繼承 display privileges。VM 內執行 computer use 對「你想遙控真實 GUI app」沒用；desktop app 隔離不解決「使用者不敢在自己 desktop 開這條 flag」的心理門檻。搭 7/19 ykdojo 這份 90 分鐘 setup 手冊剛好對上這條使用場景。"
+  }
+];
+
+const state = { idx: 0, answers: [], showFeedback: false };
+
+function render() {
+  const app = document.getElementById('app');
+  const prog = document.getElementById('progress');
+  prog.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    if (i < state.idx) d.classList.add('done');
+    else if (i === state.idx) d.classList.add('current');
+    prog.appendChild(d);
+  }
+
+  if (state.idx >= QUESTIONS.length) { renderSummary(); return; }
+
+  const q = QUESTIONS[state.idx];
+  const userAnswer = state.answers[state.idx];
+  const showFB = state.showFeedback;
+
+  let html = '<div class="card">';
+  html += '<div class="scenario-label">SCENARIO ' + (state.idx + 1) + ' / ' + QUESTIONS.length + '</div>';
+  html += '<div class="scenario-text">' + escape(q.scenario) + '</div>';
+
+  for (const opt of q.options) {
+    let cls = 'opt';
+    if (userAnswer === opt.key) {
+      if (showFB) cls += (opt.key === q.correct) ? ' correct' : ' wrong';
+      else cls += ' selected';
+    } else if (showFB && opt.key === q.correct) {
+      cls += ' other-correct';
+    }
+    const prim = PRIMITIVES[opt.key];
+    html += '<div class="' + cls + '" data-key="' + opt.key + '" onclick="pick(\'' + opt.key + '\')">';
+    html += '<span class="opt-primitive">' + escape(prim.name) + '</span>';
+    html += escape(opt.label);
+    html += '</div>';
+  }
+
+  if (showFB) {
+    const isCorrect = userAnswer === q.correct;
+    const correctPrim = PRIMITIVES[q.correct];
+    html += '<div class="feedback">';
+    html += '<div class="feedback-title">' + (isCorrect ? '正解 ✓' : '推薦解法：' + escape(correctPrim.name)) + '</div>';
+    html += escape(q.feedback);
+    html += '<div class="feedback-source">來源：' + escape(correctPrim.source) + '</div>';
+    html += '</div>';
+    html += '<button class="btn" onclick="next()">' + (state.idx === QUESTIONS.length - 1 ? '看總結' : '下一題 →') + '</button>';
+  } else {
+    html += '<button class="btn" onclick="reveal()"' + (userAnswer ? '' : ' disabled') + '>提交答案</button>';
+  }
+  html += '</div>';
+
+  app.innerHTML = html;
+}
+
+function pick(key) {
+  if (state.showFeedback) return;
+  state.answers[state.idx] = key;
+  render();
+}
+
+function reveal() {
+  if (!state.answers[state.idx]) return;
+  state.showFeedback = true;
+  render();
+}
+
+function next() {
+  state.idx += 1;
+  state.showFeedback = false;
+  render();
+}
+
+function renderSummary() {
+  const app = document.getElementById('app');
+  let correct = 0;
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    if (state.answers[i] === QUESTIONS[i].correct) correct += 1;
+  }
+  let verdict = '';
+  if (correct === 5) verdict = '滿分 — 你對「哪個場景該用哪條隔離 primitive」已經有很完整的心智模型。';
+  else if (correct >= 3) verdict = '不錯 — 大方向抓對，剩下的邊界場景差異值得回頭看看來源文章。';
+  else verdict = '有進步空間 — 這七條 primitive 之間的 tradeoff 差異值得對照 W29 五篇日誌重讀。';
+
+  let html = '<div class="card summary">';
+  html += '<div>本週測驗結果</div>';
+  html += '<div class="score">' + correct + ' / ' + QUESTIONS.length + '</div>';
+  html += '<div class="verdict">' + escape(verdict) + '</div>';
+  html += '<button class="btn secondary" onclick="restart()">再試一次</button>';
+  html += '<div class="primitive-list">';
+  html += '<div class="scenario-label" style="margin-bottom:12px;">W29 七條隔離 primitive 全景</div>';
+  let n = 1;
+  for (const key of Object.keys(PRIMITIVES)) {
+    const p = PRIMITIVES[key];
+    html += '<div class="primitive-item">';
+    html += '<div class="primitive-num">' + n + '</div>';
+    html += '<div class="primitive-body">';
+    html += '<span class="primitive-name">' + escape(p.name) + '</span>';
+    html += '<div class="primitive-desc">' + escape(p.desc) + '</div>';
+    html += '<div class="feedback-source">來源：' + escape(p.source) + '</div>';
+    html += '</div>';
+    html += '</div>';
+    n += 1;
+  }
+  html += '</div>';
+  html += '</div>';
+  app.innerHTML = html;
+
+  const prog = document.getElementById('progress');
+  prog.innerHTML = '';
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot done';
+    prog.appendChild(d);
+  }
+}
+
+function restart() {
+  state.idx = 0;
+  state.answers = [];
+  state.showFeedback = false;
+  render();
+}
+
+function escape(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];
+  });
+}
+
+render();
+</script>
+</body>
+</html>

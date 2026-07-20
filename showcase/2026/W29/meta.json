@@ -1,0 +1,30 @@
+{
+  "year": 2026,
+  "week": "W29",
+  "week_start": "2026-07-13",
+  "week_end": "2026-07-19",
+  "articles_read": [
+    "2026-07-13.md",
+    "2026-07-14.md",
+    "2026-07-15.md",
+    "2026-07-17.md",
+    "2026-07-18.md",
+    "2026-07-19.md"
+  ],
+  "articles_read_titles": [
+    "Claude Code v2.1.207 Auto mode opt-in→opt-out × Ant JS 8MB × SQLite STRICT × xAI Grok CLI 5.10 GiB wire audit",
+    "Claude Code v2.1.208 79× 壓縮 × Clawk 285★ VM sandbox × antirez Control Ideas Not Code × 前沿模型真實 $/task × Ray Myers Zig vs Rust",
+    "Claude Code v2.1.210 worktree 真關 × agent-memory beta 8 SDK × OpenAI Codex prompt 加密 × Bonsai 27B 塞 iPhone 17 Pro",
+    "Claude Code v2.1.212 quota × Kimi K3 2.8T MoE 開源 × Salesforce Agentforce 退回 deterministic × Pydantic Human-in-the-loop is tired × LM Studio Bionic",
+    "Claude Code v2.1.214 dir/** 顯式細粒度 × MCP Tunnels v0.117.0 × shadcn 4.13.1 三條資安修",
+    "ykdojo Claude Controls Mac × charlesazam Fable 5 vs Sol /goal × Transcribe.cpp 16 ASR 統一 inference"
+  ],
+  "skills_extracted": ["ai-workflow", "ai-agents", "ci-cd", "monorepo-pnpm", "typescript", "containers", "design-systems"],
+  "skills_used_in_demo": ["ai-workflow", "ai-agents", "containers", "ci-cd"],
+  "cross_week_reference": ["W26"],
+  "synthesis_note": "本週 18 篇 relevance≥4 文章匯流到同一條主線：AI agent 執行邊界的隔離 primitive 從單一選項爆炸成七條路徑（physical machine、VM、desktop app、workspace cache、network tunnel、local model runtime、permission rule 顯式細粒度）。W26 我做 Implicit→Explicit 翻轉測驗把黑盒翻 first-class primitive，這週具體到隔離這一面——同一個工程問題（AI agent 該住哪裡），今天有七種答案。我做「isolation primitive 選擇器」，讓你用五個真實場景體驗每條路徑的 tradeoff。",
+  "demo_type": "interactive-quiz",
+  "demo_available": true,
+  "demo_title": "W29 AI Agent 隔離 Primitive 選擇器：5 個真實場景 × 7 條隔離路徑",
+  "generated_at": "2026-07-20T06:22:10Z"
+}
